@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 export default function Input({
+  id,
   type,
   value,
   onChange,
@@ -8,6 +9,7 @@ export default function Input({
 }) {
   return (
     <input
+    id= {id}
       className="border rounded-lg sm:w-96 w-auto p-2 focus:border-green-900 "
       placeholder={placeholder}
       type={type}

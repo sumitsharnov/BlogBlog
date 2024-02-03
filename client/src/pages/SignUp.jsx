@@ -26,10 +26,10 @@ const SignUp = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { input, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [input]: value,
     });
   };
 
@@ -40,24 +40,21 @@ const SignUp = () => {
   };
 
   return (
-    <div className="relative mt-6 border border-purple-950 border-solid p-20 bg-cover flex md:items-end md:justify-end items-center justify-center w-full h-full overflow-hidden">
-      <Carousel className="absolute top-0 left-0 h-full lg:inline-block hidden">
-      
-  <img  className="border rounded-3xl h-96 w-96"  src={img1} alt="..."/>
-     <img className="border rounded-3xl "  src={img2} alt="..."/>
-     <img className="border rounded-3xl "  src={img3} alt="..."/>
-     <img className="border rounded-3xl "  src={img4} alt="..."/>
-     <img className="border rounded-3xl "  src={img5} alt="..."/>
+    <div className="mt-6  bg-cover flex flex-row items-center justify-center w-full h-full">
+      <div className="lg:inline hidden overflow-hidden mr-10">
+        <div className="relative w-full p-96 border rounded-3xl ">
+          <Carousel className="absolute top-0 left-0 ">
+            <img className="border rounded-3xl" src={img1} alt="..." />
+            <img className="border rounded-3xl" src={img2} alt="..." />
+            <img className="border rounded-3xl" src={img3} alt="..." />
+            <img className="border rounded-3xl" src={img4} alt="..." />
+            <img className="border rounded-3xl" src={img5} alt="..." />
+          </Carousel>
+        </div>
+      </div>
 
-
-        
-        {/* <img className="w-full" src="https://flowbite.com/docs/images/carousel/carousel-2.svg" alt="..." />
-      <img className="w-full h-auto" src="https://flowbite.com/docs/images/carousel/carousel-3.svg" alt="..." />
-      <img className="w-full h-auto" src="https://flowbite.com/docs/images/carousel/carousel-4.svg" alt="..." />
-      <img className="w-full h-auto" src="https://flowbite.com/docs/images/carousel/carousel-5.svg" alt="..." /> */}
-      </Carousel>
       <form
-        className="z-10 flex flex-col sm:justify-center sm:items-center space-y-8 bg-gray-300 p-5 relative w-auto h-auto border rounded-3xl"
+        className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-8 bg-gray-300 p-5 mr-5 border rounded-3xl"
         onSubmit={handleSubmit}
       >
         <div className="flex sm:flex-row">
@@ -66,6 +63,7 @@ const SignUp = () => {
             className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
           />
           <Input
+            id= 'firstName'
             type="text"
             value={formData.firstName}
             onChange={handleChange}
