@@ -1,4 +1,5 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -13,7 +14,7 @@ export default function Header() {
         localStorage.setItem('isActive', JSON.stringify(activeLink));
      }, [activeLink]);
   return (
-    <Navbar className="border-b-2 ">
+    <Navbar className="border-b-2  ">
       <Link
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">
