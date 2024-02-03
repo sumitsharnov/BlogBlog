@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { useState } from "react";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,14 +7,8 @@ import img3 from "../images/sign-up/img3.jpg";
 import img4 from "../images/sign-up/img4.jpg";
 import img5 from "../images/sign-up/img5.jpg";
 import { Carousel } from "flowbite-react";
-
 import { Button } from "flowbite-react";
-import {
-  faUser,
-  faUserClock,
-  faEnvelope,
-  faLock,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserClock, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -26,21 +19,20 @@ const SignUp = () => {
   });
 
   const handleChange = (e) => {
-    const { input, value } = e.target;
+    const { id, value } = e.target;
     setFormData({
       ...formData,
-      [input]: value,
+      [id]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
     console.log(formData);
   };
 
   return (
-    <div className="mt-6  bg-cover flex flex-row items-center justify-center w-full h-full">
+    <div className="mt-6 bg-cover flex flex-row items-center justify-center w-full h-full">
       <div className="lg:inline hidden overflow-hidden mr-10">
         <div className="relative w-full p-96 border rounded-3xl ">
           <Carousel className="absolute top-0 left-0 ">
@@ -63,7 +55,7 @@ const SignUp = () => {
             className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
           />
           <Input
-            id= 'firstName'
+            id="firstName"
             type="text"
             value={formData.firstName}
             onChange={handleChange}
@@ -78,6 +70,7 @@ const SignUp = () => {
             className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100   mr-2 border rounded-full"
           />
           <Input
+            id="lastName"
             type="text"
             value={formData.lastName}
             onChange={handleChange}
@@ -92,6 +85,7 @@ const SignUp = () => {
             className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
           />
           <Input
+            id="email"
             type="email"
             value={formData.email}
             onChange={handleChange}
@@ -106,6 +100,7 @@ const SignUp = () => {
             className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
           />
           <Input
+            id="password"
             type="password"
             value={formData.password}
             onChange={handleChange}
