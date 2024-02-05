@@ -11,13 +11,13 @@ export const signup = async (req, res, next) => {
     !username ||
     !email ||
     !password ||
-    firstName === ""||
+    firstName === "" ||
     lastName === "" ||
     username === "" ||
     email === "" ||
     password === ""
   ) {
-    next(errorHandler(400, 'All Fields are required'));
+    next(errorHandler(400, "All Fields are required"));
   }
   const hashedPassword = bcryt.hashSync(password, 10);
   const newUser = new User({

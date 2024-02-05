@@ -20,7 +20,7 @@ const Input = ({
         placeholder={placeholder}
         required={required}
         className={`border rounded-lg sm:w-96 w-auto p-2 focus:border-green-900 ${
-          isSubmitted && !value? "border-red-700" : ""
+          isSubmitted && !value ? "border-red-700" : ""
         }`}
       />
       {required && !value && (

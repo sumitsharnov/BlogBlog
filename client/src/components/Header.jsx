@@ -44,10 +44,9 @@ export default function Header() {
           <NavLink
             to="/"
             className={
-              location.pathname === "/"
-                ? "border-b-4 border-purple-400"
-                : ""
-            }>
+              location.pathname === "/" ? "border-b-4 border-purple-400" : ""
+            }
+          >
             Home
           </NavLink>
         </Navbar.Link>

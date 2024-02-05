@@ -174,19 +174,18 @@ const SignUp = () => {
           </Button>
         </form>
         {errorMessage && (
-  <div className="fixed top-16 w-1/6 mt-2 right-1 z-50 max-w-xs">
-    <div className=" flex-row sm:flex items-center justify-between bg-red-300 w-full rounded-md border border-gray-300 px-3 py-2">
-      <span className="text-start mr-2">{errorMessage}</span>
-      <button
-        onClick={() => setErrorMessage(null)}
-        className="text-red-500"
-      >
-        <FontAwesomeIcon icon={faTimes}/>
-      </button>
-    </div>
-  </div>
-)}
-
+          <div className="fixed top-16 w-1/6 mt-2 right-1 z-50 max-w-xs">
+            <div className=" flex-row sm:flex items-center justify-between bg-red-300 w-full rounded-md border border-gray-300 px-3 py-2">
+              <span className="text-start mr-2">{errorMessage}</span>
+              <button
+                onClick={() => setErrorMessage(null)}
+                className="text-red-500"
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
