@@ -1,16 +1,34 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 
-const Input = ({ id, type, value, onChange, placeholder, required }) => {
+const Input = ({
+  id,
+  type,
+  value,
+  onChange,
+  placeholder,
+  required,
+  isSubmitted = false,
+}) => {
   return (
-    <input
-      id={id}
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      required={required}
-      className="border rounded-lg sm:w-96 w-auto p-2 focus:border-green-900"
-    />
+    <div className="relative">
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        className={`border rounded-lg sm:w-96 w-auto p-2 focus:border-green-900 ${
+          isSubmitted && !value? "border-red-700" : ""
+        }`}
+      />
+      {required && !value && (
+        <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-red-500">
+          *
+        </span>
+      )}
+    </div>
   );
 };
 

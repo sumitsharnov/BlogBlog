@@ -4,11 +4,15 @@ import { errorHandler } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
   console.log(req.body);
-  const { username, email, password } = req.body;
+  const { firstName, lastName, username, email, password } = req.body;
   if (
+    !firstName ||
+    !lastName ||
     !username ||
     !email ||
     !password ||
+    firstName === ""||
+    lastName === "" ||
     username === "" ||
     email === "" ||
     password === ""
@@ -17,13 +21,15 @@ export const signup = async (req, res, next) => {
   }
   const hashedPassword = bcryt.hashSync(password, 10);
   const newUser = new User({
+    firstName: firstName,
+    lastName: lastName,
     username: username,
     email: email,
     password: hashedPassword,
   });
   try {
     await newUser.save();
-    res.json("sign up succesful");
+    res.status(200).json({ message: "Sign up successful" });
   } catch (error) {
     next(error);
   }

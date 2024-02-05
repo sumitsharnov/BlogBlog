@@ -1,27 +1,22 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
-// eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 
 export default function Header() {
-    const [activeLink, setActiveLink] = useState(() => {
-        const activeStatus = localStorage.getItem('isActive');
-        return activeStatus ? JSON.parse(activeStatus) : null;
-      });
-    useEffect(() => {
-        localStorage.setItem('isActive', JSON.stringify(activeLink));
-     }, [activeLink]);
+  const location = useLocation();
+
   return (
-    <Navbar className="border-b-2  ">
-      <Link
+    <Navbar className="fixed top-0 left-0 w-full border-b-2 z-50">
+      <NavLink
         to="/"
-        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">
+        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
+      >
         <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-xl">
-          BlogBlog
+          Sumit's
         </span>
-      </Link>
+        <span className="p-1">Portfolio</span>
+      </NavLink>
       <form>
         <TextInput
           type="text"
@@ -37,50 +32,48 @@ export default function Header() {
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaMoon />
         </Button>
-        <Link to="/sign-in">
-          <Button gradientDuoTone="purpleToBlue" outline>Sign In</Button>
-        </Link>
+        <NavLink to="/sign-in">
+          <Button gradientDuoTone="purpleToBlue" outline>
+            Sign In
+          </Button>
+        </NavLink>
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link as = {'div'}>
-          <Link
-            className={
-              activeLink === "Home"
-                ? 'border-b-4 border-purple-400'
-                : ""
-            }
-            onClick={() => setActiveLink("Home")}
+        <Navbar.Link as="div">
+          <NavLink
             to="/"
-          >
-            Home
-          </Link>
-        </Navbar.Link>
-        <Navbar.Link as = {'div'}>
-          <Link
             className={
-              activeLink === "About"
-                ? 'border-b-4 border-purple-400'
+              location.pathname === "/"
+                ? "border-b-4 border-purple-400"
+                : ""
+            }>
+            Home
+          </NavLink>
+        </Navbar.Link>
+        <Navbar.Link as="div">
+          <NavLink
+            to="/about"
+            className={
+              location.pathname === "/about"
+                ? "border-b-4 border-purple-400"
                 : ""
             }
-            to="/about"
-            onClick={() => setActiveLink("About")}
           >
             About
-          </Link>
+          </NavLink>
         </Navbar.Link>
-        <Navbar.Link  as = {'div'}>
-          <Link
+        <Navbar.Link as="div">
+          <NavLink
+            to="/projects"
             className={
-              activeLink === "Projects"
-                ?'border-b-4 border-purple-400'
+              location.pathname === "/projects"
+                ? "border-b-4 border-purple-400"
                 : ""
             }
-            to="/projects"
-            onClick={() => setActiveLink("Projects")}
           >
             Projects
-          </Link>
+          </NavLink>
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
