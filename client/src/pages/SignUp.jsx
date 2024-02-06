@@ -72,7 +72,6 @@ const SignUp = () => {
       } else {
         throw new Error("Something went wrong, please try again!");
       }
-      console.log(signupSuccess)
     } catch (error) {
       setErrorMessage(error.message);
     }
