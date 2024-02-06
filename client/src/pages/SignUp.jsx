@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import img1 from "../images/sign-up/img1.jpg";
@@ -8,14 +8,15 @@ import img4 from "../images/sign-up/img4.jpg";
 import img5 from "../images/sign-up/img5.jpg";
 import { Carousel } from "flowbite-react";
 import { Button } from "flowbite-react";
+import Loader from "../components/Loader";
 import {
   faUser,
   faUserClock,
   faEnvelope,
   faLock,
   faIdCard,
-  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import MessagesCentre from "../components/MessagesCentre";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -26,10 +27,10 @@ const SignUp = () => {
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const errorClass = `p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100 flex justify-center items-center mr-2 border rounded-full ${
-    isSubmitting && !formData.password && "border-red-500"
-  }`;
+  const [signupSuccess, setsignupSuccess] = useState(null);
+  const [key, setKey] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -38,29 +39,57 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    console.log("submit");
+  const handleSubmit = useCallback(async () => {
+    setKey((prev)=> prev+1)
+    setIsSubmitted(true);
+    setLoading(true); // Set the loader to true here
+    console.log(formData, typeof formData);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      if (!res.ok) {
-        // If response status is not OK (200), throw an error
-        throw new Error("Failed to sign up");
+      let resMessage = "";
+      if (res.headers.get("content-type").includes("application/json")) {
+        resMessage = await res.json();
       }
-
-      const data = await res.json();
+      console.log(res, resMessage);
+      if(res.ok && resMessage !==""){
+        setsignupSuccess(resMessage.message)
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          password: "",
+        });
+        setIsSubmitted(false);
+      }
+        
+      else if (!res.ok && resMessage !== "") {
+        await handleErrorReponse(resMessage.message);
+      } else {
+        throw new Error("Something went wrong, please try again!");
+      }
+      console.log(signupSuccess)
     } catch (error) {
-      // Handle error here
-      setErrorMessage("All fields are required");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000); // Hide error message after 5 seconds
+      setErrorMessage(error.message);
+    }
+    setTimeout(() => {
+      setErrorMessage(null);
+      setsignupSuccess(null)
+    }, 10000); 
+    setLoading(false); // Set the loader to false here
+  }, [formData]);
+
+  const handleErrorReponse = async (errorMessage) => {
+    if (errorMessage.includes("E11000 duplicate key error collection")) {
+      setErrorMessage("User with this username or email already exists");
+    } else if (errorMessage.includes("All Fields are required")) {
+      setErrorMessage(errorMessage);
+    } else {
+      throw new Error("Something Went Wrong");
     }
   };
 
@@ -94,7 +123,7 @@ const SignUp = () => {
               onChange={handleChange}
               required={true}
               placeholder={`First Name`}
-              isSubmitted={formData.firstName === "" ? isSubmitting : false}
+              isSubmitted={formData.firstName === "" ? isSubmitted : false}
             />
           </div>
 
@@ -110,7 +139,7 @@ const SignUp = () => {
               value={formData.lastName}
               onChange={handleChange}
               placeholder={"Last Name"}
-              isSubmitted={formData.lastName === "" ? isSubmitting : false}
+              isSubmitted={formData.lastName === "" ? isSubmitted : false}
             />
           </div>
 
@@ -128,7 +157,7 @@ const SignUp = () => {
               onChange={handleChange}
               required={true}
               placeholder="Username"
-              isSubmitted={formData.username === "" ? isSubmitting : false}
+              isSubmitted={formData.username === "" ? isSubmitted : false}
             />
           </div>
 
@@ -144,7 +173,7 @@ const SignUp = () => {
               onChange={handleChange}
               required={true}
               placeholder="Email"
-              isSubmitted={formData.email === "" ? isSubmitting : false}
+              isSubmitted={formData.email === "" ? isSubmitted : false}
             />
           </div>
 
@@ -160,7 +189,7 @@ const SignUp = () => {
               onChange={handleChange}
               required={true}
               placeholder="Password"
-              isSubmitted={formData.password === "" ? isSubmitting : false}
+              isSubmitted={formData.password === "" ? isSubmitted : false}
             />
           </div>
 
@@ -172,20 +201,10 @@ const SignUp = () => {
           >
             Sign up
           </Button>
+          {loading && <Loader />}
         </form>
-        {errorMessage && (
-          <div className="fixed top-16 w-1/6 mt-2 right-1 z-50 max-w-xs">
-            <div className=" flex-row sm:flex items-center justify-between bg-red-300 w-full rounded-md border border-gray-300 px-3 py-2">
-              <span className="text-start mr-2">{errorMessage}</span>
-              <button
-                onClick={() => setErrorMessage(null)}
-                className="text-red-500"
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
-          </div>
-        )}
+        {signupSuccess && <MessagesCentre messageText={signupSuccess} type='success' click={key} />}
+        {errorMessage && <MessagesCentre messageText={errorMessage} type='error' click={key} />}
       </div>
     </div>
   );

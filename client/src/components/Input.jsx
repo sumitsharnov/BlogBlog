@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 
 const Input = ({
   id,
@@ -39,6 +38,7 @@ Input.propTypes = {
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
+  isSubmitted: PropTypes.bool
 };
 
 export default Input;
