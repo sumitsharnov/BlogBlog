@@ -106,9 +106,9 @@ const SignUp = () => {
   );
 
   return (
-    <div className="mt-20 bg-cover flex flex-row items-center justify-center w-full h-full">
-      <div className="lg:inline hidden overflow-hidden mr-10">
-        <div className="relative w-full p-96 border rounded-3xl ">
+    <div className=" mt-20 bg-cover flex flex-row items-center justify-center w-full h-full">
+      <div className="lg:inline hidden w-1/3 mr-10 relative">
+        <div className=" p-96  rounded-3xl">
           <Carousel className="absolute top-0 left-0 ">
             <img className="border rounded-3xl" src={img1} alt="..." />
             <img className="border rounded-3xl" src={img2} alt="..." />
