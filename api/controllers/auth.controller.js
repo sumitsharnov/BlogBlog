@@ -3,7 +3,6 @@ import bcryt from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
-  console.log(req.body);
   const { firstName, lastName, username, email, password } = req.body;
   if (
     !firstName ||
