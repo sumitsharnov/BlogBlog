@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import img1 from "../images/sign-up/img1.jpg";
@@ -40,10 +40,11 @@ const SignUp = () => {
   };
 
   const handleSubmit = useCallback(async () => {
-    setKey((prev)=> prev+1)
+    setKey((prev) => prev + 1);
     setIsSubmitted(true);
     setLoading(true); // Set the loader to true here
-    console.log(formData, typeof formData);
+    setsignupSuccess(null);
+    setErrorMessage(null);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -55,8 +56,8 @@ const SignUp = () => {
         resMessage = await res.json();
       }
       console.log(res, resMessage);
-      if(res.ok && resMessage !==""){
-        setsignupSuccess(resMessage.message)
+      if (res.ok && resMessage !== "") {
+        setsignupSuccess(resMessage.message);
         setFormData({
           firstName: "",
           lastName: "",
@@ -65,9 +66,7 @@ const SignUp = () => {
           password: "",
         });
         setIsSubmitted(false);
-      }
-        
-      else if (!res.ok && resMessage !== "") {
+      } else if (!res.ok && resMessage !== "") {
         await handleErrorReponse(resMessage.message);
       } else {
         throw new Error("Something went wrong, please try again!");
@@ -75,10 +74,6 @@ const SignUp = () => {
     } catch (error) {
       setErrorMessage(error.message);
     }
-    setTimeout(() => {
-      setErrorMessage(null);
-      setsignupSuccess(null)
-    }, 10000); 
     setLoading(false); // Set the loader to false here
   }, [formData]);
 
@@ -91,6 +86,24 @@ const SignUp = () => {
       throw new Error("Something Went Wrong");
     }
   };
+
+  const memoizedMessagesCentre = useMemo(
+    () => (
+      <div>
+        {signupSuccess && (
+          <MessagesCentre
+            messageText={signupSuccess}
+            type="success"
+            click={key}
+          />
+        )}
+        {errorMessage && (
+          <MessagesCentre messageText={errorMessage} type="error" click={key} />
+        )}
+      </div>
+    ),
+    [signupSuccess, errorMessage, key]
+  );
 
   return (
     <div className="mt-20 bg-cover flex flex-row items-center justify-center w-full h-full">
@@ -202,8 +215,7 @@ const SignUp = () => {
           </Button>
           {loading && <Loader />}
         </form>
-        {signupSuccess && <MessagesCentre messageText={signupSuccess} type='success' click={key} />}
-        {errorMessage && <MessagesCentre messageText={errorMessage} type='error' click={key} />}
+        {memoizedMessagesCentre}
       </div>
     </div>
   );
