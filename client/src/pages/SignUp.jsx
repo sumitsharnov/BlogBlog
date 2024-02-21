@@ -1,4 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
+import {useNavigate} from "react-router-dom"
+import { useDispatch } from "react-redux";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import img1 from "../images/sign-up/img1.jpg";
@@ -17,6 +19,7 @@ import {
   faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "../components/MessagesCentre";
+import { signUpSuccess } from "../redux/store";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +34,8 @@ const SignUp = () => {
   const [key, setKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -55,9 +60,9 @@ const SignUp = () => {
       if (res.headers.get("content-type").includes("application/json")) {
         resMessage = await res.json();
       }
-      console.log(res, resMessage);
       if (res.ok && resMessage !== "") {
-        setsignupSuccess(resMessage.message);
+        dispatch(signUpSuccess());
+        navigate('/sign-in?source=signup');
         setFormData({
           firstName: "",
           lastName: "",

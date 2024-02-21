@@ -18,7 +18,7 @@ function MessagesCentre({ type, messageText, click }) {
           clearInterval(interval);
           return 0;
         }
-        return oldProgress - 1.1; // Adjust this value to match the message disappearance
+        return oldProgress - 1.8; // Adjust this value to match the message disappearance
       });
     }, 100);
   }, [messageText, click]);
@@ -63,7 +63,7 @@ function MessagesCentre({ type, messageText, click }) {
               </button>
               <div className="h-1 bg-gray-200 absolute bottom-0 left-0 w-full">
                 <div
-                  className="h-full bg-orange-300 transition-all duration-5000 ease-linear"
+                  className="h-full bg-green-950 transition-all duration-5000 ease-linear"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
