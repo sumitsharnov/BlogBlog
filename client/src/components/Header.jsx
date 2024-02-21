@@ -13,7 +13,7 @@ export default function Header() {
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
         <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-xl">
-          Sumits
+         {`Sumit's`}
         </span>
         <span className="p-1">Portfolio</span>
       </NavLink>
