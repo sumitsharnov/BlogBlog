@@ -53,57 +53,63 @@ const SignUp = () => {
     setsignupSuccess(null);
     setErrorMessage(null);
     const emailPattern = /^\S+@\S+\.\S+$/;
-
-    if (formData.password !== formData.confirmPassword && formData.password!== "") {
-      setErrorMessage("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length <= 6 && formData.password !== "") {
-      setErrorMessage("Password length should be at least 6 characters");
-      setLoading(false);
-      return;
-    }
-
-    if (!emailPattern.test(formData.email) && formData.email!== "") {
-      setErrorMessage("Please enter a valid email address");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      let resMessage = "";
-      if (res.headers.get("content-type").includes("application/json")) {
-        resMessage = await res.json();
-      }
-      if (!res.ok && resMessage !== "") {
-        setErrorMessage(resMessage.message);
-      } else if (res.ok && resMessage !== "") {
-        dispatch(signUpSuccess());
-        navigate("/sign-in?source=signup");
-        setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "", // Reset confirm password field
+    if (formData.password !== formData.confirmPassword) {
+      await handleErrorReponse("password match error");
+    } else if (formData.password.length < 6) {
+      await handleErrorReponse("password length error");
+    } else if (!emailPattern.test(formData.email)) {
+      await handleErrorReponse("email validation error");
+    } else {
+      try {
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
-      } else {
-        throw new Error("Something went wrong, please try again!");
+        let resMessage = "";
+        if (res.headers.get("content-type").includes("application/json")) {
+          resMessage = await res.json();
+        }
+        if (!res.ok && resMessage !== "") {
+          await handleErrorReponse(resMessage.message);
+        } else if (res.ok && resMessage !== "") {
+          dispatch(signUpSuccess());
+          navigate("/sign-in?source=signup");
+          setFormData({
+            firstName: "",
+            lastName: "",
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "", // Reset confirm password field
+          });
+        } else {
+          throw new Error("Something went wrong, please try again!");
+        }
+        setIsSubmitted(false);
+      } catch (error) {
+        setErrorMessage(error.message);
       }
-      setIsSubmitted(false);
-    } catch (error) {
-      setErrorMessage(error.message);
     }
+
     setLoading(false);
   }, [formData]);
+
+  const handleErrorReponse = async (errorMessage) => {
+    if (errorMessage.includes("E11000 duplicate key error collection")) {
+      setErrorMessage("User with this username or email already exists");
+    } else if (errorMessage.includes("All Fields are required")) {
+      setErrorMessage(errorMessage);
+    } else if (errorMessage.includes("password match error")) {
+      setErrorMessage("Password & Confirm Password do not match");
+    } else if (errorMessage.includes("password length error")) {
+      setErrorMessage("Password length should be at least 6 characters");
+    } else if (errorMessage.includes("email  validation error")) {
+      setErrorMessage("Please enter a valid email address");
+    } else {
+      throw new Error("Something Went Wrong");
+    }
+  };
 
   const memoizedMessagesCentre = useMemo(
     () => (
