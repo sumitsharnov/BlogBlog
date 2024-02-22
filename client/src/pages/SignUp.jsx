@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -62,7 +62,7 @@ const SignUp = () => {
       }
       if (res.ok && resMessage !== "") {
         dispatch(signUpSuccess());
-        navigate('/sign-in?source=signup');
+        navigate("/sign-in?source=signup");
         setFormData({
           firstName: "",
           lastName: "",
@@ -111,10 +111,10 @@ const SignUp = () => {
   );
 
   return (
-    <div className=" mt-20 bg-cover flex flex-row items-center justify-center w-full h-full">
+    <div className="bg-cover flex flex-row justify-center items-center w-full p-10">
       <div className="lg:inline hidden w-1/3 mr-10 relative">
         <div className=" p-96  rounded-3xl">
-          <Carousel className="absolute top-0 left-0 ">
+          <Carousel className="absolute top-0 left-0 " indicators={false}>
             <img className="border rounded-3xl" src={img1} alt="..." />
             <img className="border rounded-3xl" src={img2} alt="..." />
             <img className="border rounded-3xl" src={img3} alt="..." />
