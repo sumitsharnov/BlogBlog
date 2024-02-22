@@ -48,10 +48,10 @@ function MessagesCentre({ type, messageText, click }) {
 
   // Conditionally render the message
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute top-16 right-2  overflow-hidden p-2">
       {message && (
         <div
-          className={`absolute top-16 mb-20 w-full mt-2 right-1 z-50 max-w-xs overflow-hidden ${
+          className={`top-16 mb-20 w-full mt-2 right-1 z-50 max-w-xsz ${
             isVisible ? "animate-slideIn" : "animate-slideOut"
           }`}
           onAnimationEnd={handleAnimationEnd}
@@ -74,7 +74,7 @@ function MessagesCentre({ type, messageText, click }) {
             </div>
           )}
           {type === "success" && (
-            <div className="flex-row sm:flex items-center justify-between bg-green-500 w-full rounded-md border border-gray-300 px-3 py-2 relative">
+            <div className="flex-row flex items-center justify-between bg-green-500 w-full rounded-md border border-gray-300 px-3 py-2 relative">
               <span className="text-start mr-2 text-white">{message}</span>
               <button onClick={handleClose} className="text-white">
                 <FontAwesomeIcon icon={faTimes} />

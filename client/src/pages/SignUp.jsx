@@ -17,6 +17,7 @@ import {
   faEnvelope,
   faLock,
   faIdCard,
+  faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "../components/MessagesCentre";
 import { signUpSuccess } from "../redux/store";
@@ -53,11 +54,11 @@ const SignUp = () => {
     setsignupSuccess(null);
     setErrorMessage(null);
     const emailPattern = /^\S+@\S+\.\S+$/;
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword && formData.password !=="") {
       await handleErrorReponse("password match error");
-    } else if (formData.password.length < 6) {
+    } else if (formData.password.length < 6 && formData.password !=="") {
       await handleErrorReponse("password length error");
-    } else if (!emailPattern.test(formData.email)) {
+    } else if (!emailPattern.test(formData.email) && formData.email !=="") {
       await handleErrorReponse("email validation error");
     } else {
       try {
@@ -104,7 +105,7 @@ const SignUp = () => {
       setErrorMessage("Password & Confirm Password do not match");
     } else if (errorMessage.includes("password length error")) {
       setErrorMessage("Password length should be at least 6 characters");
-    } else if (errorMessage.includes("email  validation error")) {
+    } else if (errorMessage.includes("email validation error")) {
       setErrorMessage("Please enter a valid email address");
     } else {
       throw new Error("Something Went Wrong");
@@ -229,7 +230,7 @@ const SignUp = () => {
 
           <div className="flex flex-row">
             <FontAwesomeIcon
-              icon={faLock}
+              icon={faCheckDouble}
               className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
             />
             <Input
