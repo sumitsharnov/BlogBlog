@@ -25,9 +25,10 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "", // New field for username
+    username: "",
     email: "",
     password: "",
+    confirmPassword: "", // New field for confirm password
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [signupSuccess, setsignupSuccess] = useState(null);
@@ -36,6 +37,7 @@ const SignUp = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -47,9 +49,29 @@ const SignUp = () => {
   const handleSubmit = useCallback(async () => {
     setKey((prev) => prev + 1);
     setIsSubmitted(true);
-    setLoading(true); // Set the loader to true here
+    setLoading(true);
     setsignupSuccess(null);
     setErrorMessage(null);
+    const emailPattern = /^\S+@\S+\.\S+$/;
+
+    if (formData.password !== formData.confirmPassword && formData.password!== "") {
+      setErrorMessage("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length <= 6 && formData.password !== "") {
+      setErrorMessage("Password length should be at least 6 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (!emailPattern.test(formData.email) && formData.email!== "") {
+      setErrorMessage("Please enter a valid email address");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -60,7 +82,9 @@ const SignUp = () => {
       if (res.headers.get("content-type").includes("application/json")) {
         resMessage = await res.json();
       }
-      if (res.ok && resMessage !== "") {
+      if (!res.ok && resMessage !== "") {
+        setErrorMessage(resMessage.message);
+      } else if (res.ok && resMessage !== "") {
         dispatch(signUpSuccess());
         navigate("/sign-in?source=signup");
         setFormData({
@@ -69,28 +93,17 @@ const SignUp = () => {
           username: "",
           email: "",
           password: "",
+          confirmPassword: "", // Reset confirm password field
         });
-        setIsSubmitted(false);
-      } else if (!res.ok && resMessage !== "") {
-        await handleErrorReponse(resMessage.message);
       } else {
         throw new Error("Something went wrong, please try again!");
       }
+      setIsSubmitted(false);
     } catch (error) {
       setErrorMessage(error.message);
     }
-    setLoading(false); // Set the loader to false here
+    setLoading(false);
   }, [formData]);
-
-  const handleErrorReponse = async (errorMessage) => {
-    if (errorMessage.includes("E11000 duplicate key error collection")) {
-      setErrorMessage("User with this username or email already exists");
-    } else if (errorMessage.includes("All Fields are required")) {
-      setErrorMessage(errorMessage);
-    } else {
-      throw new Error("Something Went Wrong");
-    }
-  };
 
   const memoizedMessagesCentre = useMemo(
     () => (
@@ -161,8 +174,6 @@ const SignUp = () => {
           </div>
 
           <div className="flex sm:flex-row">
-            {" "}
-            {/* New field for username */}
             <FontAwesomeIcon
               icon={faIdCard}
               className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
@@ -178,7 +189,7 @@ const SignUp = () => {
             />
           </div>
 
-          <div className="flex flex-row $">
+          <div className="flex flex-row">
             <FontAwesomeIcon
               icon={faEnvelope}
               className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
@@ -194,7 +205,7 @@ const SignUp = () => {
             />
           </div>
 
-          <div className="flex flex-row ">
+          <div className="flex flex-row">
             <FontAwesomeIcon
               icon={faLock}
               className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
@@ -207,6 +218,24 @@ const SignUp = () => {
               required={true}
               placeholder="Password"
               isSubmitted={formData.password === "" ? isSubmitted : false}
+            />
+          </div>
+
+          <div className="flex flex-row">
+            <FontAwesomeIcon
+              icon={faLock}
+              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
+            />
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required={true}
+              placeholder="Confirm Password"
+              isSubmitted={
+                formData.confirmPassword === "" ? isSubmitted : false
+              }
             />
           </div>
 
