@@ -48,7 +48,7 @@ function MessagesCentre({ type, messageText, click }) {
 
   // Conditionally render the message
   return (
-    <div className="absolute top-12 mt-2 right-2 z-50 overflow-hidden p-2">
+    <div className="absolute top-12 mt-2 right-2 z-50 overflow-hidden">
       {message && (
         <div
           className={`top-16 mb-20 w-full mt-2 right-1 z-50 max-w-xsz ${
