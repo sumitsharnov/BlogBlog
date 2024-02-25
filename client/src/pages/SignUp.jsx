@@ -131,10 +131,10 @@ const SignUp = () => {
   );
 
   return (
-    <div className="bg-cover flex flex-row justify-center items-center gap-28 mt-4">
-      <div className="lg:inline hidden w-1/4">
+    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
+      <div className="lg:inline hidden">
         <div className="mr-5">
-          <Carousel className=" top-0 left-0 size-96" indicators={true}>
+          <Carousel className=" top-0 left-0 lg:size-96" indicators={true}>
             <img className="border rounded-3xl" src={img1} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img2} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img3} alt="AI GENERATED IMAGES" />
