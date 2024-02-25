@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { clearSignUpSuccess, signInSuccess, signUpSuccess } from "./../redux/store";
+import { clearSignUpSuccess, signInSuccess } from "./../redux/store";
+import { useNavigate } from "react-router-dom";
 import MessagesCentre from "../components/MessagesCentre";
 import { useLocation } from "react-router-dom";
 import Input from "../components/Input";
@@ -26,8 +27,8 @@ const SignIn = () => {
     password: "",
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const signUpSuccess = useSelector((state) => state.signUpSuccess);
-  const signInSuccess = useSelector((state) => state.signInSuccess);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const source = queryParams.get("source");
@@ -38,7 +39,6 @@ const SignIn = () => {
 
   // Use a ref to track if the component is mounted
   const isMountedRef = useRef(false);
-
   // Run only once after the initial render to dispatch clearSignUpSuccess
   useEffect(() => {
     if (!isMountedRef.current && source !== "signup") {
@@ -75,6 +75,7 @@ const SignIn = () => {
         await handleErrorReponse(resMessage.message);
       } else if (res.ok && resMessage !== "") {
         dispatch(signInSuccess());
+        console.log(dispatch(signInSuccess()));
         navigate("/sign-up?source=signin");
       } else {
         throw new Error("Something went wrong, please try again!");
@@ -135,21 +136,6 @@ const SignIn = () => {
           className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-8 bg-gray-300 p-5 mr-5 border rounded-3xl"
           onSubmit={handleChange}
         >
-          <div className="flex sm:flex-row">
-            <FontAwesomeIcon
-              icon={faIdCard}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
-            />
-            <Input
-              id="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              required={true}
-              placeholder="Username"
-              isSubmitted={formData.username === "" ? isSubmitted : false}
-            />
-          </div>
 
           <div className="flex flex-row">
             <FontAwesomeIcon
@@ -199,7 +185,7 @@ const SignIn = () => {
         {signUpSuccess && (
           <MessagesCentre messageText={"Sign-up successful!"} type="success" />
         )}
-        {signInSuccess && (
+        {signUpSuccess && (
           <MessagesCentre messageText={"Welcome!!"} type="success" />
         )}
       </div>

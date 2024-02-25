@@ -36,13 +36,13 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-  const { email, username, password } = req.body;
-  if ((!email && !username) || !password  || (email === "" && username === "") || password === "") {
+  const { email, password } = req.body;
+  if (!email || !password  || email === ""|| password === "") {
     return next(errorHandler(400, "All Fields are required"));
   }
   try {
     const userByEmail = await User.findOne({ email: email });
-    const userByUsername = await User.findOne({ username: username });
+    const userByUsername = await User.findOne({ username: email });
     let user="";
     if(userByEmail) user=userByEmail
     if(userByUsername) user=userByUsername
