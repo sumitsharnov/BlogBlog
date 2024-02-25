@@ -4,6 +4,7 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 // Define initial state
 const initialState = {
   signUpSuccess: false,
+  signInSuccess: false,
 };
 
 // Define slice to manage state and actions
@@ -23,6 +24,19 @@ const appSlice = createSlice({
         signUpSuccess: false,
       };
     },
+
+    signInSuccess(state) {
+      return {
+       ...state,
+        signInSuccess: true,
+      };
+    },
+    clearSignInSuccess(state) {
+      return {
+       ...state,
+        signInSuccess: false,
+      };
+    },
   },
 });
 
@@ -31,5 +45,5 @@ const store = configureStore({
   reducer: appSlice.reducer,
 });
 
-export const { signUpSuccess, clearSignUpSuccess } = appSlice.actions;
+export const { signUpSuccess, clearSignUpSuccess, signInSuccess, clearSignInSuccess } = appSlice.actions;
 export default store;
