@@ -87,8 +87,8 @@ const SignUp = () => {
         } else {
           throw new Error("Something went wrong, please try again!");
         }
-        setIsSubmitted(false);
       } catch (error) {
+        setIsSubmitted(false);
         setErrorMessage(error.message);
       }
     }
@@ -135,11 +135,11 @@ const SignUp = () => {
       <div className="lg:inline hidden w-1/3 mr-10 relative">
         <div className=" p-96  rounded-3xl">
           <Carousel className="absolute top-0 left-0 " indicators={false}>
-            <img className="border rounded-3xl" src={img1} alt="..." />
-            <img className="border rounded-3xl" src={img2} alt="..." />
-            <img className="border rounded-3xl" src={img3} alt="..." />
-            <img className="border rounded-3xl" src={img4} alt="..." />
-            <img className="border rounded-3xl" src={img5} alt="..." />
+            <img className="border rounded-3xl" src={img1} alt="AI GENERATED IMAGES" />
+            <img className="border rounded-3xl" src={img2} alt="AI GENERATED IMAGES" />
+            <img className="border rounded-3xl" src={img3} alt="AI GENERATED IMAGES" />
+            <img className="border rounded-3xl" src={img4} alt="AI GENERATED IMAGES" />
+            <img className="border rounded-3xl" src={img5} alt="AI GENERATED IMAGES" />
           </Carousel>
         </div>
       </div>
