@@ -60,7 +60,7 @@ function MessagesCentre({ type, messageText, click }) {
           }}
         >
           {type === "error" && (
-            <div className="flex-row flex items-center justify-between bg-red-300 w-full rounded-md border border-gray-300 px-3 py-2 relative">
+            <div className="flex-row flex items-center justify-between bg-red-300 w-[15rem] rounded-md border border-gray-300 px-3 py-2 relative">
               <span className="text-start mr-2">{message}</span>
               <button onClick={handleClose} className="text-red-500">
                 <FontAwesomeIcon icon={faTimes} />
@@ -74,7 +74,7 @@ function MessagesCentre({ type, messageText, click }) {
             </div>
           )}
           {type === "success" && (
-            <div className="flex-row flex items-center justify-between bg-green-500 w-full rounded-md border border-gray-300 px-3 py-2 relative">
+            <div className="flex-row flex items-center justify-between bg-green-500 w-[15rem] rounded-md border border-gray-300 px-3 py-2 relative">
               <span className="text-start mr-2 text-white">{message}</span>
               <button onClick={handleClose} className="text-white">
                 <FontAwesomeIcon icon={faTimes} />

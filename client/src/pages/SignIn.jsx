@@ -14,11 +14,8 @@ import img5 from "../images/sign-up/img5.jpg";
 import { Carousel } from "flowbite-react";
 import { Button } from "flowbite-react";
 import Loader from "../components/Loader";
-import {
-  faEnvelope,
-  faLock,
-  faIdCard,
-} from "@fortawesome/free-solid-svg-icons";
+
+import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -75,8 +72,7 @@ const SignIn = () => {
         await handleErrorReponse(resMessage.message);
       } else if (res.ok && resMessage !== "") {
         dispatch(signInSuccess());
-        console.log(dispatch(signInSuccess()));
-        navigate("/sign-up?source=signin");
+        navigate("/?source=signin");
       } else {
         throw new Error("Something went wrong, please try again!");
       }
@@ -97,46 +93,42 @@ const SignIn = () => {
     }
   };
 
-
   return (
-    <div className="bg-cover flex flex-row justify-center items-center w-full p-10">
-      <div className="lg:inline hidden w-1/3 mr-10 relative">
-        <div className=" p-96  rounded-3xl">
-          <Carousel className="absolute top-0 left-0 " indicators={false}>
-            <img
-              className="border rounded-3xl"
-              src={img1}
-              alt="AI GENERATED IMAGES"
-            />
-            <img
-              className="border rounded-3xl"
-              src={img2}
-              alt="AI GENERATED IMAGES"
-            />
-            <img
-              className="border rounded-3xl"
-              src={img3}
-              alt="AI GENERATED IMAGES"
-            />
-            <img
-              className="border rounded-3xl"
-              src={img4}
-              alt="AI GENERATED IMAGES"
-            />
-            <img
-              className="border rounded-3xl"
-              src={img5}
-              alt="AI GENERATED IMAGES"
-            />
-          </Carousel>
-        </div>
+    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
+      <div className="lg:inline hidden h-[50rem] w-[50rem]">
+        <Carousel className=" top-0 left-2 " indicators={true}>
+          <img
+            className="border rounded-3xl"
+            src={img1}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img2}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img3}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img4}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img5}
+            alt="AI GENERATED IMAGES"
+          />
+        </Carousel>
       </div>
       <div>
         <form
-          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-8 bg-gray-300 p-5 mr-5 border rounded-3xl"
-          onSubmit={handleChange}
+          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
+          onSubmit={handleSubmit}
         >
-
           <div className="flex flex-row">
             <FontAwesomeIcon
               icon={faEnvelope}
@@ -177,16 +169,72 @@ const SignIn = () => {
           >
             Log on
           </Button>
+          <div className="w-full flex flex-row space-x-3 justify-center items-center">
+            <hr className="w-full border border-white-300 "></hr>
+            <span className="text-gray-500 font-semibold">OR</span>
+            <hr className="w-full border border-white-300"></hr>
+          </div>
+
+          <div className="flex flex-row justify-center items-center space-x-4">
+            <span className="text-gray-500 text-md font-semibold">Log in with</span>
+            <button className=" hover:text-gray-900 dark:hover:text-blue-700">
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M19 0h-14c-2.8 0-5 2.2-5 5v14c0 2.8 2.2 5 5 5h14c2.8 0 5-2.2 5-5v-14c0-2.8-2.2-5-5-5zm-14 4h3v2h-3v-2zm0 4h3v12h-3v-12zm5 0h3v1.6h.1c.4-.8 1.5-1.6 3.1-1.6 3.3 0 3.9 2.2 3.9 5v7h-3v-6c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1v6.1h-3v-12z" />
+              </svg>
+            </button>
+            <button>
+              <svg
+                className="w-6 h-6 text-white bg-black border-black rounded-lg hover:bg-white hover:text-black"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 0c-6.6 0-12 5.4-12 12 0 5.3 3.4 9.8 8.2 11.5.6.1.8-.3.8-.6v-2.3c-3.3.7-4-1.6-4-1.6-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.5.1-3.2 0 0 1.1-.3 3.5 1.3 1-.3 2.1-.4 3.2-.4s2.2.1 3.2.4c2.4-1.6 3.5-1.3 3.5-1.3.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.4 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.8-1.7 8.2-6.2 8.2-11.5 0-6.6-5.4-12-12-12z" />
+              </svg>
+            </button>
+            <button>
+              {/* Google Icon */}
+              <svg
+                className="w-[24px] h-[24px] bg-slate-300 border rounded-md p-[2px] hover:bg-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <defs>
+                  <linearGradient
+                    id="gradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stopColor="red" />
+                    <stop offset="40%" stopColor="yellow" />
+                    <stop offset="70%" stopColor="green" />
+                    <stop offset="100%" stopColor="blue" />
+                  </linearGradient>
+                </defs>
+                <path
+                  fill="url(#gradient)"
+                  d="M12 22a10 10 0 0 1-7.1-3A9.9 9.9 0 0 1 5 4.8C7 3 9.5 2 12.2 2h.2c2.4 0 4.8 1 6.6 2.6l-2.5 2.3a6.2 6.2 0 0 0-4.2-1.6c-1.8 0-3.5.7-4.8 2a6.6 6.6 0 0 0-.1 9.3c1.2 1.3 2.9 2 4.7 2h.1a6 6 0 0 0 4-1.1c1-.9 1.8-2 2.1-3.4v-.2h-6v-3.4h9.6l.1 1.9c-.1 5.7-4 9.6-9.7 9.6H12Z"
+                />
+              </svg>
+            </button>
+          </div>
+
           {loading && <Loader />}
         </form>
         {errorMessage && (
-           <MessagesCentre messageText={errorMessage} type="error" click={key} />
+          <MessagesCentre messageText={errorMessage} type="error" click={key} />
         )}
         {signUpSuccess && (
           <MessagesCentre messageText={"Sign-up successful!"} type="success" />
-        )}
-        {signUpSuccess && (
-          <MessagesCentre messageText={"Welcome!!"} type="success" />
         )}
       </div>
     </div>

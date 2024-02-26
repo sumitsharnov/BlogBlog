@@ -132,20 +132,18 @@ const SignUp = () => {
 
   return (
     <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
-      <div className="lg:inline hidden">
-        <div className="mr-5">
-          <Carousel className=" top-0 left-0 lg:size-96" indicators={true}>
+      <div className="lg:inline hidden h-[50rem] w-[50rem]">
+          <Carousel className=" top-0 left-2 " indicators={true}>
             <img className="border rounded-3xl" src={img1} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img2} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img3} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img4} alt="AI GENERATED IMAGES" />
             <img className="border rounded-3xl" src={img5} alt="AI GENERATED IMAGES" />
           </Carousel>
-        </div>
       </div>
       <div> 
         <form
-          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-4 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
+          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
           onSubmit={handleSubmit}
         >
           <div className="flex sm:flex-row">
