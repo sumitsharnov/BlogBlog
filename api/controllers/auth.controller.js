@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
-  const { firstName, lastName, username, email, password } = req.body;
+  const { firstName, lastName, username, email, password, isRecruiter } = req.body;
   if (
     !firstName ||
     !lastName ||
@@ -26,6 +26,7 @@ export const signup = async (req, res, next) => {
     username: username,
     email: email,
     password: hashedPassword,
+    recruiter: isRecruiter,
   });
   try {
     await newUser.save();

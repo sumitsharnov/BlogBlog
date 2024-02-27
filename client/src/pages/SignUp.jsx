@@ -29,7 +29,8 @@ const SignUp = () => {
     username: "",
     email: "",
     password: "",
-    confirmPassword: "", // New field for confirm password
+    confirmPassword: "",
+    isRecruiter: false,
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [signupSuccess, setsignupSuccess] = useState(null);
@@ -40,10 +41,10 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
+    const { id, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [id]: value,
+      [id]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -243,6 +244,11 @@ const SignUp = () => {
               }
             />
           </div>
+          <div className="flex flex-row justify-between items-center space-x-4 borde">
+          <span className="font-medium text-gray-700 ">Are you a recruiter?</span>
+          <input type="checkbox" checked = {formData.isRecruiter} id="isRecruiter" onChange={handleChange} value={formData.isRecruiter} ></input>
+          </div>
+          
 
           <Button
             className="sm:w-full w-auto  hover:bg-purple-200  text-white"

@@ -25,7 +25,7 @@ const SignIn = () => {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const signUpSuccess = useSelector((state) => state.signUpSuccess);
+  const signUpSuccess = useSelector((state) => state.user.signUpSuccess);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const source = queryParams.get("source");
