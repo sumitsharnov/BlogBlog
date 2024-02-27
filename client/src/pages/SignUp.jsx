@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +20,7 @@ import {
   faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "../components/MessagesCentre";
-import { signUpSuccess } from "../redux/store";
+import { signUpSuccess } from "../redux/user/userSlice";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -143,7 +143,7 @@ const SignUp = () => {
       </div>
       <div> 
         <form
-          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
+          className="top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
           onSubmit={handleSubmit}
         >
           <div className="flex sm:flex-row">
@@ -254,6 +254,9 @@ const SignUp = () => {
           </Button>
           {loading && <Loader />}
         </form>
+        <div className="border-2 border-teal-500 font-sans rounded-md ml-8 mr-8 mt-4 p-2 bg-gray-300 text-center">
+        <span >Already have an account? <Link to="/sign-in" className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700">Log-on</Link></span>
+        </div>
         {memoizedMessagesCentre}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { clearSignUpSuccess, signInSuccess } from "./../redux/store";
-import { useNavigate } from "react-router-dom";
+import { clearSignUpSuccess, signInSuccess } from "./../redux/user/userSlice";
+import { useNavigate, Link } from "react-router-dom";
 import MessagesCentre from "../components/MessagesCentre";
 import { useLocation } from "react-router-dom";
 import Input from "../components/Input";
@@ -65,13 +65,14 @@ const SignIn = () => {
         body: JSON.stringify(formData),
       });
       let resMessage = "";
+      const data = await res.json();
       if (res.headers.get("content-type").includes("application/json")) {
-        resMessage = await res.json();
+        resMessage = data;
       }
       if (!res.ok && resMessage !== "") {
         await handleErrorReponse(resMessage.message);
       } else if (res.ok && resMessage !== "") {
-        dispatch(signInSuccess());
+        dispatch(signInSuccess(data));
         navigate("/?source=signin");
       } else {
         throw new Error("Something went wrong, please try again!");
@@ -124,9 +125,9 @@ const SignIn = () => {
           />
         </Carousel>
       </div>
-      <div>
+      <div >
         <form
-          className="sticky top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
+          className=" top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl mb-4"
           onSubmit={handleSubmit}
         >
           <div className="flex flex-row">
@@ -227,9 +228,11 @@ const SignIn = () => {
               </svg>
             </button>
           </div>
-
           {loading && <Loader />}
         </form>
+        <div className="border-2 border-teal-500 font-sans rounded-md m-8 p-2 bg-gray-300 text-center">
+        <span> {`Don't have an account?`} <Link to="/sign-up" className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700">Sign up</Link></span>
+        </div>
         {errorMessage && (
           <MessagesCentre messageText={errorMessage} type="error" click={key} />
         )}
