@@ -55,11 +55,14 @@ const SignUp = () => {
     setsignupSuccess(null);
     setErrorMessage(null);
     const emailPattern = /^\S+@\S+\.\S+$/;
-    if (formData.password !== formData.confirmPassword && formData.password !=="") {
+    if (
+      formData.password !== formData.confirmPassword &&
+      formData.password !== ""
+    ) {
       await handleErrorReponse("password match error");
-    } else if (formData.password.length < 6 && formData.password !=="") {
+    } else if (formData.password.length < 6 && formData.password !== "") {
       await handleErrorReponse("password length error");
-    } else if (!emailPattern.test(formData.email) && formData.email !=="") {
+    } else if (!emailPattern.test(formData.email) && formData.email !== "") {
       await handleErrorReponse("email validation error");
     } else {
       try {
@@ -134,15 +137,35 @@ const SignUp = () => {
   return (
     <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
-          <Carousel className=" top-0 left-2 " indicators={true}>
-            <img className="border rounded-3xl" src={img1} alt="AI GENERATED IMAGES" />
-            <img className="border rounded-3xl" src={img2} alt="AI GENERATED IMAGES" />
-            <img className="border rounded-3xl" src={img3} alt="AI GENERATED IMAGES" />
-            <img className="border rounded-3xl" src={img4} alt="AI GENERATED IMAGES" />
-            <img className="border rounded-3xl" src={img5} alt="AI GENERATED IMAGES" />
-          </Carousel>
+        <Carousel className=" top-0 left-2 " indicators={true}>
+          <img
+            className="border rounded-3xl"
+            src={img1}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img2}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img3}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img4}
+            alt="AI GENERATED IMAGES"
+          />
+          <img
+            className="border rounded-3xl"
+            src={img5}
+            alt="AI GENERATED IMAGES"
+          />
+        </Carousel>
       </div>
-      <div> 
+      <div>
         <form
           className="top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
           onSubmit={handleSubmit}
@@ -244,11 +267,19 @@ const SignUp = () => {
               }
             />
           </div>
-          <div className="flex flex-row justify-between items-center space-x-4 borde">
-          <span className="font-medium text-gray-700 ">Are you a recruiter?</span>
-          <input type="checkbox" checked = {formData.isRecruiter} id="isRecruiter" onChange={handleChange} value={formData.isRecruiter} ></input>
+          <div className="flex flex-row justify-center items-center space-x-3">
+            <label htmlFor="isRecruiter" className="font-medium text-gray-700">
+              Are you a recruiter? </label>
+            <input
+              name="isRecruiter"
+              type="checkbox"
+              checked={formData.isRecruiter}
+              id="isRecruiter"
+              onChange={handleChange}
+              value={formData.isRecruiter}
+              className="mt-1"
+            ></input>
           </div>
-          
 
           <Button
             className="sm:w-full w-auto  hover:bg-purple-200  text-white"
@@ -261,7 +292,15 @@ const SignUp = () => {
           {loading && <Loader />}
         </form>
         <div className="border-2 border-teal-500 font-sans rounded-md ml-8 mr-8 mt-4 p-2 bg-gray-300 text-center">
-        <span >Already have an account? <Link to="/sign-in" className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700">Log-on</Link></span>
+          <span>
+            Already have an account?{" "}
+            <Link
+              to="/sign-in"
+              className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700"
+            >
+              Log-on
+            </Link>
+          </span>
         </div>
         {memoizedMessagesCentre}
       </div>
