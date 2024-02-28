@@ -14,6 +14,7 @@ import img5 from "../images/sign-up/img5.jpg";
 import { Carousel } from "flowbite-react";
 import { Button } from "flowbite-react";
 import Loader from "../components/Loader";
+import ViaGoogleLogin from "../components/GoogleAuth";
 
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
@@ -125,7 +126,7 @@ const SignIn = () => {
           />
         </Carousel>
       </div>
-      <div >
+      <div>
         <form
           className=" top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl mb-4"
           onSubmit={handleSubmit}
@@ -177,7 +178,9 @@ const SignIn = () => {
           </div>
 
           <div className="flex flex-row justify-center items-center space-x-4">
-            <span className="text-gray-500 text-md font-semibold">Log in with</span>
+            <span className="text-gray-500 text-md font-semibold">
+              Log in with
+            </span>
             <button className=" hover:text-gray-900 dark:hover:text-blue-700">
               <svg
                 className="w-6 h-6"
@@ -198,40 +201,22 @@ const SignIn = () => {
                 <path d="M12 0c-6.6 0-12 5.4-12 12 0 5.3 3.4 9.8 8.2 11.5.6.1.8-.3.8-.6v-2.3c-3.3.7-4-1.6-4-1.6-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.5.1-3.2 0 0 1.1-.3 3.5 1.3 1-.3 2.1-.4 3.2-.4s2.2.1 3.2.4c2.4-1.6 3.5-1.3 3.5-1.3.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.4 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.8-1.7 8.2-6.2 8.2-11.5 0-6.6-5.4-12-12-12z" />
               </svg>
             </button>
-            <button>
-              {/* Google Icon */}
-              <svg
-                className="w-[24px] h-[24px] bg-slate-300 border rounded-md p-[2px] hover:bg-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <defs>
-                  <linearGradient
-                    id="gradient"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
-                    <stop offset="0%" stopColor="red" />
-                    <stop offset="40%" stopColor="yellow" />
-                    <stop offset="70%" stopColor="green" />
-                    <stop offset="100%" stopColor="blue" />
-                  </linearGradient>
-                </defs>
-                <path
-                  fill="url(#gradient)"
-                  d="M12 22a10 10 0 0 1-7.1-3A9.9 9.9 0 0 1 5 4.8C7 3 9.5 2 12.2 2h.2c2.4 0 4.8 1 6.6 2.6l-2.5 2.3a6.2 6.2 0 0 0-4.2-1.6c-1.8 0-3.5.7-4.8 2a6.6 6.6 0 0 0-.1 9.3c1.2 1.3 2.9 2 4.7 2h.1a6 6 0 0 0 4-1.1c1-.9 1.8-2 2.1-3.4v-.2h-6v-3.4h9.6l.1 1.9c-.1 5.7-4 9.6-9.7 9.6H12Z"
-                />
-              </svg>
-            </button>
+            <ViaGoogleLogin />
           </div>
+
           {loading && <Loader />}
         </form>
         <div className="border-2 border-teal-500 font-sans rounded-md m-8 p-2 bg-gray-300 text-center">
-        <span> {`Don't have an account?`} <Link to="/sign-up" className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700">Sign up</Link></span>
+          <span>
+            {" "}
+            {`Don't have an account?`}{" "}
+            <Link
+              to="/sign-up"
+              className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700"
+            >
+              Sign up
+            </Link>
+          </span>
         </div>
         {errorMessage && (
           <MessagesCentre messageText={errorMessage} type="error" click={key} />
