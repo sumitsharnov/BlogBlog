@@ -1,13 +1,32 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth} from 'firebase/auth'
 import { app } from '../firebase';
+import {useDispatch} from'react-redux';
+import { signInSuccess } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 export default function ViaGoogleLogin() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const auth = getAuth(app);
   const handleClick = async () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({prompt: "select_account"});
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
+      const res = await fetch("/api/google/googleauth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: result.user.displayName,
+          email: result.user.email
+        }),
+      }); 
+      const data = await res.json();
+      if(res.ok){
+        dispatch(signInSuccess(data));
+        navigate("/?source=signin");
+      }else{
+        console.log(data.error);
+      }
     } catch (error) {
       console.log(error);
     }

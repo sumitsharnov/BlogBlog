@@ -39,13 +39,14 @@ const SignIn = () => {
   const isMountedRef = useRef(false);
   // Run only once after the initial render to dispatch clearSignUpSuccess
   useEffect(() => {
+    console.log(isMountedRef.current)
     if (!isMountedRef.current && source !== "signup") {
       dispatch(clearSignUpSuccess());
     }
     // Set the isMountedRef to true after the first render
     isMountedRef.current = true;
   }, []); // Empty dependency array to run the effect only once after the initial render
-
+  
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -222,7 +223,7 @@ const SignIn = () => {
           <MessagesCentre messageText={errorMessage} type="error" click={key} />
         )}
         {signUpSuccess && (
-          <MessagesCentre messageText={"Sign-up successful!"} type="success" />
+          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key} />
         )}
       </div>
     </div>
