@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
-  const { firstName, lastName, username, email, password } = req.body;
+  const { firstName, lastName, username, email, password, isRecruiter } = req.body;
   if (
     !firstName ||
     !lastName ||
@@ -26,6 +26,7 @@ export const signup = async (req, res, next) => {
     username: username,
     email: email,
     password: hashedPassword,
+    recruiter: isRecruiter,
   });
   try {
     await newUser.save();
@@ -36,13 +37,13 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-  const { email, username, password } = req.body;
-  if ((!email && !username) || !password  || (email === "" && username === "") || password === "") {
+  const { email, password } = req.body;
+  if (!email || !password  || email === ""|| password === "") {
     return next(errorHandler(400, "All Fields are required"));
   }
   try {
     const userByEmail = await User.findOne({ email: email });
-    const userByUsername = await User.findOne({ username: username });
+    const userByUsername = await User.findOne({ username: email });
     let user="";
     if(userByEmail) user=userByEmail
     if(userByUsername) user=userByUsername

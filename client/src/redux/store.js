@@ -1,35 +1,26 @@
 // store.js
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import  userReducer from './user/userSlice'
+import { persistReducer, persistStore } from 'redux-persist'
+import storage from'redux-persist/lib/storage'
 
-// Define initial state
-const initialState = {
-  signUpSuccess: false,
-};
-
-// Define slice to manage state and actions
-const appSlice = createSlice({
-  name: "app",
-  initialState,
-  reducers: {
-    signUpSuccess(state) {
-      return {
-        ...state,
-        signUpSuccess: true,
-      };
-    },
-    clearSignUpSuccess(state) {
-      return {
-        ...state,
-        signUpSuccess: false,
-      };
-    },
-  },
+const rootReducer = combineReducers({
+  user: userReducer
 });
 
-// Create Redux store
-const store = configureStore({
-  reducer: appSlice.reducer,
-});
+const persistConfig = {
+  key: 'root',
+  storage,
+  version: 1,
+}
 
-export const { signUpSuccess, clearSignUpSuccess } = appSlice.actions;
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware)=>getDefaultMiddleware({
+    serializableCheck: false,
+  }),
+})
+
+export const persistor = persistStore(store)

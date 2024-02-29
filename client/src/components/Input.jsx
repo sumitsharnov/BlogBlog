@@ -18,7 +18,7 @@ const Input = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`border rounded-lg sm:w-96 w-auto p-2 focus:border-green-900 ${
+        className={`border rounded-lg sm:w-[20em] w-auto p-2 focus:border-green-900 ${
           isSubmitted && !value ? "border-red-700" : ""
         }`}
       />

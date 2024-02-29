@@ -7,12 +7,9 @@ import SignUp from "./pages/SignUp";
 import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Header from "./components/Header";
-import { Provider } from "react-redux";
-import store from "./redux/store";
 
 export default function App() {
   return (
-    <Provider store={store}>
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           <Header />
@@ -29,6 +26,5 @@ export default function App() {
           <FooterComponent />
         </div>
       </BrowserRouter>
-    </Provider>
   );
 }

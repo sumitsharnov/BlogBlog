@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String,
         required: true
+    },
+    recruiter:{
+        type: Boolean,
     }
 }, {timestamps: true})
 
