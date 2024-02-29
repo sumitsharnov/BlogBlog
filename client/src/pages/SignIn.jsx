@@ -34,12 +34,26 @@ const SignIn = () => {
   const [key, setKey] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showSignUpSuccess, setShowSignUpSuccess] = useState(false); // New state to manage showing sign-up success message
 
+  useEffect(() => {
+    if (signUpSuccess && source === "signup") {
+      setShowSignUpSuccess(true); // Show sign-up success message only if coming from sign-up page
+      dispatch(clearSignUpSuccess());
+    }
+  }, [signUpSuccess, source, dispatch]);
+
+  // Clear the sign-up success message when the component unmounts
+  useEffect(() => {
+    return () => {
+      setShowSignUpSuccess(false);
+    };
+  }, []);
   // Use a ref to track if the component is mounted
   const isMountedRef = useRef(false);
   // Run only once after the initial render to dispatch clearSignUpSuccess
   useEffect(() => {
-    console.log(isMountedRef.current)
+
     if (!isMountedRef.current && source !== "signup") {
       dispatch(clearSignUpSuccess());
     }
@@ -222,7 +236,7 @@ const SignIn = () => {
         {errorMessage && (
           <MessagesCentre messageText={errorMessage} type="error" click={key} />
         )}
-        {signUpSuccess && (
+        {showSignUpSuccess && (
           <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key} />
         )}
       </div>
