@@ -2,10 +2,13 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { clearSignInSuccess } from "../redux/user/userSlice";
 
 export default function Header() {
   const location = useLocation();
-
+  const { signInSuccess } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   return (
     <Navbar className="top-0 left-0 w-full border-b-2 z-50 mb-10 ">
       <NavLink
@@ -32,23 +35,34 @@ export default function Header() {
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaMoon />
         </Button>
-        <NavLink to="/sign-in">
+        {signInSuccess ? (
+          <NavLink to="/sign-in" onClick={()=>{
+            dispatch(clearSignInSuccess())
+          }}>
+            <Button gradientDuoTone="purpleToBlue" outline>
+              Log Out
+            </Button>
+          </NavLink>
+        ) : ( <NavLink to="/sign-in">
           <Button gradientDuoTone="purpleToBlue" outline>
             Sign In
           </Button>
         </NavLink>
+      )}
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
         <Navbar.Link as="div">
-          <NavLink
-            to="/"
-            className={
-              location.pathname === "/" ? "border-b-4 border-purple-400" : ""
-            }
-          >
-            Home
-          </NavLink>
+          {signInSuccess && (
+            <NavLink
+              to="/"
+              className={
+                location.pathname === "/" ? "border-b-4 border-purple-400" : ""
+              }
+            >
+              Home
+            </NavLink>
+          )}
         </Navbar.Link>
         <Navbar.Link as="div">
           <NavLink

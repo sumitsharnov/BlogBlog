@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Header from "./components/Header";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 export default function App() {
   return (
@@ -15,10 +16,12 @@ export default function App() {
           <Header />
           <div className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route  element={<PrivateRoutes />}>
+                <Route path="/" element={<Home events={sampleEvents}/>} />
+              </Route>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects" element={<Projects />} />
             </Routes>

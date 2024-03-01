@@ -35,6 +35,7 @@ const initialState = {
         return {
          ...state,
           signInSuccess: false,
+          currentUser: null
         };
       },
     },
