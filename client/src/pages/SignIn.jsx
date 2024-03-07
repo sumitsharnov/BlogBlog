@@ -88,7 +88,7 @@ const SignIn = () => {
       if (!res.ok && resMessage !== "") {
         await handleErrorReponse(resMessage.message);
       } else if (res.ok && resMessage !== "") {
-        dispatch(signInSuccess(data));
+                dispatch(signInSuccess(data));
         navigate("/?source=signin");
       } else {
         throw new Error("Something went wrong, please try again!");

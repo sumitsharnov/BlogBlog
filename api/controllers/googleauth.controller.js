@@ -15,7 +15,7 @@ export const googleauth = async (req, res, next) => {
         .cookie("token", token, {
           hTTPOnly: true,
         })
-        .json(args);
+        .json({...args, token: token });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +

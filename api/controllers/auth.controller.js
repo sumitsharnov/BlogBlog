@@ -58,7 +58,7 @@ export const signin = async (req, res, next) => {
     const {password : pass, ...args} = user._doc;
     res.status(200).cookie("token", token,  {
       hTTPOnly: true,
-    }).json(args)
+    }).json({...args, token: token})
   } catch (error) {
     return next(error);
   }

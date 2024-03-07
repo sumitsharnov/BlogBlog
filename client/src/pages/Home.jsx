@@ -1,10 +1,31 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const {token} = useSelector((state) => state.user);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("/api/timeline/content", {
+          method: "GET",
+          headers: { "Authorization": token}
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        // Handle the response data here
+      } catch (error) {
+        console.log("Failed", error);
+      }
+    }
+    
+    fetchData();
+  }, []);
+  
   const content = [
     {
       title: "Collaborative Editing",
