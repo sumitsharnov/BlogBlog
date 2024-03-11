@@ -1,90 +1,55 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import { useMotionValueEvent, useScroll } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { useSelector } from "react-redux";
+import MessagesCentre from "../components/MessagesCentre";
+import { GoogleGeminiEffect } from "../pages/GeminiEffect";
 
 const Home = () => {
-  const {token} = useSelector((state) => state.user);
+  const { token } = useSelector((state) => state.user);
+  const [content, setContent] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [activeCard, setActiveCard] = useState(0);
+  const ref = useRef(null);
+
   useEffect(() => {
     async function fetchData() {
       try {
         const res = await fetch("/api/timeline/content", {
           method: "GET",
-          headers: { "Authorization": token}
+          headers: { Authorization: token },
         });
+        const data = await res.json();
+        setContent(data);
         if (!res.ok) {
-          throw new Error("Failed to fetch data");
+          setErrorMessage(res.Message);
         }
-        // Handle the response data here
       } catch (error) {
-        console.log("Failed", error);
+        setErrorMessage("Something went wrong");
       }
     }
-    
-    fetchData();
-  }, []);
-  
-  const content = [
-    {
-      title: "Collaborative Editing",
-      description:
-        "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
-      content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-          Collaborative Editing
-        </div>
-      ),
-    },
-    {
-      title: "Real time changes",
-      description:
-        "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
-      content: (
-        <div className="h-full w-full  flex items-center justify-center text-white">
-          <img
-            src="/linear.webp"
-            width={300}
-            height={300}
-            className="h-full w-full object-cover"
-            alt="linear board demo"
-          />
-        </div>
-      ),
-    },
-    {
-      title: "Version control",
-      description:
-        "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
-      content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-          Version control
-        </div>
-      ),
-    },
-    {
-      title: "Running out of content",
-      description:
-        "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
-      content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-          Running out of content
-        </div>
-      ),
-    },
-  ];
 
-  const [activeCard, setActiveCard] = useState(0);
-  const ref = useRef(null);
+    fetchData();
+  }, [token]);
+
   const { scrollYProgress } = useScroll({
     container: ref,
+    target: ref,
     offset: ["start start", "end start"],
   });
-  const cardLength = content.length;
+
+  const cardLength = content && content.length;
+
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.2]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.2]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.2]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.2]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardsBreakpoints = content.map((_, index) => index / cardLength);
+    const cardsBreakpoints =
+      content && content.map((_, index) => index / cardLength);
     const closestBreakpointIndex = cardsBreakpoints.reduce(
       (acc, breakpoint, index) => {
         const distance = Math.abs(latest - breakpoint);
@@ -99,9 +64,9 @@ const Home = () => {
   });
 
   const backgroundColors = [
-    "var(--slate-900)",
     "var(--black)",
-    "var(--neutral-900)",
+    "var(--black)",
+    "var(--black)",
   ];
   const linearGradients = [
     "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
@@ -110,57 +75,84 @@ const Home = () => {
   ];
 
   return (
-    <div>
-      <motion.div
-        animate={{
-          backgroundColor:
-            backgroundColors[activeCard % backgroundColors.length],
-        }}
-        className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
+    <div className="flex flex-col justify-around bg-black">
+      <div
+        className="lg:h-96 h-40  w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
         ref={ref}
       >
-        <div className="div relative flex items-start px-4">
-          <div className="max-w-2xl">
-            {content.map((item, index) => (
-              <div key={item.title + index} className="my-20">
-                <motion.h2
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: activeCard === index ? 1 : 0.3,
-                  }}
-                  className="text-2xl font-bold text-slate-100"
-                >
-                  {item.title}
-                </motion.h2>
-                <motion.p
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: activeCard === index ? 1 : 0.3,
-                  }}
-                  className="text-kg text-slate-300 max-w-sm mt-10"
-                >
-                  {item.description}
-                </motion.p>
-              </div>
-            ))}
-            <div className="h-40" />
-          </div>
-        </div>
+        <GoogleGeminiEffect
+          pathLengths={[
+            pathLengthFirst,
+            pathLengthSecond,
+            pathLengthThird,
+            pathLengthFourth,
+            pathLengthFifth,
+          ]}
+        />
+      </div>
+      <div>
         <motion.div
           animate={{
-            background: linearGradients[activeCard % linearGradients.length],
+            backgroundColor:
+              backgroundColors[activeCard % backgroundColors.length],
           }}
-          className={cn(
-            "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden"
-          )}
+          className="h-[30em] overflow-y-auto flex justify-center relative space-x-10 p-10"
+          ref={ref}
         >
-          {content[activeCard].content ?? null}
+          <div className="div relative flex items-start px-4">
+            <div className="max-w-2xl">
+              {content &&
+                content.map((item, index) => (
+                  <div key={item.title + index} className="my-20">
+                    <motion.h2
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: activeCard === index ? 1 : 0.3,
+                      }}
+                      className="text-2xl font-bold text-slate-100"
+                    >
+                      {item.title}
+                    </motion.h2>
+                    <motion.p
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: activeCard === index ? 1 : 0.3,
+                      }}
+                      className="text-kg text-slate-300 max-w-sm mt-10"
+                    >
+                      {item.description}
+                    </motion.p>
+                  </div>
+                ))}
+              <div className="h-40" />
+            </div>
+          </div>
+          <motion.div
+            animate={{
+              background: linearGradients[activeCard % linearGradients.length],
+            }}
+            className={cn(
+              "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden"
+            )}
+          >
+            <div className="flex flex-col justify-center items-center h-full">
+              <img
+                className="w-40 h-40"
+                src={content && content[activeCard].image}
+                alt="Content"
+              />
+              <span>{content && content[activeCard].content}</span>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
+      {errorMessage && (
+        <MessagesCentre messageText={errorMessage} type="error" />
+      )}
     </div>
   );
 };

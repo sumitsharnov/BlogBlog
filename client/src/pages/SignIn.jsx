@@ -91,11 +91,11 @@ const SignIn = () => {
                 dispatch(signInSuccess(data));
         navigate("/?source=signin");
       } else {
-        throw new Error("Something went wrong, please try again!");
+        throw new Error();
       }
     } catch (error) {
       setIsSubmitted(false);
-      setErrorMessage(error.message);
+      setErrorMessage("Somwthing went wrong. Please try again later");
     }
     setLoading(false);
   }, [formData]);

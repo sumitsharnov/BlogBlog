@@ -3,7 +3,10 @@ import { app } from '../firebase';
 import {useDispatch} from'react-redux';
 import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import MessagesCentre from "../components/MessagesCentre";
 export default function ViaGoogleLogin() {
+  const [errorMessage, setErrorMessage] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = getAuth(app);
@@ -25,10 +28,10 @@ export default function ViaGoogleLogin() {
         dispatch(signInSuccess(data));
         navigate("/?source=signin");
       }else{
-        console.log(data.error);
+        setErrorMessage(res.Message);
       }
     } catch (error) {
-      console.log(error);
+      setErrorMessage("Something went wrong");
     }
   };
   return (
@@ -54,6 +57,9 @@ export default function ViaGoogleLogin() {
           d="M12 22a10 10 0 0 1-7.1-3A9.9 9.9 0 0 1 5 4.8C7 3 9.5 2 12.2 2h.2c2.4 0 4.8 1 6.6 2.6l-2.5 2.3a6.2 6.2 0 0 0-4.2-1.6c-1.8 0-3.5.7-4.8 2a6.6 6.6 0 0 0-.1 9.3c1.2 1.3 2.9 2 4.7 2h.1a6 6 0 0 0 4-1.1c1-.9 1.8-2 2.1-3.4v-.2h-6v-3.4h9.6l.1 1.9c-.1 5.7-4 9.6-9.7 9.6H12Z"
         />
       </svg>
+      {errorMessage && (
+        <MessagesCentre messageText={errorMessage} type="error" />
+      )}
     </button>
   );
 }

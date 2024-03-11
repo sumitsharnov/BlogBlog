@@ -45,24 +45,6 @@ export const timeline = async (req, res, next) => {
           "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
         content: "Running out of content",
       },
-      {
-        title: "Running out of content",
-        description:
-          "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
-        content: "Running out of content",
-      },
-      {
-        title: "Running out of content",
-        description:
-          "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
-        content: "Running out of content",
-      },
-      {
-        title: "Sumit",
-        description:
-          "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
-        content: "Running out of content",
-      },
     ];
 
     // Return the content JSON as a response

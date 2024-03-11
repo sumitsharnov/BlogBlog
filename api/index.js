@@ -5,6 +5,8 @@ import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import googleauthRoutes from "./routes/authviagoogle.route.js";
 import timelineRoutes from "./routes/timeline.route.js";
+import { fileURLToPath } from 'url';
+import path from "path";
 dotenv.config();
 
 mongoose
@@ -17,6 +19,7 @@ mongoose
   });
 const app = express();
 app.use(express.json());
+app.use('/images', express.static("api\\utils\\images"));
 app.listen(3000, () => {
   console.log("Server is running");
 });

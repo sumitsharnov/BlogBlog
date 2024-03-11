@@ -10,7 +10,7 @@ export default function Header() {
   const { signInSuccess } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   return (
-    <Navbar className="top-0 left-0 w-full border-b-2 z-50 mb-10 ">
+    <Navbar className="top-0 left-0 w-full border-b-2 z-50 mb-1 ">
       <NavLink
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
