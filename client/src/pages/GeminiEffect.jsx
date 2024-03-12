@@ -16,7 +16,7 @@ export const GoogleGeminiEffect = ({ pathLengths }) => {
           {`Timeline`}
         </p>
         <p className="text-xs md:text-xl font-normal text-center text-neutral-400  max-w-lg mx-auto p-2">
-          {`Explore our journey through time`}
+          {`Explore my journey through time`}
         </p>
       </div>
       <div className={cn("sticky")}>

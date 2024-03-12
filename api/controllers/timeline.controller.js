@@ -19,18 +19,19 @@ export const timeline = async (req, res, next) => {
     // Example content data
     const content = [
       {
-        image: `${process.env.BASE_URL}/images/img1.jpg`,
-        title: "Collaborative Editing",
+        image: `${process.env.BASE_URL}/images/3PillarGlobal.jpg`,
+        url: "https://www.3pillarglobal.com/",
+        title: "3Pillar Global | 2021 - current",
         description:
-          "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
-        content: "Collaborative Editing",
+          "I actively contributed to the development of MERN stack applications, utilizing tools such as React for frontend development, Node.js and Express.js for backend implementation, and MongoDB for database management. My focus was on building responsive and scalable web applications while collaborating with teams to ensure efficient development workflows and optimal user experiences.",
+        content: "3Pillar Global",
       },
       {
-        image: `${process.env.BASE_URL}/images/img2.jpg`,
-        title: "Real time changes",
+        image: `${process.env.BASE_URL}/images/nagarro.png`,
+        title: "Nagarro",
         description:
           "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
-        content: "Real time changes",
+        content: "Nagarro",
       },
       {
         image: `${process.env.BASE_URL}/images/img3.jpg`,

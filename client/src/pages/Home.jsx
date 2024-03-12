@@ -41,11 +41,11 @@ const Home = () => {
 
   const cardLength = content && content.length;
 
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.2]);
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2]);
-  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.2]);
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.2]);
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.2]);
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.2]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints =
@@ -63,14 +63,10 @@ const Home = () => {
     setActiveCard(closestBreakpointIndex);
   });
 
-  const backgroundColors = [
-    "var(--black)",
-    "var(--black)",
-    "var(--black)",
-  ];
+  const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
   const linearGradients = [
-    "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
-    "linear-gradient(to bottom right, var(--pink-500), var(--indigo-500))",
+    "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
     "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
   ];
 
@@ -96,10 +92,10 @@ const Home = () => {
             backgroundColor:
               backgroundColors[activeCard % backgroundColors.length],
           }}
-          className="h-[30em] overflow-y-auto flex justify-center relative space-x-10 p-10"
+          className="h-[30em] overflow-y-auto flex justify-center relative space-x-10 "
           ref={ref}
         >
-          <div className="div relative flex items-start px-4">
+          <div className="div relative flex items-start px-5">
             <div className="max-w-2xl">
               {content &&
                 content.map((item, index) => (
@@ -122,10 +118,31 @@ const Home = () => {
                       animate={{
                         opacity: activeCard === index ? 1 : 0.3,
                       }}
-                      className="text-kg text-slate-300 max-w-sm mt-10"
+                      className="text-kg text-slate-300 max-w-sm mt-4"
                     >
                       {item.description}
                     </motion.p>
+                    <a
+                      href={content && content[activeCard].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                        }}
+                        animate={{
+                          background:
+                            linearGradients[
+                              activeCard % linearGradients.length
+                            ],
+                          opacity: activeCard === index ? 1 : 0.3,
+                        }}
+                        className="border  rounded-2xl p-2 mt-2 mb-2 text-center cursor-pointer shadow-md  transform transition-transform duration-200 hover:scale-105 focus:scale-105 active:scale-100 hover:font-"
+                      >
+                        {item.content}
+                      </motion.div>
+                    </a>
                   </div>
                 ))}
               <div className="h-40" />
@@ -139,14 +156,27 @@ const Home = () => {
               "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden"
             )}
           >
-            <div className="flex flex-col justify-center items-center h-full">
+            <a
+              href={content && content[activeCard].url}
+              className="flex flex-col justify-center items-center h-full"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
-                className="w-40 h-40"
+                className="w-40 h-40 border rounded-full border-blue-400 shadow-2xl"
                 src={content && content[activeCard].image}
                 alt="Content"
               />
-              <span>{content && content[activeCard].content}</span>
-            </div>
+              <motion.p animate={{
+              opacity: 1,
+              color: "var(--white)"
+            }}>
+              
+                <span>
+                  {content && content[activeCard].title}
+                </span>
+              </motion.p>
+            </a>
           </motion.div>
         </motion.div>
       </div>
