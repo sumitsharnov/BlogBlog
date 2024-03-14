@@ -19,7 +19,7 @@ mongoose
   });
 const app = express();
 app.use(express.json());
-app.use('/images', express.static("api\\utils\\images"));
+app.use('/images', express.static("api/utils/images"));
 app.listen(3000, () => {
   console.log("Server is running");
 });

@@ -13,6 +13,7 @@ const Home = () => {
   const [activeCard, setActiveCard] = useState(0);
   const ref = useRef(null);
 
+  console.log(content, "sumit")
   useEffect(() => {
     async function fetchData() {
       try {
