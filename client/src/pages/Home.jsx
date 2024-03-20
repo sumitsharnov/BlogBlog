@@ -68,7 +68,7 @@ const Home = () => {
   const linearGradients = [
     "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
     "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
-    "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
+    "linear-gradient(to bottom right, var(--pink-500), var(--gray-500))",
   ];
 
   return (
@@ -93,7 +93,7 @@ const Home = () => {
             backgroundColor:
               backgroundColors[activeCard % backgroundColors.length],
           }}
-          className="h-[30em] overflow-y-auto flex justify-center relative space-x-10 "
+          className="h-[30em] overflow-y-auto flex justify-center relative  "
           ref={ref}
         >
           <div className="div relative flex items-start px-5">
@@ -139,7 +139,8 @@ const Home = () => {
                             ],
                           opacity: activeCard === index ? 1 : 0.3,
                         }}
-                        className="border  rounded-2xl p-2 mt-2 mb-2 text-center cursor-pointer shadow-md  transform transition-transform duration-200 hover:scale-105 focus:scale-105 active:scale-100 hover:font-"
+                        className="border  rounded-2xl p-2 mt-2 mb-2 text-center cursor-pointer shadow-md  transform transition-transform duration-200 hover:scale-105 focus:scale-105 active:scale-100 hover:font-
+                        w-[50%]"
                       >
                         {item.content}
                       </motion.div>
@@ -154,7 +155,7 @@ const Home = () => {
               background: linearGradients[activeCard % linearGradients.length],
             }}
             className={cn(
-              "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden"
+              "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden right-4"
             )}
           >
             <a
@@ -170,8 +171,9 @@ const Home = () => {
               />
               <motion.p animate={{
               opacity: 1,
-              color: "var(--white)"
-            }}>
+              color: "var(--white)",
+              
+            }} className="pl-2 pr-2">
               
                 <span>
                   {content && content[activeCard].title}
