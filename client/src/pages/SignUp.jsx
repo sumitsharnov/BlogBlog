@@ -89,7 +89,7 @@ const SignUp = () => {
             confirmPassword: "", // Reset confirm password field
           });
         } else {
-          throw new Error("Something went wrong, please try again!");
+          throw new Error("Something went wrong");
         }
       } catch (error) {
         setIsSubmitted(false);

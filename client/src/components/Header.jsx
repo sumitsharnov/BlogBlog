@@ -4,6 +4,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
+import Cookies from "js-cookie";
 
 export default function Header() {
   const location = useLocation();
@@ -37,6 +38,7 @@ export default function Header() {
         </Button>
         {signInSuccess ? (
           <NavLink to="/sign-in" onClick={()=>{
+            Cookies.set("loginSuccess", "false");
             dispatch(clearSignInSuccess())
           }}>
             <Button gradientDuoTone="purpleToBlue" outline>
