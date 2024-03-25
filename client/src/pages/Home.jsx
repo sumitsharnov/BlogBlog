@@ -33,6 +33,14 @@ const Home = () => {
           headers: { Authorization: token },
         });
         const data = await res.json();
+        
+        // Sort the data based on the years mentioned in the titles
+        data.sort((a, b) => {
+          const yearA = parseInt(a.title.match(/\d{4}/)[0]);
+          const yearB = parseInt(b.title.match(/\d{4}/)[0]);
+          return yearB - yearA; // Sort in descending order
+        });
+        
         setContent(data);
         if (!res.ok) {
           setErrorMessage(res.Message);
@@ -41,7 +49,7 @@ const Home = () => {
         setErrorMessage("Something went wrong");
       }
     }
-
+  
     fetchData();
   }, [token]);
 
@@ -53,11 +61,11 @@ const Home = () => {
 
   const cardLength = content && content.length;
 
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
-  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.2]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints =
@@ -112,7 +120,7 @@ const Home = () => {
                 backgroundColor:
                   backgroundColors[activeCard % backgroundColors.length],
               }}
-              className="h-[30em] overflow-y-auto flex justify-center relative  "
+              className="h-[25em] overflow-y-auto flex justify-center relative  "
               ref={ref}
             >
               <div className="div relative flex items-start px-5">
@@ -201,15 +209,14 @@ const Home = () => {
                 </a>
               </motion.div>
             </motion.div>
-            <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+          </div>
+          <div className="h-[20rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
               <InfiniteMovingCards
                 items={testimonials}
                 direction="right"
                 speed="slow"
               />
             </div>
-          </div>
-
           {showSuccessMessage && (
             <MessagesCentre messageText={"Welcome!"} type="success" />
           )}
