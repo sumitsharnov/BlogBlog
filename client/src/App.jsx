@@ -11,7 +11,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 
 export default function App() {
   return (
-      <BrowserRouter>
+      <BrowserRouter >
         <div className="min-h-screen flex flex-col">
           <Header />
           <div className="flex-grow">
@@ -31,3 +31,29 @@ export default function App() {
       </BrowserRouter>
   );
 }
+
+const ScrollbarStyles =`
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 12px; /* width of the entire scrollbar */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* color of the track */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #888; /* color of the scroll thumb */
+    border-radius: 6px; /* roundness of the scroll thumb */
+    border: 3px solid transparent; /* creates padding around scroll thumb */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* color of the scroll thumb on hover */
+  }
+`;
+
+const style = document.createElement("style");
+style.appendChild(document.createTextNode(ScrollbarStyles));
+document.head.appendChild(style);
+

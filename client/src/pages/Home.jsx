@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { useSelector } from "react-redux";
 import MessagesCentre from "../components/MessagesCentre";
-import { GoogleGeminiEffect } from "../pages/GeminiEffect";
+import { GoogleGeminiEffect } from "../components/GeminiEffect";
 import Cookies from "js-cookie";
+import { InfiniteMovingCards } from "../components/infiniteMovingCards";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
@@ -52,11 +53,11 @@ const Home = () => {
 
   const cardLength = content && content.length;
 
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.2]);
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.5]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints =
@@ -77,8 +78,9 @@ const Home = () => {
   const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
   const linearGradients = [
     "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
-    "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--white), var(--gray-500))",
     "linear-gradient(to bottom right, var(--pink-500), var(--gray-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--blue-500), var(--yellow-500))",
   ];
 
   return (
@@ -199,9 +201,17 @@ const Home = () => {
                 </a>
               </motion.div>
             </motion.div>
+            <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+              <InfiniteMovingCards
+                items={testimonials}
+                direction="right"
+                speed="slow"
+              />
+            </div>
           </div>
+
           {showSuccessMessage && (
-            <MessagesCentre messageText={"Login successful!"} type="success" />
+            <MessagesCentre messageText={"Welcome!"} type="success" />
           )}
         </div>
       )}
@@ -210,3 +220,35 @@ const Home = () => {
 };
 
 export default Home;
+
+const testimonials = [
+  {
+    quote:
+      "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
+    name: "Charles Dickens",
+    title: "A Tale of Two Cities",
+  },
+  {
+    quote:
+      "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
+    name: "William Shakespeare",
+    title: "Hamlet",
+  },
+  {
+    quote: "All that we see or seem is but a dream within a dream.",
+    name: "Edgar Allan Poe",
+    title: "A Dream Within a Dream",
+  },
+  {
+    quote:
+      "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    name: "Jane Austen",
+    title: "Pride and Prejudice",
+  },
+  {
+    quote:
+      "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
+    name: "Herman Melville",
+    title: "Moby-Dick",
+  },
+];
