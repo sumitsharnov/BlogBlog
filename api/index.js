@@ -28,7 +28,7 @@ mongoose
 
 const app = express();
 app.use(express.json());
-app.use('/images', express.static("api\\utils\\images"));
+app.use('/images', express.static("api/utils/images"));
 app.listen(3000, () => {
   logger.info("Server is running"); // Log server startup
 });

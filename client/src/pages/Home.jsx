@@ -139,7 +139,7 @@ const Home = () => {
             </p>
           </div>
           <div
-            className="h-96 lg:inline-block hidden w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
+            className="h-72 lg:inline-block hidden w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
             ref={ref}
           >
             <GoogleGeminiEffect
