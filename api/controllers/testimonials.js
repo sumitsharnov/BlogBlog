@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import Content from "../models/timeline.model.js";
+import Testimonial from "../models/testimonial.model.js";
 
 dotenv.config();
-export const timeline = async (req, res, next) => {
+export const testimonials = async (req, res, next) => {
   const token = req.headers.authorization;
 
   try {
@@ -17,19 +17,9 @@ export const timeline = async (req, res, next) => {
 
     // Attach the user ID to the request object for future use
     req.userId = decoded.id;
-    const content = await Content.find({}).lean();
-
-    const updatedContent = content.map(item => {
-      const parts = item.image.split("/");
-      const imageName = parts.pop();
-      const imageUrl = `${process.env.BASE_URL}/images/${imageName}`;
-      return {
-        ...item,
-        image: imageUrl
-      };
-    });
+    const testimonials = await Testimonial.find({}).lean();
     // Return the content JSON as a response
-    res.status(200).json(updatedContent);
+    res.status(200).json(testimonials);
   } catch (error) {
     // If token verification fails, return 403 Forbidden
     return res.status(403).json({ message: "Invalid token" });

@@ -1,6 +1,6 @@
 const FooterComponent = () => {
   return (
-    <footer className="w-full bg-white dark:bg-gray-900 border-b-2 mt-10 border-t-8 border-t-teal-500">
+    <footer className="w-full bg-white dark:bg-gray-900 border-b-2  border-t-teal-500">
       <div className="mx-auto max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div className="flex justify-center items-center space-x-4 mb-4 sm:mb-0">

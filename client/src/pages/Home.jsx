@@ -7,16 +7,23 @@ import MessagesCentre from "../components/MessagesCentre";
 import { GoogleGeminiEffect } from "../components/GeminiEffect";
 import Cookies from "js-cookie";
 import { InfiniteMovingCards } from "../components/infiniteMovingCards";
+import { Tabs } from "../components/AnimatedTabs";
+
+const DummyContent = () => {
+  return <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>;
+};
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
   const [content, setContent] = useState(null);
+  const [testimonials, setTestimonials] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [activeCard, setActiveCard] = useState(0);
   const ref = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.signInSuccess);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+  console.log(testimonials, "Sumit");
   useEffect(() => {
     const loginSuccessCookie = Cookies.get("loginSuccess") === "true";
     if (isLoggedIn && !loginSuccessCookie) {
@@ -33,14 +40,14 @@ const Home = () => {
           headers: { Authorization: token },
         });
         const data = await res.json();
-        
+
         // Sort the data based on the years mentioned in the titles
         data.sort((a, b) => {
           const yearA = parseInt(a.title.match(/\d{4}/)[0]);
           const yearB = parseInt(b.title.match(/\d{4}/)[0]);
           return yearB - yearA; // Sort in descending order
         });
-        
+
         setContent(data);
         if (!res.ok) {
           setErrorMessage(res.Message);
@@ -49,7 +56,27 @@ const Home = () => {
         setErrorMessage("Something went wrong");
       }
     }
-  
+
+    fetchData();
+  }, [token]);
+
+   useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("/api/testimonials", {
+          method: "GET",
+          headers: { Authorization: token },
+        });
+        const data = await res.json();
+        setTestimonials(data);
+        if (!res.ok) {
+          setErrorMessage(res.Message);
+        }
+      } catch (error) {
+        setErrorMessage("Something went wrong");
+      }
+    }
+
     fetchData();
   }, [token]);
 
@@ -86,9 +113,12 @@ const Home = () => {
   const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
   const linearGradients = [
     "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--white), var(--red-500))",
     "linear-gradient(to bottom right, var(--white), var(--gray-500))",
-    "linear-gradient(to bottom right, var(--pink-500), var(--gray-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--gray-500))",
     "linear-gradient(to bottom right, var(--green-500), var(--blue-500), var(--yellow-500))",
+    "linear-gradient(to bottom right, var(--red-500), var(--yellow-500), var(--blue-500))",
   ];
 
   return (
@@ -99,9 +129,17 @@ const Home = () => {
           <MessagesCentre messageText={errorMessage} type="error" />{" "}
         </>
       ) : (
-        <div className="flex flex-col justify-around bg-black">
+        <div className="flex flex-col bg-black">
+          <div>
+            <p className="text-lg md:text-7xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500">
+              {`Timeline`}
+            </p>
+            <p className="text-xs md:text-xl font-normal text-center text-neutral-400  max-w-lg mx-auto p-2">
+              {`Explore my journey through time`}
+            </p>
+          </div>
           <div
-            className="lg:h-96 h-40  w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
+            className="h-96 lg:inline-block hidden w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
             ref={ref}
           >
             <GoogleGeminiEffect
@@ -174,7 +212,7 @@ const Home = () => {
                         </a>
                       </div>
                     ))}
-                  <div className="h-40" />
+                  <div />
                 </div>
               </div>
               <motion.div
@@ -209,14 +247,19 @@ const Home = () => {
                 </a>
               </motion.div>
             </motion.div>
-          </div>
-          <div className="h-[20rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-              <InfiniteMovingCards
+            <div className="h-[30rem] [perspective:1000px] relative flex flex-col justify-center items-center max-w-5xl mx-auto w-full gap-10">
+              <Tabs propTabs={tabs} />
+            </div>
+            <div className="rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden">
+              <span className="text-white">What people think about me?</span>
+             {testimonials && <InfiniteMovingCards
                 items={testimonials}
                 direction="right"
                 speed="slow"
               />
+             }
             </div>
+          </div>
           {showSuccessMessage && (
             <MessagesCentre messageText={"Welcome!"} type="success" />
           )}
@@ -227,35 +270,55 @@ const Home = () => {
 };
 
 export default Home;
-
-const testimonials = [
+const tabs = [
   {
-    quote:
-      "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-    name: "Charles Dickens",
-    title: "A Tale of Two Cities",
+    title: "Product",
+    value: "product",
+    content: (
+      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
+        <p>Product Tab</p>
+        <DummyContent />
+      </div>
+    ),
   },
   {
-    quote:
-      "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
-    name: "William Shakespeare",
-    title: "Hamlet",
+    title: "Services",
+    value: "services",
+    content: (
+      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
+        <p>Services tab</p>
+        <DummyContent />
+      </div>
+    ),
   },
   {
-    quote: "All that we see or seem is but a dream within a dream.",
-    name: "Edgar Allan Poe",
-    title: "A Dream Within a Dream",
+    title: "Playground",
+    value: "playground",
+    content: (
+      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
+        <p>Playground tab</p>
+        <DummyContent />
+      </div>
+    ),
   },
   {
-    quote:
-      "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-    name: "Jane Austen",
-    title: "Pride and Prejudice",
+    title: "Content",
+    value: "content",
+    content: (
+      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
+        <p>Content tab</p>
+        <DummyContent />
+      </div>
+    ),
   },
   {
-    quote:
-      "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
-    name: "Herman Melville",
-    title: "Moby-Dick",
+    title: "Random",
+    value: "random",
+    content: (
+      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
+        <p>Random tab</p>
+        <DummyContent />
+      </div>
+    ),
   },
 ];

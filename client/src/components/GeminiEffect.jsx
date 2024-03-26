@@ -10,15 +10,7 @@ const transition = {
 
 export const GoogleGeminiEffect = ({ pathLengths }) => {
   return (
-    <div>
-      <div>
-        <p className="text-lg md:text-7xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500">
-          {`Timeline`}
-        </p>
-        <p className="text-xs md:text-xl font-normal text-center text-neutral-400  max-w-lg mx-auto p-2">
-          {`Explore my journey through time`}
-        </p>
-      </div>
+    <div className="hidden lg:inline">
       <div className={cn("sticky")}>
         <svg
           width="1440"
