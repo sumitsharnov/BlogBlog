@@ -19,6 +19,7 @@ export async function fetchTestimonials(token) {
 // api_call.js
 
 export async function fetchTimeline(token) {
+ await new Promise((resolve) => {setTimeout(resolve,3000)});
   try {
     const res = await fetch("/api/timeline/content", {
       method: "GET",
