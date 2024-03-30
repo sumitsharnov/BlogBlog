@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
@@ -8,22 +8,34 @@ import { GoogleGeminiEffect } from "../components/GeminiEffect";
 import Cookies from "js-cookie";
 import { InfiniteMovingCards } from "../components/infiniteMovingCards";
 import { Tabs } from "../components/AnimatedTabs";
-
-const DummyContent = () => {
-  return <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>;
-};
+import { fetchTestimonials, fetchTimeline } from "../services/home_api";
+import Loader from "../components/Loader";
+import sww from "../images/home/somethingWentWrong.jpeg";
+import { useFetcher } from "react-router-dom";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
   const [content, setContent] = useState(null);
   const [testimonials, setTestimonials] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessageTestimonials, setErrorMessageTestimonials] =
+    useState(null);
   const [activeCard, setActiveCard] = useState(0);
   const ref = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.signInSuccess);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
-  console.log(testimonials, "Sumit");
+  const [initLoading, setInitLoading] = useState(true);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(false); 
+  const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
+  const linearGradients = [
+    "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--white), var(--red-500))",
+    "linear-gradient(to bottom right, var(--white), var(--gray-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--gray-500))",
+    "linear-gradient(to bottom right, var(--green-500), var(--blue-500), var(--yellow-500))",
+    "linear-gradient(to bottom right, var(--red-500), var(--yellow-500), var(--blue-500))",
+  ];
   useEffect(() => {
     const loginSuccessCookie = Cookies.get("loginSuccess") === "true";
     if (isLoggedIn && !loginSuccessCookie) {
@@ -35,48 +47,29 @@ const Home = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/timeline/content", {
-          method: "GET",
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
-
-        // Sort the data based on the years mentioned in the titles
-        data.sort((a, b) => {
-          const yearA = parseInt(a.title.match(/\d{4}/)[0]);
-          const yearB = parseInt(b.title.match(/\d{4}/)[0]);
-          return yearB - yearA; // Sort in descending order
-        });
-
+        const data = await fetchTimeline(token);
         setContent(data);
-        if (!res.ok) {
-          setErrorMessage(res.Message);
-        }
+        setInitLoading(false);
       } catch (error) {
         setErrorMessage("Something went wrong");
       }
     }
-
     fetchData();
+  
   }, [token]);
 
-   useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
+      setLoadingTestimonials(true);
       try {
-        const res = await fetch("/api/testimonials", {
-          method: "GET",
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const data = await fetchTestimonials(token);
         setTestimonials(data);
-        if (!res.ok) {
-          setErrorMessage(res.Message);
-        }
       } catch (error) {
-        setErrorMessage("Something went wrong");
+        setLoadingTestimonials(false);
+        setErrorMessageTestimonials(error.message);
       }
+      setLoadingTestimonials(false);
     }
-
     fetchData();
   }, [token]);
 
@@ -97,39 +90,31 @@ const Home = () => {
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints =
       content && content.map((_, index) => index / cardLength);
-    const closestBreakpointIndex = cardsBreakpoints.reduce(
-      (acc, breakpoint, index) => {
+    const closestBreakpointIndex =
+      cardsBreakpoints &&
+      cardsBreakpoints.reduce((acc, breakpoint, index) => {
         const distance = Math.abs(latest - breakpoint);
         if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
           return index;
         }
         return acc;
-      },
-      0
-    );
+      }, 0);
     setActiveCard(closestBreakpointIndex);
   });
 
-  const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
-  const linearGradients = [
-    "linear-gradient(to bottom right, var(--orange-500), var(--blue-500))",
-    "linear-gradient(to bottom right, var(--white), var(--red-500))",
-    "linear-gradient(to bottom right, var(--white), var(--gray-500))",
-    "linear-gradient(to bottom right, var(--green-500), var(--blue-500))",
-    "linear-gradient(to bottom right, var(--green-500), var(--gray-500))",
-    "linear-gradient(to bottom right, var(--green-500), var(--blue-500), var(--yellow-500))",
-    "linear-gradient(to bottom right, var(--red-500), var(--yellow-500), var(--blue-500))",
-  ];
-
   return (
     <>
-      {errorMessage ? (
+    {
+      errorMessage ? (
+        // Error message handling
         <>
           <h4>Something Went Wrong, Please try after some time</h4>
-          <MessagesCentre messageText={errorMessage} type="error" />{" "}
+          <MessagesCentre messageText={errorMessage} type="error" />
         </>
-      ) : (
-        <div className="flex flex-col bg-black">
+      ) :
+        // Render content when it's loaded
+        
+        <div className={ "flex flex-col bg-black"}>
           <div>
             <p className="text-lg md:text-7xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500">
               {`Timeline`}
@@ -138,6 +123,7 @@ const Home = () => {
               {`Explore my journey through time`}
             </p>
           </div>
+
           <div
             className="h-72 lg:inline-block hidden w-full dark:border dark:border-white/[0.1] rounded-md relative overflow-clip top-2"
             ref={ref}
@@ -152,6 +138,7 @@ const Home = () => {
               ]}
             />
           </div>
+
           <div>
             <motion.div
               animate={{
@@ -247,24 +234,46 @@ const Home = () => {
                 </a>
               </motion.div>
             </motion.div>
-            <div className="h-[30rem] [perspective:1000px] relative flex flex-col justify-center items-center max-w-5xl mx-auto w-full gap-10">
+
+            <div className="h-[30rem] [perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent hidden">
               <Tabs propTabs={tabs} />
             </div>
             <div className="rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden">
               <span className="text-white">What people think about me?</span>
-             {testimonials && <InfiniteMovingCards
-                items={testimonials}
-                direction="right"
-                speed="slow"
-              />
-             }
+              {loadingTestimonials ? (
+                <span className="p-[10rem]">
+                  <Loader />
+                </span>
+              ) : (
+                testimonials && (
+                  <InfiniteMovingCards
+                    items={testimonials}
+                    direction="right"
+                    speed="slow"
+                  />
+                )
+              )}
+              {errorMessageTestimonials && (
+                <div className="p-[5rem] flex flex-col items-center justify-center">
+                  <MessagesCentre
+                    messageText={errorMessageTestimonials}
+                    type="error"
+                  />
+                  <img
+                    className="border rounded-3xl size-[30%] flex justify-between items-center"
+                    src={sww}
+                    alt="AI GENERATED IMAGES"
+                  />
+                </div>
+              )}
             </div>
+          
           </div>
           {showSuccessMessage && (
             <MessagesCentre messageText={"Welcome!"} type="success" />
           )}
         </div>
-      )}
+      }
     </>
   );
 };
@@ -274,51 +283,26 @@ const tabs = [
   {
     title: "Product",
     value: "product",
-    content: (
-      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-        <p>Product Tab</p>
-        <DummyContent />
-      </div>
-    ),
+    content: "Product",
   },
   {
     title: "Services",
     value: "services",
-    content: (
-      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-        <p>Services tab</p>
-        <DummyContent />
-      </div>
-    ),
+    content: "Services",
   },
   {
     title: "Playground",
     value: "playground",
-    content: (
-      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-        <p>Playground tab</p>
-        <DummyContent />
-      </div>
-    ),
+    content: "Playground",
   },
   {
     title: "Content",
     value: "content",
-    content: (
-      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-        <p>Content tab</p>
-        <DummyContent />
-      </div>
-    ),
+    content: "Content",
   },
   {
     title: "Random",
     value: "random",
-    content: (
-      <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-        <p>Random tab</p>
-        <DummyContent />
-      </div>
-    ),
+    content: "Random",
   },
 ];

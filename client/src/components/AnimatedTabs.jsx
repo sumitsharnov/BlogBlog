@@ -15,15 +15,11 @@ export function Tabs({ propTabs }) {
     setTabs(newTabs);
     setActive(newTabs[0]);
   };
-
-  
-
-  console.log(propTabs, active, setActive);
   return (
     <>
       <div
         className={cn(
-          "md:flex md:flex-row items-center justify-start [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12"
+          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12 mb-[5rem]"
         )}
       >
         {propTabs.map((tab, idx) => (
@@ -34,7 +30,7 @@ export function Tabs({ propTabs }) {
             }}
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
-            className={cn("relative px-2 rounded-full")} // Adjust padding for smaller screens
+            className={cn("relative px-2 ")} // Adjust padding for smaller screens
             style={{
               transformStyle: "preserve-3d",
             }}
@@ -43,13 +39,11 @@ export function Tabs({ propTabs }) {
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-                className={cn(
-                  "absolute inset-0 bg-gray-200 dark:bg-zinc-800 rounded-full"
-                )}
+                className={cn("absolute inset-0 bg-yellow-200 rounded-full")}
               />
             )}
 
-            <span className="relative block text-black dark:text-white ">
+            <span className="relative block text-purple-700  ">
               {tab.title}
             </span>
           </button>
@@ -60,7 +54,7 @@ export function Tabs({ propTabs }) {
         active={active}
         key={active.value}
         hovering={hovering}
-        className={cn("mt-32")}
+        className={cn("mb-10")}
       />
     </>
   );
@@ -71,25 +65,32 @@ const FadeInDiv = ({ tabs, hovering }) => {
     return tab.value === tabs[0].value;
   };
   return (
-    <div className="relative flex justify-between w-[70%] h-full">
+    <div className="relative flex justify-between w-[70%] h-full ">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}
           layoutId={tab.value}
           style={{
             scale: 1 - idx * 0.1,
-            top: hovering ? idx * -50 : 0,
+            top: hovering ? idx * -50 : -40,
             zIndex: -idx,
             opacity: idx < 3 ? 1 - idx * 0.1 : 0,
           }}
-          animate={{
-            y: isActive(tab) ? [0, 40, 0] : 0,
-          }}
+          animate={
+            window.innerWidth > 768
+              ? {
+                  y: isActive(tab) ? [0, 40, 0] : 0,
+                }
+              : null
+          }
           className={cn(
-            "w-full h-full absolute mt-2 flex justify-center items-center"
+            "w-full h-full absolute flex justify-center items-center"
           )}
         >
-          {tab.content}
+          <div className="w-[70%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900 mb-2 flex flex-row gap-2 justify-content-between">
+            <div className="border-2 border-white] h-full">{tab.content}</div>
+            <div className="border-2 border-white h-full">Sumit</div>
+          </div>
         </motion.div>
       ))}
     </div>

@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.route.js";
 import googleauthRoutes from "./routes/authviagoogle.route.js";
 import timelineRoutes from "./routes/timeline.route.js";
 import testimonialRoutes from "./routes/testimonial.route.js";
+import certificateRoutes from "./routes/certificate.route.js";
 import { fileURLToPath } from 'url';
 import path from "path";
 import pino from 'pino';
@@ -38,6 +39,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/google", googleauthRoutes); 
 app.use("/api/timeline", timelineRoutes); 
 app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/certificates", certificateRoutes);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";

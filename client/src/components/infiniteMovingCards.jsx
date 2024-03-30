@@ -124,9 +124,9 @@ export const InfiniteMovingCards = ({ items, direction, speed }) => {
 InfiniteMovingCards.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      quote: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      quote: PropTypes.string,
+      title: PropTypes.string,
     })
   ).isRequired,
   direction: PropTypes.oneOf(["left", "right"]),
