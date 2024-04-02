@@ -1,28 +1,29 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
 import Timeline from "../components/Timeline";
 import { useSelector } from "react-redux";
 import MessagesCentre from "../components/MessagesCentre";
 import Cookies from "js-cookie";
 import { InfiniteMovingCards } from "../components/infiniteMovingCards";
 import { Tabs } from "../components/AnimatedTabs";
-import { fetchTestimonials, fetchTimeline } from "../services/home_api";
+import { fetchTestimonials, fetchTimeline, fetchCertificates } from "../services/home_api";
 import Loader from "../components/Loader";
 import sww from "../images/home/somethingWentWrong.jpeg";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
+  const {currentUser} = useSelector((state) => state.user)
   const [content, setContent] = useState(null);
   const [testimonials, setTestimonials] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorMessageTestimonials, setErrorMessageTestimonials] =
     useState(null);
-  const [activeCard, setActiveCard] = useState(0);
-  const ref = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.signInSuccess);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
   const [loadingTestimonials, setLoadingTestimonials] = useState(false);
+  const [loadingCertificates, setLoadingCertificates] = useState(false);
+  const [certificates, setCertificates] = useState(null);
+  const [errorCertificates, setErrorCertificates] = useState(null);
 
   useEffect(() => {
     const loginSuccessCookie = Cookies.get("loginSuccess") === "true";
@@ -61,6 +62,21 @@ const Home = () => {
     fetchData();
   }, [token]);
 
+   useEffect(() => {
+    async function fetchData() {
+      setLoadingCertificates(true);
+      try {
+        const data = await fetchCertificates(token);
+        setCertificates(data);
+      } catch (error) {
+        setLoadingCertificates(false);
+        setErrorCertificates(error.message);
+      }
+      setLoadingCertificates(false);
+    }
+    fetchData();
+  }, [token]);
+
   return (
     <>
       {initLoading ? (
@@ -79,11 +95,11 @@ const Home = () => {
       ) : (
         <>
           <Timeline content={content} />
-          <div className="h-[30rem] [perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent hidden">
-            <Tabs propTabs={tabs} />
+          <div className="h-[30rem] [perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent">
+            {certificates && <Tabs propTabs={certificates} />}
           </div>
-          <div className="rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden">
-            <span className="text-white">What people think about me?</span>
+          <div className="md:rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden ">
+            <span className="text-white p-[3rem]">What people think about me?</span>
             {loadingTestimonials ? (
               <span className="p-[10rem]">
                 <Loader />
@@ -111,6 +127,9 @@ const Home = () => {
               </div>
             )}
           </div>
+          {showSuccessMessage && (
+            <MessagesCentre messageText={`Welcome ${currentUser.firstName}!`} type="success" />
+          )}
         </>
       )}
     </>
@@ -118,30 +137,3 @@ const Home = () => {
 };
 
 export default Home;
-const tabs = [
-  {
-    title: "Product",
-    value: "product",
-    content: "Product",
-  },
-  {
-    title: "Services",
-    value: "services",
-    content: "Services",
-  },
-  {
-    title: "Playground",
-    value: "playground",
-    content: "Playground",
-  },
-  {
-    title: "Content",
-    value: "content",
-    content: "Content",
-  },
-  {
-    title: "Random",
-    value: "random",
-    content: "Random",
-  },
-];

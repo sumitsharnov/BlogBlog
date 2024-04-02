@@ -24,7 +24,7 @@ export function Tabs({ propTabs }) {
       >
         {propTabs.map((tab, idx) => (
           <button
-            key={tab.title}
+            key={tab.name}
             onClick={() => {
               moveSelectedTabToTop(idx);
             }}
@@ -35,7 +35,7 @@ export function Tabs({ propTabs }) {
               transformStyle: "preserve-3d",
             }}
           >
-            {active.value === tab.value && (
+            {active.name === tab.name && (
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
@@ -43,16 +43,14 @@ export function Tabs({ propTabs }) {
               />
             )}
 
-            <span className="relative block text-purple-700  ">
-              {tab.title}
-            </span>
+            <span className="relative block text-purple-700  ">{tab.name}</span>
           </button>
         ))}
       </div>
       <FadeInDiv
         tabs={tabs}
         active={active}
-        key={active.value}
+        key={active.name}
         hovering={hovering}
         className={cn("mb-10")}
       />
@@ -62,14 +60,14 @@ export function Tabs({ propTabs }) {
 
 const FadeInDiv = ({ tabs, hovering }) => {
   const isActive = (tab) => {
-    return tab.value === tabs[0].value;
+    return tab.name === tabs[0].name;
   };
   return (
-    <div className="relative flex justify-between w-[70%] h-full ">
+    <div className="relative flex justify-between md:w-[70%] h-full w-[100%]">
       {tabs.map((tab, idx) => (
         <motion.div
-          key={tab.value}
-          layoutId={tab.value}
+          key={tab.name}
+          layoutId={tab.name}
           style={{
             scale: 1 - idx * 0.1,
             top: hovering ? idx * -50 : -40,
@@ -84,12 +82,25 @@ const FadeInDiv = ({ tabs, hovering }) => {
               : null
           }
           className={cn(
-            "w-full h-full absolute flex justify-center items-center"
+            "w-full h-full absolute flex justify-center items-center "
           )}
         >
-          <div className="w-[70%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900 mb-2 flex flex-row gap-2 justify-content-between">
-            <div className="border-2 border-white] h-full">{tab.content}</div>
-            <div className="border-2 border-white h-full">Sumit</div>
+          <div className="w-[100%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900 mb-2 flex flex-row gap-2 justify-evenly">
+            <div
+              key={`${tab.value}-image`}
+              className="border-2 border-white h-full min-w-[8em] md:flex hidden"
+            >
+              <a href={tab.image} target="_blank" rel="noopener noreferrer">
+                <img className="w-full h-full" src={tab.image} alt="Image" />
+              </a>
+            </div>
+            <div className="overflow-auto flex flex-col gap-2 justify-items-center">
+              <div className="border-2 border-white]">{tab.name}</div>
+              <div className="border-2 border-white] text-sm">
+                {tab.overview}
+              </div>
+              <div className="border-2 border-white] text-sm">{tab.skills}</div>
+            </div>
           </div>
         </motion.div>
       ))}

@@ -18,8 +18,17 @@ export const certifications = async (req, res, next) => {
     // Attach the user ID to the request object for future use
     req.userId = decoded.id;
     const certifications = await Certification.find({}).lean();
+    const updatedContent = certifications.map(item => {
+      const parts = item.image.split("/");
+      const imageName = parts.pop();
+      const imageUrl = `${process.env.BASE_URL}/images/${imageName}`;
+      return {
+        ...item,
+        image: imageUrl
+      };
+    });
     // Return the content JSON as a response
-    res.status(200).json(certifications);
+    res.status(200).json(updatedContent);
   } catch (error) {
     // If token verification fails, return 403 Forbidden
     return res.status(403).json({ message: "Invalid token" });

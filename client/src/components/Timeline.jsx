@@ -2,7 +2,8 @@ import { GoogleGeminiEffect } from "../components/GeminiEffect";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import React, { useRef, useState } from "react";
+import PropTypes from "prop-types";
+import { useRef, useState } from "react";
 
 
 const Timeline = ({content}) => {
@@ -176,3 +177,7 @@ const Timeline = ({content}) => {
 };
 
 export default Timeline;
+
+Timeline.propTypes = {
+    content: PropTypes.array,
+  }

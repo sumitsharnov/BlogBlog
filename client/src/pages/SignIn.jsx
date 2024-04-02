@@ -74,6 +74,7 @@ const SignIn = () => {
     setIsSubmitted(true);
     setLoading(true);
     setErrorMessage(null);
+    setShowSignUpSuccess(false);
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",

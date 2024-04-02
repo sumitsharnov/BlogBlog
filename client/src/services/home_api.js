@@ -43,3 +43,21 @@ export async function fetchTimeline(token) {
   }
 }
 
+export async function fetchCertificates(token) {
+  await new Promise((resolve) => {setTimeout(resolve,3000)});
+   try {
+     const res = await fetch("/api/certificates", {
+       method: "GET",
+       headers: { Authorization: token },
+     });
+     const data = await res.json();
+ 
+     if (!res.ok) {
+      throw new Error(data.message);
+     }
+     return data;
+   } catch (error) {
+     throw new Error("Something went wrong");
+   }
+ }
+
