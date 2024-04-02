@@ -98,7 +98,7 @@ const Home = () => {
           <div className="h-[30rem] [perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent">
             {certificates && <Tabs propTabs={certificates} />}
           </div>
-          <div className="md:rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden ">
+          <div className="flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden ">
             <span className="text-white p-[3rem]">What people think about me?</span>
             {loadingTestimonials ? (
               <span className="p-[10rem]">

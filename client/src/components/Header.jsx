@@ -4,6 +4,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
+import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 
 export default function Header() {
@@ -43,6 +44,7 @@ export default function Header() {
               onClick={() => {
                 Cookies.set("loginSuccess", "false");
                 dispatch(clearSignInSuccess());
+                dispatch(setDefaultColor());
               }}
             >
               <Button gradientDuoTone="purpleToBlue" outline>

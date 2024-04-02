@@ -4,11 +4,16 @@ import { cn } from "../../utils/cn";
 import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import PropTypes from "prop-types";
 import { useRef, useState } from "react";
+import { setColor } from "./../redux/home/homeSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 
 const Timeline = ({content}) => {
   const ref = useRef(null);
   const [activeCard, setActiveCard] = useState(0);
+  const dispatch = useDispatch();
+
 
   const { scrollYProgress } = useScroll({
     container: ref,
@@ -17,7 +22,7 @@ const Timeline = ({content}) => {
   });
 
   const cardLength = content && content.length;
-
+ 
   const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
   const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
   const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
@@ -34,6 +39,10 @@ const Timeline = ({content}) => {
     "linear-gradient(to bottom right, var(--green-500), var(--blue-500), var(--yellow-500))",
     "linear-gradient(to bottom right, var(--red-500), var(--yellow-500), var(--blue-500))",
   ];
+
+ useEffect(()=>{
+    dispatch(setColor(linearGradients[activeCard % linearGradients.length]));
+ }, [activeCard % linearGradients.length])
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints =

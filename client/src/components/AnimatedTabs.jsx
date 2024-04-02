@@ -3,11 +3,11 @@ import { cn } from "../../utils/cn";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 export function Tabs({ propTabs }) {
   const [active, setActive] = useState(propTabs[0]);
   const [tabs, setTabs] = useState(propTabs);
   const [hovering, setHovering] = useState(false);
-
   const moveSelectedTabToTop = (idx) => {
     const newTabs = [...propTabs];
     const selectedTab = newTabs.splice(idx, 1);
@@ -59,6 +59,7 @@ export function Tabs({ propTabs }) {
 }
 
 const FadeInDiv = ({ tabs, hovering }) => {
+  const bgColour = useSelector((state)=>state.home.color);
   const isActive = (tab) => {
     return tab.name === tabs[0].name;
   };
@@ -85,7 +86,9 @@ const FadeInDiv = ({ tabs, hovering }) => {
             "w-full h-full absolute flex justify-center items-center "
           )}
         >
-          <div className="w-[100%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900 mb-2 flex flex-row gap-2 justify-evenly">
+          <motion.div className="w-[100%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white flex flex-row gap-2 justify-evenly"
+          animate={{background:bgColour}}
+          >
             <div
               key={`${tab.value}-image`}
               className="border-2 border-white h-full min-w-[8em] md:flex hidden"
@@ -101,7 +104,7 @@ const FadeInDiv = ({ tabs, hovering }) => {
               </div>
               <div className="border-2 border-white] text-sm">{tab.skills}</div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       ))}
     </div>
