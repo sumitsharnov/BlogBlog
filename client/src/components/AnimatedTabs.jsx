@@ -19,7 +19,7 @@ export function Tabs({ propTabs }) {
     <>
       <div
         className={cn(
-          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12 mb-[5rem]"
+          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12"
         )}
       >
         {propTabs.map((tab, idx) => (
@@ -64,7 +64,7 @@ const FadeInDiv = ({ tabs, hovering }) => {
     return tab.name === tabs[0].name;
   };
   return (
-    <div className="relative flex justify-between md:w-[70%] h-full w-[100%]">
+    <div className="relative flex justify-between md:w-[70%] sm:h-[20rem] w-[100%] h-[15rem]">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.name}
@@ -98,11 +98,31 @@ const FadeInDiv = ({ tabs, hovering }) => {
               </a>
             </div>
             <div className="overflow-auto flex flex-col gap-2 justify-items-center">
-              <div className="border-2 border-white]">{tab.name}</div>
-              <div className="border-2 border-white] text-sm">
+              <div className=" text-gray-600 text-2xl ">
+                {tab.name}
+                <a
+                  href={tab.link}
+                  target="_blank"
+                  title={tab.link}
+                  rel="noreferrer"
+                >
+                  <span className="text-xs  text-white border rounded-md p-2 mt-2 cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[10rem] flex justify-center md:inline-block md:ml-2 text-center">
+                    Show Credentials
+                  </span>
+                </a>
+              </div>
+
+              <span className="text-lg font-semibold text-slate-600">
+                Overview:
+              </span>
+              <div className="text-sm font-medium font-serif">
                 {tab.overview}
               </div>
-              <div className="border-2 border-white] text-sm">{tab.skills}</div>
+              <div></div>
+              <span className="text-lg font-semibold text-slate-600">
+                Skills:
+              </span>
+              <div className="text-sm font-medium font-serif">{tab.skills}</div>
             </div>
           </motion.div>
         </motion.div>
