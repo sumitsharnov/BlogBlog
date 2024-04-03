@@ -64,7 +64,7 @@ const FadeInDiv = ({ tabs, hovering }) => {
     return tab.name === tabs[0].name;
   };
   return (
-    <div className="relative flex justify-between md:w-[70%] sm:h-[20rem] w-[100%] h-[15rem]">
+    <div className="relative flex justify-between md:w-[70%] h-[20rem] w-[100%]">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.name}
@@ -91,7 +91,7 @@ const FadeInDiv = ({ tabs, hovering }) => {
           >
             <div
               key={`${tab.value}-image`}
-              className="border-2 border-white h-full min-w-[8em] md:flex hidden"
+              className="border-2 border-white rounded-lg h-full min-w-[10em] p-1 mr-2 md:flex hidden shadow-2xl"
             >
               <a href={tab.image} target="_blank" rel="noopener noreferrer">
                 <img className="w-full h-full" src={tab.image} alt="Image" />
