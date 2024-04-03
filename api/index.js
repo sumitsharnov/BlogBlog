@@ -8,6 +8,7 @@ import timelineRoutes from "./routes/timeline.route.js";
 import testimonialRoutes from "./routes/testimonial.route.js";
 import certificateRoutes from "./routes/certificate.route.js";
 import uploadfileRoutes from "./routes/uploadfile.route.js";
+import downloadFileRoute from "./routes/downloadfile.route.js";
 import { fileURLToPath } from 'url';
 import path from "path";
 import pino from 'pino';
@@ -44,6 +45,7 @@ app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/upload", uploadfileRoutes);
+app.use("/api/download", downloadFileRoute);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";

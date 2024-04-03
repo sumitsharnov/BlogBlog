@@ -1,25 +1,17 @@
-import multer from 'multer';
-import { GridFsStorage } from 'multer-gridfs-storage';
+// controllers/uploadController.js
+import File from "../models/uploadfile.model.js";
 
-// Initialize GridFS storage engine
-const storage = new GridFsStorage({
-  url: process.env.MONGO,
-  file: (req, file) => {
-    return {
-      filename: file.originalname,
-    };
+export const uploadFile = async (req, res, next) => {
+  try {
+    const { filename, contentType, data } = req.file;
+    const file = new File({
+      filename,
+      contentType,
+      data,
+    });
+    await file.save();
+    res.status(201).json({ success: true, file: { _id: file._id, filename, data, contentType } });
+  } catch (error) {
+    next(error);
   }
-});
-const upload = multer({ storage: storage });
-
-// Handle file upload
-const uploadFile = (req, res) => {
-  upload.single('file')(req, res, (err) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'File upload failed', error: err });
-    }
-    res.json({ success: true, message: 'File uploaded successfully' });
-  });
 };
-
-export default { uploadFile };
