@@ -1,5 +1,5 @@
 // controllers/downloadController.js
-import File from "../models/uploadfile.model.js";
+import File from "../models/file.model.js";
 
 export const downloadFile = async (req, res, next) => {
     try {

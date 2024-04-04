@@ -7,12 +7,10 @@ import googleauthRoutes from "./routes/authviagoogle.route.js";
 import timelineRoutes from "./routes/timeline.route.js";
 import testimonialRoutes from "./routes/testimonial.route.js";
 import certificateRoutes from "./routes/certificate.route.js";
-import uploadfileRoutes from "./routes/uploadfile.route.js";
-import downloadFileRoute from "./routes/downloadfile.route.js";
-import { fileURLToPath } from 'url';
-import path from "path";
+import fileRoutes from "./routes/file.route.js";
 import pino from 'pino';
 import pinoPretty from 'pino-pretty'; // Import pino-pretty
+import { initGridFS } from './controllers/file.controller.js';
 
 dotenv.config();
 
@@ -24,13 +22,24 @@ const logger = pino({
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
-    logger.info("Mongo DB connected"); // Log MongoDB connection success
+    console.log("MongoDB connected");
+    initGridFS(mongoose.connection.db); // Log MongoDB connection success
   })
   .catch((err) => {
-    logger.error(err); // Log MongoDB connection error
+    console.error(err); // Log MongoDB connection error
   });
 
+
 const app = express();
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    return res.status(200).json({});
+  }
+  next();
+});
 app.use(express.json());
 app.use('/images', express.static("api/utils/images"));
 app.listen(3000, () => {
@@ -44,8 +53,8 @@ app.use("/api/timeline", timelineRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/certificates", certificateRoutes);
-app.use("/api/upload", uploadfileRoutes);
-app.use("/api/download", downloadFileRoute);
+app.use("/api", fileRoutes);
+app.use("/api", fileRoutes);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";

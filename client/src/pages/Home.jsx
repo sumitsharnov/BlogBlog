@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Timeline from "../components/Timeline";
 import { useSelector } from "react-redux";
 import MessagesCentre from "../components/MessagesCentre";
@@ -77,6 +77,17 @@ const Home = () => {
     fetchData();
   }, [token]);
 
+  const handledownload = useCallback(async ()=>{
+    const res = await fetch("http://localhost:3000/api/download/:Statement-2023-10-31.csv", {
+      method: "GET",
+      headers: { Authorization: token },
+    });
+    const data = await res.json();
+    console.log(data);
+  }, []
+    
+  )
+
   return (
     <>
       {initLoading ? (
@@ -95,6 +106,7 @@ const Home = () => {
       ) : (
         <>
           <Timeline content={content} />
+          <button onClick={handledownload}>Download</button>
           <div className="h-[30rem] md:[perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent">
             {certificates && <Tabs propTabs={certificates} />}
           </div>
