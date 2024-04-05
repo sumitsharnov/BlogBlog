@@ -10,7 +10,7 @@ import certificateRoutes from "./routes/certificate.route.js";
 import fileRoutes from "./routes/file.route.js";
 import pino from 'pino';
 import pinoPretty from 'pino-pretty'; // Import pino-pretty
-import { initGridFS } from './controllers/file.controller.js';
+import { GridFSBucket } from 'mongodb';
 
 dotenv.config();
 
@@ -19,18 +19,24 @@ const logger = pino({
   prettifier: pinoPretty, // Use pino-pretty as the prettifier
 });
 
+let bucket; // Declare bucket variable outside of the promise chain
+
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
     console.log("MongoDB connected");
-    initGridFS(mongoose.connection.db); // Log MongoDB connection success
+    const db = mongoose.connection.db;
+    bucket = new GridFSBucket(db, { bucketName: 'filesBucket' }); // Initialize GridFS bucket
   })
   .catch((err) => {
     console.error(err); // Log MongoDB connection error
   });
 
-
+// Create Express app
 const app = express();
+
+// Middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -42,19 +48,17 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use('/images', express.static("api/utils/images"));
-app.listen(3000, () => {
-  logger.info("Server is running"); // Log server startup
-});
 
+// Routes
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/google", googleauthRoutes); 
 app.use("/api/timeline", timelineRoutes); 
 app.use("/api/testimonials", testimonialRoutes);
-app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api", fileRoutes);
-app.use("/api", fileRoutes);
+
+// Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -66,4 +70,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-export default app;
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  logger.info(`Server is running on port ${port}`); // Log server startup
+});
+
+// Export app and bucket separately
+export { app, bucket };

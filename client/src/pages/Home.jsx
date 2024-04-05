@@ -77,16 +77,31 @@ const Home = () => {
     fetchData();
   }, [token]);
 
-  const handledownload = useCallback(async ()=>{
-    const res = await fetch("http://localhost:3000/api/download/:Statement-2023-10-31.csv", {
-      method: "GET",
-      headers: { Authorization: token },
-    });
-    const data = await res.json();
-    console.log(data);
-  }, []
-    
-  )
+  const handledownload = useCallback(async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/download/image.png", {
+        method: "GET",
+        headers: { Authorization: token },
+      });
+      
+      // Convert the response to blob
+      const blob = await res.blob();
+      
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'image.png'; // Specify the filename
+      a.click(); // Trigger the download
+      
+      // Release the object URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  }, []);
 
   return (
     <>
