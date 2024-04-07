@@ -5,13 +5,17 @@ import MessagesCentre from "../components/MessagesCentre";
 import Cookies from "js-cookie";
 import { InfiniteMovingCards } from "../components/infiniteMovingCards";
 import { Tabs } from "../components/AnimatedTabs";
-import { fetchTestimonials, fetchTimeline, fetchCertificates } from "../services/home_api";
+import {
+  fetchTestimonials,
+  fetchTimeline,
+  fetchCertificates,
+} from "../services/home_api";
 import Loader from "../components/Loader";
 import sww from "../images/home/somethingWentWrong.jpeg";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
-  const {currentUser} = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user);
   const [content, setContent] = useState(null);
   const [testimonials, setTestimonials] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -62,7 +66,7 @@ const Home = () => {
     fetchData();
   }, [token]);
 
-   useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       setLoadingCertificates(true);
       try {
@@ -79,27 +83,27 @@ const Home = () => {
 
   const handledownload = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/download/image.png", {
+      const res = await fetch("http://localhost:3000/api/download/CertificateOfCompletion_Become%20a%20Django%20Developer.pdf", {
         method: "GET",
         headers: { Authorization: token },
       });
-      
+
       // Convert the response to blob
       const blob = await res.blob();
-      
+
       // Create a URL for the blob
       const url = window.URL.createObjectURL(blob);
-      
+
       // Create a temporary anchor element
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'image.png'; // Specify the filename
+      a.download = "CertificateOfCompletion_Become a Django Developer.pdf"; // Specify the filename
       a.click(); // Trigger the download
-      
+
       // Release the object URL
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error("Error downloading file:", error);
     }
   }, []);
 
@@ -121,42 +125,61 @@ const Home = () => {
       ) : (
         <>
           <Timeline content={content} />
-          <button onClick={handledownload}>Download</button>
           <div className="h-[30rem] md:[perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent">
-            {certificates && <Tabs propTabs={certificates} />}
-          </div>
-          <div className="flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden ">
-            <div className="text-white ">What people think about me?</div> 
-            {loadingTestimonials ? (
+            {loadingCertificates ? (
               <span className="p-[10rem]">
                 <Loader />
               </span>
+            ) : certificates ? (
+              <Tabs propTabs={certificates} handleDownload={handledownload} />
             ) : (
-              testimonials && (
-                <InfiniteMovingCards
-                  items={testimonials}
-                  direction="right"
-                  speed="slow"
-                />
-              )
-            )}
-       
-            {errorMessageTestimonials && (
-              <div className="p-[5rem] flex flex-col items-center justify-center">
+              errorCertificates && (
+                <div className="p-[5rem] flex flex-col items-center justify-center">
                 <MessagesCentre
                   messageText={errorMessageTestimonials}
                   type="error"
                 />
                 <img
-                  className="border rounded-3xl size-[30%] flex justify-between items-center"
+                  className="border rounded-3xl w-[40%] flex justify-between items-center"
                   src={sww}
                   alt="AI GENERATED IMAGES"
                 />
               </div>
+            ))}
+          </div>
+          <div className="flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-between relative overflow-hidden ">
+            <div className="text-white ">What people think about me?</div>
+            {loadingTestimonials ? (
+              <span className="p-[10rem]">
+                <Loader />
+              </span>
+            ) : testimonials ? (
+              <InfiniteMovingCards
+                items={testimonials}
+                direction="right"
+                speed="slow"
+              />
+            ) : (
+              errorMessageTestimonials && (
+                <div className="p-[5rem] flex flex-col items-center justify-center">
+                  <MessagesCentre
+                    messageText={errorMessageTestimonials}
+                    type="error"
+                  />
+                  <img
+                    className="border rounded-3xl size-[30%] flex justify-between items-center"
+                    src={sww}
+                    alt="AI GENERATED IMAGES"
+                  />
+                </div>
+              )
             )}
           </div>
           {showSuccessMessage && (
-            <MessagesCentre messageText={`Welcome ${currentUser.firstName}!`} type="success" />
+            <MessagesCentre
+              messageText={`Welcome ${currentUser.firstName}!`}
+              type="success"
+            />
           )}
         </>
       )}

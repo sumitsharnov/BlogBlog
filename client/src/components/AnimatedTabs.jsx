@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-export function Tabs({ propTabs }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+export function Tabs({ propTabs, handleDownload }) {
   const [active, setActive] = useState(propTabs[0]);
   const [tabs, setTabs] = useState(propTabs);
   const [hovering, setHovering] = useState(false);
@@ -52,14 +54,15 @@ export function Tabs({ propTabs }) {
         active={active}
         key={active.name}
         hovering={hovering}
+        handleDownload={handleDownload}
         className={cn("mb-10")}
       />
     </>
   );
 }
 
-const FadeInDiv = ({ tabs, hovering }) => {
-  const bgColour = useSelector((state)=>state.home.color);
+const FadeInDiv = ({ tabs, hovering, handleDownload }) => {
+  const bgColour = useSelector((state) => state.home.color);
   const isActive = (tab) => {
     return tab.name === tabs[0].name;
   };
@@ -86,8 +89,9 @@ const FadeInDiv = ({ tabs, hovering }) => {
             "w-full h-full absolute flex justify-center items-center "
           )}
         >
-          <motion.div className="w-[100%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white flex flex-row gap-2 justify-evenly"
-          animate={{background:bgColour}}
+          <motion.div
+            className="w-[100%] overflow-hidden relative h-full rounded-2xl p-5 text-xl md:text-4xl font-bold text-white flex flex-row gap-2 justify-evenly"
+            animate={{ background: bgColour }}
           >
             <div
               key={`${tab.value}-image`}
@@ -98,18 +102,25 @@ const FadeInDiv = ({ tabs, hovering }) => {
               </a>
             </div>
             <div className="overflow-auto flex flex-col gap-2 justify-items-center">
-              <div className=" text-gray-600 text-2xl ">
-                {tab.name}
+              <div className=" text-gray-600 text-2xl">
+                <span className="mr-2">{tab.name}</span>
                 <a
                   href={tab.link}
                   target="_blank"
                   title={tab.link}
                   rel="noreferrer"
                 >
-                  <span className="text-xs  text-white border rounded-md p-2 mt-2 cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[10rem] flex justify-center md:inline-block md:ml-2 text-center">
+                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center mb-1 mt-1">
                     Show Credentials
                   </span>
                 </a>
+                <div
+                  onClick={handleDownload}
+                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flexjustify-center md:inline-block md:ml-2 text-center"
+                >
+                  Download
+                  <FontAwesomeIcon icon={faDownload} className="ml-2" />
+                </div>
               </div>
 
               <span className="text-lg font-semibold text-slate-600">
@@ -137,9 +148,11 @@ Tabs.propTypes = {
   activeTabClassName: PropTypes.string,
   tabClassName: PropTypes.string,
   contentClassName: PropTypes.string,
+  handleDownload: PropTypes.func
 };
 
 FadeInDiv.propTypes = {
   tabs: PropTypes.array.isRequired,
   hovering: PropTypes.bool.isRequired,
+  handleDownload: PropTypes.func
 };

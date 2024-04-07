@@ -44,7 +44,6 @@ export async function fetchTimeline(token) {
 }
 
 export async function fetchCertificates(token) {
-  await new Promise((resolve) => {setTimeout(resolve,3000)});
    try {
      const res = await fetch("/api/certificates", {
        method: "GET",
