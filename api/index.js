@@ -77,4 +77,4 @@ app.listen(port, () => {
 });
 
 // Export app and bucket separately
-export { app, bucket };
+export { app, bucket, logger };

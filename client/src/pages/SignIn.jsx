@@ -112,7 +112,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
+    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
         <Carousel className=" top-0 left-2 " indicators={true}>
           <img
@@ -235,10 +235,10 @@ const SignIn = () => {
           </span>
         </div>
         {errorMessage && (
-          <MessagesCentre messageText={errorMessage} type="error" click={key} />
+          <MessagesCentre messageText={errorMessage} type="error" click={key} top={16} mt={0}  />
         )}
         {showSignUpSuccess && (
-          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key} />
+          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key}  top={12} mt={3}/>
         )}
       </div>
     </div>

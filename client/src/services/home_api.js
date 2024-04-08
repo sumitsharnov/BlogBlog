@@ -111,7 +111,7 @@ export async function downloadCfts(cft, token) {
         window.URL.revokeObjectURL(url);
       } else {
         // Handle non-ZIP file response
-        const responseText = await res.text();
+       await res.text();
         // Log or handle the response accordingly
       }
     } else {

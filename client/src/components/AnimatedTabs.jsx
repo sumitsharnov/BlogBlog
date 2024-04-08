@@ -6,14 +6,13 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import Loader from "../components/Loader";
 import MessagesCentre from "./MessagesCentre";
 export function Tabs({
   propTabs,
   handleDownload,
   downloading,
   errorDownloading,
-  key,
+  downloadCount,
   downloadSuccess,
 }) {
   const [active, setActive] = useState(propTabs[0]);
@@ -38,7 +37,7 @@ export function Tabs({
             <MessagesCentre
               messageText={errorDownloading}
               type="error"
-              key={key}
+              key={downloadCount}
               top={0}
               mt={0}
             />
@@ -49,7 +48,7 @@ export function Tabs({
             <MessagesCentre
               messageText={"Download Success!"}
               type="success"
-              key={key}
+              key={downloadCount}
               top={0}
               mt={0}
             />
@@ -100,7 +99,6 @@ const FadeInDiv = ({
   hovering,
   handleDownload,
   downloading,
-  errorDownloading,
 }) => {
   const bgColour = useSelector((state) => state.home.color);
   const isActive = (tab) => {
@@ -193,10 +191,15 @@ Tabs.propTypes = {
   tabClassName: PropTypes.string,
   contentClassName: PropTypes.string,
   handleDownload: PropTypes.func,
+  downloading: PropTypes.bool,
+  errorDownloading: PropTypes.bool,
+  downloadCount: PropTypes.number,
+  downloadSuccess: PropTypes.bool,
 };
 
 FadeInDiv.propTypes = {
   tabs: PropTypes.array.isRequired,
   hovering: PropTypes.bool.isRequired,
   handleDownload: PropTypes.func,
+  downloading: PropTypes.bool,
 };

@@ -212,7 +212,7 @@ const Home = () => {
                 handleDownload={handledownload}
                 downloading={downloading}
                 errorDownloading={errorDownloading}
-                key= {downloadCount}
+                downloadCount= {downloadCount}
                 downloadSuccess = {downloadSuccess}
               />
             ) : (
@@ -221,6 +221,8 @@ const Home = () => {
                   <MessagesCentre
                     messageText={errorMessageTestimonials}
                     type="error"
+                    mt = {0}
+                    top = {0}
                   />
                   <img
                     className="border rounded-3xl w-[40%] flex justify-between items-center"
@@ -265,6 +267,8 @@ const Home = () => {
             <MessagesCentre
               messageText={`Welcome ${currentUser.firstName}!`}
               type="success"
+              top = {16}
+              mt = {0}
             />
           )}
         </>

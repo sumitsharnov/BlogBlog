@@ -124,10 +124,18 @@ const SignUp = () => {
             messageText={signupSuccess}
             type="success"
             click={key}
+            top={12}
+            mt={3}
           />
         )}
         {errorMessage && (
-          <MessagesCentre messageText={errorMessage} type="error" click={key} />
+          <MessagesCentre
+            messageText={errorMessage}
+            type="error"
+            click={key}
+            top={16}
+            mt={0}
+          />
         )}
       </div>
     ),
@@ -135,7 +143,7 @@ const SignUp = () => {
   );
 
   return (
-    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
+    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
         <Carousel className=" top-0 left-2 " indicators={true}>
           <img
@@ -269,7 +277,8 @@ const SignUp = () => {
           </div>
           <div className="flex flex-row justify-center items-center space-x-3">
             <label htmlFor="isRecruiter" className="font-medium text-gray-700">
-              Are you a recruiter? </label>
+              Are you a recruiter?{" "}
+            </label>
             <input
               name="isRecruiter"
               type="checkbox"
