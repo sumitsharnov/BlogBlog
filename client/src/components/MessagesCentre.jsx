@@ -3,7 +3,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 
-function MessagesCentre({ type, messageText, click }) {
+function MessagesCentre({ type, messageText, click, top=12, mt=2 }) {
   const [message, setMessage] = useState(messageText);
   const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(100);
@@ -48,7 +48,7 @@ function MessagesCentre({ type, messageText, click }) {
 
   // Conditionally render the message
   return (
-    <div className="absolute top-12 mt-2 right-2 z-50 overflow-hidden">
+    <div className={`absolute top-${top} mt-${mt} right-2 z-50 overflow-hidden`}>
       {message && (
         <div
           className={`top-16 mb-20 w-full mt-2 right-1 z-50 max-w-xsz ${

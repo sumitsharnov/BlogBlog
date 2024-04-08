@@ -6,7 +6,16 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
-export function Tabs({ propTabs, handleDownload }) {
+import Loader from "../components/Loader";
+import MessagesCentre from "./MessagesCentre";
+export function Tabs({
+  propTabs,
+  handleDownload,
+  downloading,
+  errorDownloading,
+  key,
+  downloadSuccess,
+}) {
   const [active, setActive] = useState(propTabs[0]);
   const [tabs, setTabs] = useState(propTabs);
   const [hovering, setHovering] = useState(false);
@@ -24,6 +33,29 @@ export function Tabs({ propTabs, handleDownload }) {
           "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12"
         )}
       >
+        {errorDownloading && (
+          <div className="mt-0">
+            <MessagesCentre
+              messageText={errorDownloading}
+              type="error"
+              key={key}
+              top={0}
+              mt={0}
+            />
+          </div>
+        )}
+        {downloadSuccess && (
+          <div className="mt-0">
+            <MessagesCentre
+              messageText={"Download Success!"}
+              type="success"
+              key={key}
+              top={0}
+              mt={0}
+            />
+          </div>
+        )}
+
         {propTabs.map((tab, idx) => (
           <button
             key={tab.name}
@@ -55,13 +87,21 @@ export function Tabs({ propTabs, handleDownload }) {
         key={active.name}
         hovering={hovering}
         handleDownload={handleDownload}
+        downloading={downloading}
+        errorDownloading={errorDownloading}
         className={cn("mb-10")}
       />
     </>
   );
 }
 
-const FadeInDiv = ({ tabs, hovering, handleDownload }) => {
+const FadeInDiv = ({
+  tabs,
+  hovering,
+  handleDownload,
+  downloading,
+  errorDownloading,
+}) => {
   const bgColour = useSelector((state) => state.home.color);
   const isActive = (tab) => {
     return tab.name === tabs[0].name;
@@ -110,15 +150,19 @@ const FadeInDiv = ({ tabs, hovering, handleDownload }) => {
                   title={tab.link}
                   rel="noreferrer"
                 >
-                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center mb-1 mt-1">
+                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[9rem] flex justify-center md:inline-block text-center mb-1 mt-1 mr-2">
                     Show Credentials
                   </span>
                 </a>
                 <div
                   onClick={handleDownload}
-                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flexjustify-center md:inline-block md:ml-2 text-center"
+                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flexjustify-center md:inline-block text-center"
                 >
-                  Download
+                  {downloading ? (
+                    <span>Downloading</span>
+                  ) : (
+                    <span>Download</span>
+                  )}{" "}
                   <FontAwesomeIcon icon={faDownload} className="ml-2" />
                 </div>
               </div>
@@ -148,11 +192,11 @@ Tabs.propTypes = {
   activeTabClassName: PropTypes.string,
   tabClassName: PropTypes.string,
   contentClassName: PropTypes.string,
-  handleDownload: PropTypes.func
+  handleDownload: PropTypes.func,
 };
 
 FadeInDiv.propTypes = {
   tabs: PropTypes.array.isRequired,
   hovering: PropTypes.bool.isRequired,
-  handleDownload: PropTypes.func
+  handleDownload: PropTypes.func,
 };
