@@ -29,7 +29,7 @@ export function Tabs({
     <>
       <div
         className={cn(
-          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col p-12"
+          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col mt-1"
         )}
       >
         {errorDownloading && (
@@ -63,7 +63,7 @@ export function Tabs({
             }}
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
-            className={cn("relative px-2 ")} // Adjust padding for smaller screens
+            className={cn("relative px-2 border border-orange-500 rounded-full  font-semibold text-sm m-1")} // Adjust padding for smaller screens
             style={{
               transformStyle: "preserve-3d",
             }}
@@ -71,7 +71,7 @@ export function Tabs({
             {active.name === tab.name && (
               <motion.div
                 layoutId="clickedbutton"
-                transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+                transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
                 className={cn("absolute inset-0 bg-yellow-200 rounded-full")}
               />
             )}
@@ -80,6 +80,7 @@ export function Tabs({
           </button>
         ))}
       </div>
+      <hr className="border-orange-500 w-[90%] mx-auto sm:p-12 p-8 mt-1" />
       <FadeInDiv
         tabs={tabs}
         active={active}
@@ -88,18 +89,13 @@ export function Tabs({
         handleDownload={handleDownload}
         downloading={downloading}
         errorDownloading={errorDownloading}
-        className={cn("mb-10")}
+        className={cn("mb-96")}
       />
     </>
   );
 }
 
-const FadeInDiv = ({
-  tabs,
-  hovering,
-  handleDownload,
-  downloading,
-}) => {
+const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
   const bgColour = useSelector((state) => state.home.color);
   const isActive = (tab) => {
     return tab.name === tabs[0].name;
@@ -124,7 +120,7 @@ const FadeInDiv = ({
               : null
           }
           className={cn(
-            "w-full h-full absolute flex justify-center items-center "
+            "w-full h-full absolute flex justify-center items-center"
           )}
         >
           <motion.div

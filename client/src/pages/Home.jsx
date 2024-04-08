@@ -110,19 +110,19 @@ const Home = () => {
                         </option>
                       ))}
                     </select>
-                    {/* OK button */}
-                    <div className="flex flex-row gap-2">
-                      <button
-                        onClick={handleDownloadModal}
-                        className="border border-blue-500 hover:bg-blue-400 hover:text-white font-bold py-2 px-4 rounded text-blue-400"
-                      >
-                        OK
-                      </button>
+                    {/* Action buttons */}
+                    <div className="flex justify-end">
                       <button
                         onClick={handleCloseModal}
-                        className="bg-white hover:bg-red-400 hover:text-white text-red-500 font-bold py-2 px-4 rounded border border-red-500"
+                        className="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md mr-2 hover:bg-gray-300"
                       >
                         Close
+                      </button>
+                      <button
+                        onClick={handleDownloadModal}
+                        className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                      >
+                        Download
                       </button>
                     </div>
                   </div>
@@ -132,7 +132,7 @@ const Home = () => {
           )}
 
           <Timeline content={content} />
-          <div className="h-[30rem] md:[perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent">
+          <div className="md:[perspective:1000px]  md:flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-400 to-yellow-200 w-full shadow-transparent ">
             {loadingCertificates ? (
               <span className="p-[10rem]">
                 <Loader />
