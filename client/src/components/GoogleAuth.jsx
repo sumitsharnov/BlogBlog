@@ -66,6 +66,8 @@ export default function ViaGoogleLogin() {
           messageText={errorMessage}
           type="error"
           click={loginCount}
+          top={16}
+          mt={0}
         />
       )}
     </>
