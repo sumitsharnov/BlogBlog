@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Timeline from "../components/Timeline";
 import { useSelector } from "react-redux";
 import MessagesCentre from "../components/MessagesCentre";
@@ -9,37 +9,51 @@ import {
   fetchTestimonials,
   fetchTimeline,
   fetchCertificates,
-  downloadCfts,
 } from "../services/home_api";
 import Loader from "../components/Loader";
 import sww from "../images/home/somethingWentWrong.jpeg";
+import { useFetchData } from "../hooks/useFetchData";
+import { useCertificateDownload } from "../hooks/useCertificateDownload";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
   const { currentUser } = useSelector((state) => state.user);
-  const [content, setContent] = useState(null);
-  const [testimonials, setTestimonials] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [errorMessageTestimonials, setErrorMessageTestimonials] =
-    useState(null);
   const isLoggedIn = useSelector((state) => state.user.signInSuccess);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [initLoading, setInitLoading] = useState(true);
-  const [loadingTestimonials, setLoadingTestimonials] = useState(false);
-  const [loadingCertificates, setLoadingCertificates] = useState(false);
-  const [certificates, setCertificates] = useState(null);
-  const [errorCertificates, setErrorCertificates] = useState(null);
-  const [downloading, setDownloading] = useState(false);
-  const [errorDownloading, setErrorDownloading] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [downloadingFilesModal, setDownloadingFilesModal] = useState(false);
-  const [downloadCount, setDownloadCount] = useState(0);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const cftList = [
     { name: "All", type: "pdf" },
     { name: "Django Developer", type: "pdf" },
   ];
-  const [selectedCft, setSelectedCft] = useState(cftList[0].name);
+
+  const {
+    handleDownload,
+    handleDownloadModal,
+    handleCloseModal,
+    handleOptionChange,
+    downloading,
+    showModal,
+    downloadCount,
+    downloadSuccess,
+    errorDownloading,
+    downloadingFilesModal,
+    selectedCft,
+  } = useCertificateDownload(token, cftList);
+
+  const {
+    data: content,
+    loading: initLoading,
+    error: errorMessage,
+  } = useFetchData(fetchTimeline, token);
+  const {
+    data: testimonials,
+    loading: loadingTestimonials,
+    error: errorMessageTestimonials,
+  } = useFetchData(fetchTestimonials, token);
+  const {
+    data: certificates,
+    loading: loadingCertificates,
+    error: errorCertificates,
+  } = useFetchData(fetchCertificates, token);
 
   useEffect(() => {
     const loginSuccessCookie = Cookies.get("loginSuccess") === "true";
@@ -48,88 +62,6 @@ const Home = () => {
       Cookies.set("loginSuccess", "true");
     }
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await fetchTimeline(token);
-        setContent(data);
-        setInitLoading(false);
-      } catch (error) {
-        setInitLoading(false);
-        setErrorMessage("Something went wrong");
-      }
-    }
-    fetchData();
-  }, [token]);
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoadingTestimonials(true);
-      try {
-        const data = await fetchTestimonials(token);
-        setTestimonials(data);
-      } catch (error) {
-        setLoadingTestimonials(false);
-        setErrorMessageTestimonials(error.message);
-      }
-      setLoadingTestimonials(false);
-    }
-    fetchData();
-  }, [token]);
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoadingCertificates(true);
-      try {
-        const data = await fetchCertificates(token);
-        setCertificates(data);
-      } catch (error) {
-        setLoadingCertificates(false);
-        setErrorCertificates(error.message);
-      }
-      setLoadingCertificates(false);
-    }
-    fetchData();
-  }, [token]);
-
-  const handledownload = useCallback(async () => {
-    setDownloading(true);
-    setShowModal(true);
-    setDownloadSuccess(false);
-    setErrorDownloading(null);
-    document.body.style.overflow = "hidden";
-  }, []);
-
-  const handleDownloadModal = async () => {
-    setDownloadCount((prev)=> prev+1)
-    try{
-    setDownloadingFilesModal(true);
-    const cft = cftList.find((c) => c.name === selectedCft);
-    await downloadCfts(cft, token);
-    setDownloadSuccess(true);
-    document.body.style.overflow = "auto";
-    setShowModal(false);
-    setDownloading(false);
-    setDownloadingFilesModal(false);
-    }catch(e){
-      document.body.style.overflow = "auto";
-      setErrorDownloading(e.message);
-    }
-    document.body.style.overflow = "auto";
-    setShowModal(false);
-    setDownloading(false);
-    setDownloadingFilesModal(false);
-  };
-
-  const handleCloseModal = async () => {
-    setShowModal(false);
-    setDownloading(false);
-  };
-
-  const handleOptionChange = (event) => {
-    setSelectedCft(event.target.value);
-  };
 
   return (
     <>
@@ -152,7 +84,6 @@ const Home = () => {
             <div>
               {/* Overlay to block interaction with the webpage */}
               <div className="fixed inset-0 z-50 bg-black bg-opacity-50" />
-
               {/* Modal content */}
               <div className="fixed inset-0 z-50 overflow-auto flex justify-center items-center">
                 {downloadingFilesModal ? (
@@ -209,11 +140,11 @@ const Home = () => {
             ) : certificates ? (
               <Tabs
                 propTabs={certificates}
-                handleDownload={handledownload}
+                handleDownload={handleDownload}
                 downloading={downloading}
                 errorDownloading={errorDownloading}
-                downloadCount= {downloadCount}
-                downloadSuccess = {downloadSuccess}
+                downloadCount={downloadCount}
+                downloadSuccess={downloadSuccess}
               />
             ) : (
               errorCertificates && (
@@ -221,8 +152,8 @@ const Home = () => {
                   <MessagesCentre
                     messageText={errorMessageTestimonials}
                     type="error"
-                    mt = {0}
-                    top = {0}
+                    mt={0}
+                    top={0}
                   />
                   <img
                     className="border rounded-3xl w-[40%] flex justify-between items-center"
@@ -251,8 +182,8 @@ const Home = () => {
                   <MessagesCentre
                     messageText={errorMessageTestimonials}
                     type="error"
-                    mt = {0}
-                    top = {0}
+                    mt={0}
+                    top={0}
                   />
                   <img
                     className="border rounded-3xl size-[30%] flex justify-between items-center"
@@ -267,8 +198,8 @@ const Home = () => {
             <MessagesCentre
               messageText={`Welcome ${currentUser.firstName}!`}
               type="success"
-              top = {16}
-              mt = {0}
+              top={16}
+              mt={0}
             />
           )}
         </>

@@ -6,21 +6,25 @@ export const useFetchData = (fetchFunction, token) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
     const fetchData = async () => {
       try {
-        const fetchedData = await fetchFunction(token);
+        const fetchedData = await fetchFunction(token, { signal });
         setData(fetchedData);
         setLoading(false);
       } catch (error) {
-        setError(error);
+        setError(error.message);
         setLoading(false);
       }
     };
 
     fetchData();
+
     // Cleanup function to abort fetch if component unmounts
     return () => {
-      // Abort fetch operation or any cleanup logic if needed
+      abortController.abort(); // Abort the fetch request
     };
   }, [fetchFunction, token]);
 
