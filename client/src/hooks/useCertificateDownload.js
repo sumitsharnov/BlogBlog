@@ -20,7 +20,6 @@ export const useCertificateDownload = (token, cftList) => {
   };
   
   const handleDownloadModal = async () => {
-    console.log("Amit");
     setDownloadCount((prev) => prev + 1);
     try {
       setDownloadingFilesModal(true);
@@ -41,6 +40,7 @@ export const useCertificateDownload = (token, cftList) => {
   const handleCloseModal = () => {
     setShowModal(false);
     setDownloading(false);
+    document.body.style.overflow = "auto";
   };
 
   const handleOptionChange = (event) => {
