@@ -146,6 +146,7 @@ const Home = () => {
                 downloadCount={downloadCount}
                 downloadSuccess={downloadSuccess}
               />
+            
             ) : (
               errorCertificates && (
                 <div className="p-[5rem] flex flex-col items-center justify-center">

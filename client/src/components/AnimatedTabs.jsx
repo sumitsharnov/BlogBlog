@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faCertificate, faDownload } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
 export function Tabs({
   propTabs,
@@ -29,9 +29,21 @@ export function Tabs({
     <>
       <div
         className={cn(
-          "md:flex md:flex-row items-center justify-center gap-2 [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full flex-col mt-1"
+          "text-center [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full  mt-1"
         )}
       >
+        <span className="sm:text-3xl text-gray-500 text-md flex flex-row items-center justify-center">
+          <FontAwesomeIcon
+            icon={faCertificate}
+            color="purple"
+            className="p-1 bg-gradient-to-tr from-viole-500 via-yellow-400 to-purple-400 rounded-full m-1"
+          />
+          Certifications <FontAwesomeIcon
+            icon={faCertificate}
+            color="purple"
+            className="p-1 bg-gradient-to-tr from-viole-500 via-yellow-400 to-purple-400 rounded-full m-1"
+          />
+        </span>
         {errorDownloading && (
           <div className="mt-0">
             <MessagesCentre
@@ -63,7 +75,9 @@ export function Tabs({
             }}
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
-            className={cn("relative px-2 border border-orange-500 rounded-full  font-semibold text-sm m-1")} // Adjust padding for smaller screens
+            className={cn(
+              "relative px-2 border border-orange-500 rounded-full  font-semibold text-sm m-1"
+            )} // Adjust padding for smaller screens
             style={{
               transformStyle: "preserve-3d",
             }}
@@ -150,7 +164,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                 </a>
                 <div
                   onClick={handleDownload}
-                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flexjustify-center md:inline-block text-center"
+                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center"
                 >
                   {downloading ? (
                     <span>Downloading</span>
