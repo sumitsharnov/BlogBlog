@@ -11,7 +11,6 @@ export const useCertificateDownload = (token, cftList) => {
   const [selectedCft, setSelectedCft] = useState("All");
  
   const handleDownload = async () => {
-    console.log("Sumit");
     setDownloading(true);
     setShowModal(true);
     setDownloadSuccess(false);
@@ -47,11 +46,16 @@ export const useCertificateDownload = (token, cftList) => {
     setSelectedCft(event.target.value);
   };
 
+  const handleSelect = (option) => {
+    setSelectedCft(option);
+  };
+
   return {
     handleDownload,
     handleDownloadModal,
     handleCloseModal,
     handleOptionChange,
+    handleSelect,
     downloading,
     showModal,
     downloadCount,

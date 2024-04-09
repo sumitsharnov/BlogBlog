@@ -14,6 +14,7 @@ import Loader from "../components/Loader";
 import sww from "../images/home/somethingWentWrong.jpeg";
 import { useFetchData } from "../hooks/useFetchData";
 import { useCertificateDownload } from "../hooks/useCertificateDownload";
+import Dropdown from "../components/Dropdown";
 
 const Home = () => {
   const { token } = useSelector((state) => state.user);
@@ -23,20 +24,30 @@ const Home = () => {
   const cftList = [
     { name: "All", type: "pdf" },
     { name: "Django Developer", type: "pdf" },
+    { name: "Deployment", type: "pdf" },
+    { name: "Power BI", type: "pdf" },
+    { name: "Learning Django", type: "pdf" },
+    { name: "Web Api", type: "pdf" },
+    { name: "Django TDD", type: "pdf" },
+    { name: "Django Forms", type: "pdf" },
+    { name: "Django Portfolio", type: "pdf" },
+    { name: "csharp Training", type: "pdf" },
+    { name: "csharp oops", type: "pdf" },
+    { name: "Django Deployment", type: "pdf" },
   ];
 
   const {
     handleDownload,
     handleDownloadModal,
     handleCloseModal,
-    handleOptionChange,
+  handleSelect,
     downloading,
     showModal,
     downloadCount,
     downloadSuccess,
     errorDownloading,
     downloadingFilesModal,
-    selectedCft,
+    selectedCft,   
   } = useCertificateDownload(token, cftList);
 
   const {
@@ -87,29 +98,23 @@ const Home = () => {
               {/* Modal content */}
               <div className="fixed inset-0 z-50 overflow-auto flex justify-center items-center">
                 {downloadingFilesModal ? (
-                  <div className="h-[10rem] w-[10rem] flex flex-col justify-center items-center">
+                  <div className="h-[20rem] w-[10rem] flex flex-col justify-center items-center">
                     <span className="text-white p-2 font-bold">
                       Downloading...
                     </span>
                     <Loader />
                   </div>
                 ) : (
-                  <div className="bg-white p-8 rounded-lg shadow-lg">
-                    <h2 className="text-xl  mb-4 text-gray-500">
+                  <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all duration-300 hover:scale-105">
+                    <h2 className="text-xl mb-4 text-gray-500">
                       Download Certificate(s)
                     </h2>
                     {/* Dropdown */}
-                    <select
-                      className="block w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 mb-4"
-                      value={selectedCft}
-                      onChange={handleOptionChange}
-                    >
-                      {cftList.map((cft, index) => (
-                        <option key={index} value={cft.name}>
-                          {cft.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div>
+                      <h1>Dropdown Component</h1>
+                      <Dropdown options={cftList.map((cft) => cft.name)} onSelect={handleSelect} defaultOption={selectedCft} />
+                    </div>
+
                     {/* Action buttons */}
                     <div className="flex justify-end">
                       <button
@@ -146,7 +151,6 @@ const Home = () => {
                 downloadCount={downloadCount}
                 downloadSuccess={downloadSuccess}
               />
-            
             ) : (
               errorCertificates && (
                 <div className="p-[5rem] flex flex-col items-center justify-center">
