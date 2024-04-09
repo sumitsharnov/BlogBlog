@@ -78,7 +78,7 @@ export function Tabs({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
-                className={cn("absolute inset-0 bg-purple-400 rounded-full shadow-lg transform rotate-12 ")}
+                className={cn("absolute inset-0 bg-purple-400 rounded-full shadow-lg transform ")}
               />
             )}
              {active.name === tab.name ?
