@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCertificate, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
 export function Tabs({
   propTabs,
@@ -25,24 +25,16 @@ export function Tabs({
     setTabs(newTabs);
     setActive(newTabs[0]);
   };
+
   return (
     <>
       <div
         className={cn(
-          "text-center [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full  mt-1"
+          "text-center [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full "
         )}
       >
-        <span className="sm:text-3xl text-gray-500 text-md flex flex-row items-center justify-center">
-          <FontAwesomeIcon
-            icon={faCertificate}
-            color="purple"
-            className="p-1 bg-gradient-to-tr from-viole-500 via-yellow-400 to-purple-400 rounded-full m-1"
-          />
-          Certifications <FontAwesomeIcon
-            icon={faCertificate}
-            color="purple"
-            className="p-1 bg-gradient-to-tr from-viole-500 via-yellow-400 to-purple-400 rounded-full m-1"
-          />
+        <span className="text-3xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500 flex justify-center items-center  ">
+          Certifications
         </span>
         {errorDownloading && (
           <div className="mt-0">
@@ -76,7 +68,7 @@ export function Tabs({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              "relative px-2 border border-orange-500 rounded-full  font-semibold text-sm m-1"
+              "relative px-2 border border-purple-500 rounded-full  font-semibold text-sm m-1 p-2"
             )} // Adjust padding for smaller screens
             style={{
               transformStyle: "preserve-3d",
@@ -86,11 +78,10 @@ export function Tabs({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
-                className={cn("absolute inset-0 bg-yellow-200 rounded-full")}
+                className={cn("absolute inset-0 bg-yellow-100 rounded-full")}
               />
             )}
-
-            <span className="relative block text-purple-700  ">{tab.name}</span>
+            <span className="relative block text-gray-600">{tab.name}</span>
           </button>
         ))}
       </div>
