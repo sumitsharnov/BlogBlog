@@ -33,7 +33,7 @@ export function Tabs({
           "text-center [perspective:1000px] relative overflow-hidden no-visible-scrollbar max-w-full w-full "
         )}
       >
-        <span className="text-3xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500 flex justify-center items-center  ">
+        <span className="text-3xl font-normal text-center bg-clip-text text-transparent bg-gradient-to-b from-blue-500 via-purple-500 to-red-500 flex justify-center items-center">
           Certifications
         </span>
         {errorDownloading && (
@@ -68,7 +68,7 @@ export function Tabs({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              "relative px-2 border border-purple-500 rounded-full  font-semibold text-sm m-1 p-2"
+              "relative px-2 border border-purple-500 rounded-full font-semibold text-sm m-1 p-2 hover:bg-orange-200 transition duration-300 ease-in-out transform hover:scale-105"
             )} // Adjust padding for smaller screens
             style={{
               transformStyle: "preserve-3d",
@@ -78,10 +78,14 @@ export function Tabs({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
-                className={cn("absolute inset-0 bg-yellow-100 rounded-full")}
+                className={cn("absolute inset-0 bg-purple-400 rounded-full shadow-lg transform rotate-12 ")}
               />
             )}
-            <span className="relative block text-gray-600">{tab.name}</span>
+             {active.name === tab.name ?
+             <span className="relative block text-white">{tab.name}</span> :
+             <span className="relative block text-black">{tab.name}</span>
+             }
+            
           </button>
         ))}
       </div>
