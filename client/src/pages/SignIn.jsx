@@ -101,6 +101,11 @@ const SignIn = () => {
     setLoading(false);
   }, [formData]);
 
+  const handleLoginAsGuest = () => {
+    setFormData({username: "ram", password: "Sumit@22"})
+    handleSubmit();
+  }
+
   const handleErrorReponse = async (errorMessage) => {
     if (errorMessage.includes("All Fields are required")) {
       setErrorMessage(errorMessage);
@@ -178,7 +183,7 @@ const SignIn = () => {
               isSubmitted={formData.password === "" ? isSubmitted : false}
             />
           </div>
-
+<div className="flex w-full gap-2">
           <Button
             className="sm:w-full w-auto  hover:bg-purple-200  text-white"
             gradientDuoTone="purpleToBlue"
@@ -187,6 +192,15 @@ const SignIn = () => {
           >
             Log on
           </Button>
+          <Button
+            className="sm:w-full w-auto  hover:bg-purple-200  text-white"
+            gradientDuoTone="purpleToBlue"
+            outline
+            onClick={handleLoginAsGuest}
+          >
+            Guest Logon
+          </Button>
+          </div>
           <div className="w-full flex flex-row space-x-3 justify-center items-center">
             <hr className="w-full border border-white-300 "></hr>
             <span className="text-gray-500 font-semibold">OR</span>
