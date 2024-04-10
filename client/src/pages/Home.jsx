@@ -111,7 +111,6 @@ const Home = () => {
                     </h2>
                     {/* Dropdown */}
                     <div>
-                      <h1>Dropdown Component</h1>
                       <Dropdown options={cftList.map((cft) => cft.name)} onSelect={handleSelect} defaultOption={selectedCft} />
                     </div>
 

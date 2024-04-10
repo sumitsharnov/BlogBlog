@@ -144,22 +144,22 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                 <img className="w-full h-full" src={tab.image} alt="Image" />
               </a>
             </div>
-            <div className="overflow-auto flex flex-col gap-2 justify-items-center">
-              <div className=" text-gray-600 text-2xl">
-                <span className="mr-2">{tab.name}</span>
+            <div className="overflow-auto flex flex-col gap-2 justify-centre p-2">
+              <div className=" text-gray-600 text-2xl gap-2">
+                <span className="mr-2 flex">{tab.name}</span>
                 <a
                   href={tab.link}
                   target="_blank"
                   title={tab.link}
                   rel="noreferrer"
                 >
-                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[9rem] flex justify-center md:inline-block text-center mb-1 mt-1 mr-2">
+                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[9rem] md:inline-block text-center mr-2 mb-1">
                     Show Credentials
                   </span>
                 </a>
                 <div
                   onClick={handleDownload}
-                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center"
+                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center mt-1"
                 >
                   {downloading ? (
                     <span>Downloading</span>
