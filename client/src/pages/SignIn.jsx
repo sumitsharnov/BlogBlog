@@ -74,6 +74,7 @@ const SignIn = () => {
     setIsSubmitted(true);
     setLoading(true);
     setErrorMessage(null);
+    setShowSignUpSuccess(false);
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -91,14 +92,19 @@ const SignIn = () => {
         dispatch(signInSuccess(data));
         navigate("/?source=signin");
       } else {
-        throw new Error("Something went wrong, please try again!");
+        throw new Error();
       }
     } catch (error) {
       setIsSubmitted(false);
-      setErrorMessage(error.message);
+      setErrorMessage("Something went wrong");
     }
     setLoading(false);
   }, [formData]);
+
+  const handleLoginAsGuest = () => {
+    setFormData({username: "ram", password: "Sumit@22"})
+    handleSubmit();
+  }
 
   const handleErrorReponse = async (errorMessage) => {
     if (errorMessage.includes("All Fields are required")) {
@@ -111,7 +117,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 mt-4">
+    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
         <Carousel className=" top-0 left-2 " indicators={true}>
           <img
@@ -177,7 +183,7 @@ const SignIn = () => {
               isSubmitted={formData.password === "" ? isSubmitted : false}
             />
           </div>
-
+<div className="flex w-full gap-2">
           <Button
             className="sm:w-full w-auto  hover:bg-purple-200  text-white"
             gradientDuoTone="purpleToBlue"
@@ -186,6 +192,15 @@ const SignIn = () => {
           >
             Log on
           </Button>
+          <Button
+            className="sm:w-full w-auto  hover:bg-purple-200  text-white"
+            gradientDuoTone="purpleToBlue"
+            outline
+            onClick={handleLoginAsGuest}
+          >
+            Guest Logon
+          </Button>
+          </div>
           <div className="w-full flex flex-row space-x-3 justify-center items-center">
             <hr className="w-full border border-white-300 "></hr>
             <span className="text-gray-500 font-semibold">OR</span>
@@ -234,10 +249,10 @@ const SignIn = () => {
           </span>
         </div>
         {errorMessage && (
-          <MessagesCentre messageText={errorMessage} type="error" click={key} />
+          <MessagesCentre messageText={errorMessage} type="error" click={key} top={16} mt={0}  />
         )}
         {showSignUpSuccess && (
-          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key} />
+          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key}  top={12} mt={3}/>
         )}
       </div>
     </div>

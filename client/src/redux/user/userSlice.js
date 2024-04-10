@@ -3,7 +3,8 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
     signUpSuccess: false,
     signInSuccess: false,
-    currentUser: null
+    currentUser: null,
+    token: null
   };
   
   // Define slice to manage state and actions
@@ -28,6 +29,7 @@ const initialState = {
         return {
          ...state,
           currentUser :action.payload,
+          token: action.payload.token,
           signInSuccess: true,
         };
       },
@@ -35,6 +37,8 @@ const initialState = {
         return {
          ...state,
           signInSuccess: false,
+          currentUser: null,
+          token: null
         };
       },
     },
