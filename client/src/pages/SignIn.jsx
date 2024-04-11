@@ -15,6 +15,7 @@ import { Carousel } from "flowbite-react";
 import { Button } from "flowbite-react";
 import Loader from "../components/Loader";
 import ViaGoogleLogin from "../components/GoogleAuth";
+import { handleGuestLogin, handleSignIn } from "../services/signin_api";
 
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
@@ -35,6 +36,7 @@ const SignIn = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [showSignUpSuccess, setShowSignUpSuccess] = useState(false); // New state to manage showing sign-up success message
+  const [guest, setGuest] = useState(false);
 
   useEffect(() => {
     if (signUpSuccess && source === "signup") {
@@ -53,14 +55,13 @@ const SignIn = () => {
   const isMountedRef = useRef(false);
   // Run only once after the initial render to dispatch clearSignUpSuccess
   useEffect(() => {
-
     if (!isMountedRef.current && source !== "signup") {
       dispatch(clearSignUpSuccess());
     }
     // Set the isMountedRef to true after the first render
     isMountedRef.current = true;
   }, []); // Empty dependency array to run the effect only once after the initial render
-  
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -69,42 +70,36 @@ const SignIn = () => {
     });
   };
 
-  const handleSubmit = useCallback(async () => {
-    setKey((prev) => prev + 1);
-    setIsSubmitted(true);
-    setLoading(true);
-    setErrorMessage(null);
-    setShowSignUpSuccess(false);
-    try {
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      let resMessage = "";
-      const data = await res.json();
-      if (res.headers.get("content-type").includes("application/json")) {
-        resMessage = data;
-      }
-      if (!res.ok && resMessage !== "") {
-        await handleErrorReponse(resMessage.message);
-      } else if (res.ok && resMessage !== "") {
-        dispatch(signInSuccess(data));
-        navigate("/?source=signin");
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      setIsSubmitted(false);
-      setErrorMessage("Something went wrong");
-    }
-    setLoading(false);
-  }, [formData]);
+  const handleSubmit = useCallback(
+    async (isGuest) => {
+      console.log(isGuest);
+      setKey((prev) => prev + 1);
+      setIsSubmitted(true);
+      setLoading(true);
+      setErrorMessage(null);
+      setShowSignUpSuccess(false);
 
-  const handleLoginAsGuest = () => {
-    setFormData({username: "ram", password: "Sumit@22"})
-    handleSubmit();
-  }
+      try {
+        const res = await (isGuest
+          ? handleGuestLogin()
+          : handleSignIn(formData));
+        const data = await res.json();
+
+        if (!res.ok) {
+          await handleErrorReponse(data.message);
+        } else {
+          dispatch(signInSuccess(data));
+          navigate("/?source=signin");
+        }
+      } catch (error) {
+        setIsSubmitted(false);
+        setErrorMessage("Something went wrong");
+      }
+
+      setLoading(false);
+    },
+    [formData, dispatch, navigate, setKey, setIsSubmitted, setLoading]
+  );
 
   const handleErrorReponse = async (errorMessage) => {
     if (errorMessage.includes("All Fields are required")) {
@@ -116,6 +111,13 @@ const SignIn = () => {
     }
   };
 
+  const handleGuest = () => {
+    setGuest(true);
+  };
+  const handleCloseModal = () => {
+    setGuest(false);
+    document.body.style.overflow = "auto";
+  };
   return (
     <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
@@ -183,23 +185,23 @@ const SignIn = () => {
               isSubmitted={formData.password === "" ? isSubmitted : false}
             />
           </div>
-<div className="flex w-full gap-2">
-          <Button
-            className="sm:w-full w-auto  hover:bg-purple-200  text-white"
-            gradientDuoTone="purpleToBlue"
-            outline
-            onClick={handleSubmit}
-          >
-            Log on
-          </Button>
-          <Button
-            className="sm:w-full w-auto  hover:bg-purple-200  text-white"
-            gradientDuoTone="purpleToBlue"
-            outline
-            onClick={handleLoginAsGuest}
-          >
-            Guest Logon
-          </Button>
+          <div className="flex w-full gap-2">
+            <Button
+              className="sm:w-full w-auto  hover:bg-purple-200  text-white"
+              gradientDuoTone="purpleToBlue"
+              outline
+              onClick={() => handleSubmit(false)}
+            >
+              Log on
+            </Button>
+            <Button
+              className="sm:w-full w-auto  hover:bg-purple-200  text-white"
+              gradientDuoTone="purpleToBlue"
+              outline
+              onClick={handleGuest}
+            >
+              Guest Logon
+            </Button>
           </div>
           <div className="w-full flex flex-row space-x-3 justify-center items-center">
             <hr className="w-full border border-white-300 "></hr>
@@ -249,10 +251,58 @@ const SignIn = () => {
           </span>
         </div>
         {errorMessage && (
-          <MessagesCentre messageText={errorMessage} type="error" click={key} top={16} mt={0}  />
+          <MessagesCentre
+            messageText={errorMessage}
+            type="error"
+            click={key}
+            top={16}
+            mt={0}
+          />
         )}
         {showSignUpSuccess && (
-          <MessagesCentre messageText={"Sign-up successful!"} type="success" click={key}  top={12} mt={3}/>
+          <MessagesCentre
+            messageText={"Sign-up successful!"}
+            type="success"
+            click={key}
+            top={12}
+            mt={3}
+          />
+        )}
+        {guest && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all duration-300 hover:scale-105">
+              <Input id="name" placeholder="Name" />
+              <div className="flex flex-row justify-start items-center space-x-3 mt-2">
+                <label
+                  htmlFor="isRecruiter"
+                  className="font-medium text-gray-700"
+                >
+                  Are you a recruiter?{" "}
+                </label>
+                <input
+                  name="isRecruiter"
+                  type="checkbox"
+                  id="isRecruiter"
+                  className="mt-1"
+                ></input>
+              </div>
+              {/* Action buttons */}
+              <div className="flex justify-end mt-2">
+                <button
+                  className="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md mr-2 hover:bg-gray-300"
+                  onClick={handleCloseModal}
+                >
+                  Close
+                </button>
+                <button
+                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                  onClick={() => handleSubmit(true)}
+                >
+                  Log on
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

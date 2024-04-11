@@ -62,5 +62,16 @@ export const signin = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-}; 
+}
+
+export const guestlogin = (req, res) => {
+  try {
+    const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+    res.status(200).cookie("token", token,  {
+      hTTPOnly: true,
+    }).json({token: token, firstName: "Guest"})
+  } catch (error) {
+    return next(error);
+  }
+};
 
