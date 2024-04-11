@@ -87,7 +87,9 @@ const Home = () => {
             src={sww}
             alt="AI GENERATED IMAGES"
           />
-          <MessagesCentre messageText={errorMessage} type="error" />
+          <MessagesCentre messageText={errorMessage} type="error"
+          top={16}
+          mt={0} />
         </div>
       ) : (
         <>
