@@ -5,6 +5,9 @@ import MessagesCentre from "../components/MessagesCentre";
 import Cookies from "js-cookie";
 import { InfiniteMovingCards } from "../components/infiniteMovingCards";
 import { Tabs } from "../components/AnimatedTabs";
+import { useDispatch } from "react-redux";
+import { clearSignInSuccess } from "../redux/user/userSlice";
+import { setDefaultColor } from "../redux/home/homeSlice";
 import {
   fetchTestimonials,
   fetchTimeline,
@@ -15,8 +18,11 @@ import sww from "../images/home/somethingWentWrong.jpeg";
 import { useFetchData } from "../hooks/useFetchData";
 import { useCertificateDownload } from "../hooks/useCertificateDownload";
 import Dropdown from "../components/Dropdown";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { token } = useSelector((state) => state.user);
   const { currentUser } = useSelector((state) => state.user);
   const isLoggedIn = useSelector((state) => state.user.signInSuccess);
@@ -40,14 +46,14 @@ const Home = () => {
     handleDownload,
     handleDownloadModal,
     handleCloseModal,
-  handleSelect,
+    handleSelect,
     downloading,
     showModal,
     downloadCount,
     downloadSuccess,
     errorDownloading,
     downloadingFilesModal,
-    selectedCft,   
+    selectedCft,
   } = useCertificateDownload(token, cftList);
 
   const {
@@ -74,6 +80,18 @@ const Home = () => {
     }
   }, [isLoggedIn]);
 
+  
+  useEffect(() => {
+    if (errorMessage === "Unauthorized") {
+      Cookies.set("loginSuccess", "false");
+      Cookies.set("timeout", "You have been logged out");
+      dispatch(clearSignInSuccess());
+      dispatch(setDefaultColor());
+      navigate("/sign-in");
+
+    }
+  }, [errorMessage, dispatch, navigate]);
+
   return (
     <>
       {initLoading ? (
@@ -87,9 +105,12 @@ const Home = () => {
             src={sww}
             alt="AI GENERATED IMAGES"
           />
-          <MessagesCentre messageText={errorMessage} type="error"
-          top={16}
-          mt={0} />
+          <MessagesCentre
+            messageText={errorMessage}
+            type="error"
+            top={16}
+            mt={0}
+          />
         </div>
       ) : (
         <>
@@ -113,7 +134,11 @@ const Home = () => {
                     </h2>
                     {/* Dropdown */}
                     <div>
-                      <Dropdown options={cftList.map((cft) => cft.name)} onSelect={handleSelect} defaultOption={selectedCft} />
+                      <Dropdown
+                        options={cftList.map((cft) => cft.name)}
+                        onSelect={handleSelect}
+                        defaultOption={selectedCft}
+                      />
                     </div>
 
                     {/* Action buttons */}

@@ -16,7 +16,7 @@ import { Button } from "flowbite-react";
 import Loader from "../components/Loader";
 import ViaGoogleLogin from "../components/GoogleAuth";
 import { handleGuestLogin, handleSignIn } from "../services/signin_api";
-
+import Cookies from "js-cookie";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
 const SignIn = () => {
@@ -37,6 +37,8 @@ const SignIn = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [showSignUpSuccess, setShowSignUpSuccess] = useState(false); // New state to manage showing sign-up success message
   const [guest, setGuest] = useState(false);
+  const message = Cookies.get("timeout")
+  Cookies.set("timeout", "");
 
   useEffect(() => {
     if (signUpSuccess && source === "signup") {
@@ -118,8 +120,11 @@ const SignIn = () => {
     setGuest(false);
     document.body.style.overflow = "auto";
   };
+  
   return (
     <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
+      {message && <MessagesCentre type = "success" messageText={message} top={16}
+              mt={0}/>}
       <div className="lg:inline hidden h-[50rem] w-[50rem]">
         <Carousel className=" top-0 left-2 " indicators={true}>
           <img
@@ -271,21 +276,21 @@ const SignIn = () => {
         {guest && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all duration-300 hover:scale-105">
-              <Input id="name" placeholder="Name" />
-              <div className="flex flex-row justify-start items-center space-x-3 mt-2">
-                <label
-                  htmlFor="isRecruiter"
-                  className="font-medium text-gray-700"
-                >
-                  Are you a recruiter?{" "}
-                </label>
-                <input
-                  name="isRecruiter"
-                  type="checkbox"
-                  id="isRecruiter"
-                  className="mt-1"
-                ></input>
-              </div>
+            <Input
+              id="name"
+              placeholder="Name"
+            />
+            <div className="flex flex-row justify-start items-center space-x-3 mt-2">
+            <label htmlFor="isRecruiter" className="font-medium text-gray-700">
+              Are you a recruiter?{" "}
+            </label>
+            <input
+              name="isRecruiter"
+              type="checkbox"
+              id="isRecruiter"
+              className="mt-1"
+            ></input>
+          </div>
               {/* Action buttons */}
               <div className="flex justify-end mt-2">
                 <button
@@ -294,10 +299,7 @@ const SignIn = () => {
                 >
                   Close
                 </button>
-                <button
-                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                  onClick={() => handleSubmit(true)}
-                >
+                <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600" onClick={() => handleSubmit(true)}>
                   Log on
                 </button>
               </div>

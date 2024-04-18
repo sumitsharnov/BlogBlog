@@ -33,9 +33,9 @@ const Input = ({
 
 Input.propTypes = {
   id: PropTypes.string,
-  type: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   isSubmitted: PropTypes.bool

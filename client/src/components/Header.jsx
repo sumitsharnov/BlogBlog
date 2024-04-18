@@ -45,6 +45,7 @@ export default function Header() {
                 Cookies.set("loginSuccess", "false");
                 dispatch(clearSignInSuccess());
                 dispatch(setDefaultColor());
+                Cookies.set("timeout", "You have been logeed out");
               }}
             >
               <Button gradientDuoTone="purpleToBlue" outline>
