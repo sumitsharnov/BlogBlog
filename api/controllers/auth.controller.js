@@ -59,7 +59,7 @@ export const signin = async (req, res, next) => {
     const {password : pass, ...args} = user._doc;
     res.status(200).cookie("token", token,  {
       hTTPOnly: true,
-    }).json({...args, token: token})
+    }).json({...args, token: token, type: "user"});
   } catch (error) {
     return next(error);
   }
@@ -75,7 +75,7 @@ export const guestlogin = async (req, res, next) => {
     res.cookie("token", token, { httpOnly: true });
     
     // Send the JSON response
-    res.status(200).json({ token: token, firstName: name ? name : "Guest" });
+    res.status(200).json({ token: token, firstName: name ? name : "Guest", type: 'guest' });
     
     // Save the new guest user if name or recruiter is provided
     if (name || recruiter) {

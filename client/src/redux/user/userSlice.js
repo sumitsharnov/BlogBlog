@@ -4,7 +4,7 @@ const initialState = {
     signUpSuccess: false,
     signInSuccess: false,
     currentUser: null,
-    token: null
+    token: null,
   };
   
   // Define slice to manage state and actions

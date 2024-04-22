@@ -80,7 +80,6 @@ const Home = () => {
     }
   }, [isLoggedIn]);
 
-  
   useEffect(() => {
     if (errorMessage === "Unauthorized") {
       Cookies.set("loginSuccess", "false");
@@ -88,7 +87,6 @@ const Home = () => {
       dispatch(clearSignInSuccess());
       dispatch(setDefaultColor());
       navigate("/sign-in");
-
     }
   }, [errorMessage, dispatch, navigate]);
 

@@ -78,14 +78,16 @@ export function Tabs({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
-                className={cn("absolute inset-0 bg-purple-400 rounded-full shadow-lg transform ")}
+                className={cn(
+                  "absolute inset-0 bg-purple-400 rounded-full shadow-lg transform "
+                )}
               />
             )}
-             {active.name === tab.name ?
-             <span className="relative block text-white">{tab.name}</span> :
-             <span className="relative block text-black">{tab.name}</span>
-             }
-            
+            {active.name === tab.name ? (
+              <span className="relative block text-white">{tab.name}</span>
+            ) : (
+              <span className="relative block text-black">{tab.name}</span>
+            )}
           </button>
         ))}
       </div>
@@ -105,6 +107,7 @@ export function Tabs({
 }
 
 const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
+  const { currentUser } = useSelector((state) => state.user);
   const bgColour = useSelector((state) => state.home.color);
   const isActive = (tab) => {
     return tab.name === tabs[0].name;
@@ -157,9 +160,10 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                     Show Credentials
                   </span>
                 </a>
-                <div
+                <button
                   onClick={handleDownload}
-                  className="text-xs  text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[7rem] flex justify-center md:inline-block text-center mt-1"
+                  className="text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[7rem] flex justify-center md:inline-block text-center mt-1"
+                  disabled={currentUser.type === "guest"}
                 >
                   {downloading ? (
                     <span>Downloading</span>
@@ -167,7 +171,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                     <span>Download</span>
                   )}{" "}
                   <FontAwesomeIcon icon={faDownload} className="ml-2" />
-                </div>
+                </button>
               </div>
 
               <span className="text-lg font-semibold text-slate-600">
