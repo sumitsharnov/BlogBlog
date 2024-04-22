@@ -8,7 +8,6 @@ export const handleSignIn = async (formData) => {
   };
 
   export const handleGuestLogin = async (formData) => {
-    console.log("Guest login", formData);
     const res = await fetch("/api/auth/guestlogin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

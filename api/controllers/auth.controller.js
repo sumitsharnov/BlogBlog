@@ -68,7 +68,6 @@ export const signin = async (req, res, next) => {
 export const guestlogin = async (req, res, next) => {
   try {
     const { name, recruiter } = req.body;
-    console.log(name,recruiter);
     const newGuestUser = new GuestUser({ name: name, recruiter: recruiter });
     const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
     
