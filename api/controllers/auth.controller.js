@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import GuestUser from "../models/guest.model.js";
 import bcryt from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
@@ -64,14 +65,26 @@ export const signin = async (req, res, next) => {
   }
 }
 
-export const guestlogin = (req, res) => {
+export const guestlogin = async (req, res, next) => {
   try {
+    const { name, recruiter } = req.body;
+    console.log(name,recruiter);
+    const newGuestUser = new GuestUser({ name: name, recruiter: recruiter });
     const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
-    res.status(200).cookie("token", token,  {
-      hTTPOnly: true,
-    }).json({token: token, firstName: "Guest"})
+    
+    // Set the cookie
+    res.cookie("token", token, { httpOnly: true });
+    
+    // Send the JSON response
+    res.status(200).json({ token: token, firstName: name ? name : "Guest" });
+    
+    // Save the new guest user if name or recruiter is provided
+    if (name || recruiter) {
+      await newGuestUser.save();
+    }
   } catch (error) {
     return next(error);
   }
 };
+
 
