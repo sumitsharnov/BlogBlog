@@ -160,18 +160,31 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                     Show Credentials
                   </span>
                 </a>
-                <button
-                  onClick={handleDownload}
-                  className="text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[7rem] flex justify-center md:inline-block text-center mt-1"
-                  disabled={currentUser.type === "guest"}
+                <span
+                  className="relative"
+                  title={
+                    currentUser.type === "guest"
+                      ? "Download button only enabled for logged-in users"
+                      : ""
+                  }
                 >
-                  {downloading ? (
-                    <span>Downloading</span>
-                  ) : (
-                    <span>Download</span>
-                  )}{" "}
-                  <FontAwesomeIcon icon={faDownload} className="ml-2" />
-                </button>
+                  <button
+                    onClick={handleDownload}
+                    className={`text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[7rem] flex justify-center md:inline-block text-center mt-1 ${
+                      currentUser.type === "guest"
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }`}
+                    disabled={currentUser.type === "guest"}
+                  >
+                    {downloading ? (
+                      <span>Downloading</span>
+                    ) : (
+                      <span>Download</span>
+                    )}{" "}
+                    <FontAwesomeIcon icon={faDownload} className="ml-2" />
+                  </button>
+                </span>
               </div>
 
               <span className="text-lg font-semibold text-slate-600">
