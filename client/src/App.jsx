@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import FooterComponent from "./components/Footer";
@@ -8,27 +8,31 @@ import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Header from "./components/Header";
 import PrivateRoutes from "./components/PrivateRoutes";
+import UserProfile from "./pages/UserProfile";
 
 export default function App() {
   return (
-      <BrowserRouter >
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <div className="flex-grow">
-            <Routes>
-              <Route path="/about" element={<About />} />
-              <Route path="/sign-in" element={<SignIn />} />
-              <Route path="/sign-up" element={<SignUp />} />
-              <Route  element={<PrivateRoutes />}>
-                <Route path="/" element={<Home/>} />
-              </Route>
+    <BrowserRouter>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/about" element={<About />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route element={<PrivateRoutes />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<UserProfile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects" element={<Projects />} />
-            </Routes>
-          </div>
-          <FooterComponent />
+            </Route>
+            {/* Catch all unmatched routes and redirect to the root */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
-      </BrowserRouter>
+        <FooterComponent />
+      </div>
+    </BrowserRouter>
   );
 }
 

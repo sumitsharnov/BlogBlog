@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const Loader = ({ width = 4, height = 4 }) => {
   return (
@@ -31,3 +31,9 @@ styleElement.innerHTML = styles;
 document.head.appendChild(styleElement);
 
 export default Loader;
+
+// Define prop types for width and height props
+Loader.propTypes = {
+  width: PropTypes.number, // Width should be a number
+  height: PropTypes.number, // Height should be a number
+};

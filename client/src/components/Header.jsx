@@ -6,12 +6,17 @@ import { clearSignInSuccess } from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
+import { useNavigate } from "react-router-dom";
 export default function Header() {
   const location = useLocation();
   const { signInSuccess } = useSelector((state) => state.user);
   const { currentUser } = useSelector((state) => state.user);
-  const displayImage = currentUser && currentUser.photoURL || anonuser;
+  const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleProfile = () => {
+    navigate("/profile");
+  };
   return (
     <>
       <Navbar className="top-0 left-0 w-full border-b-2 z-50">
@@ -48,7 +53,10 @@ export default function Header() {
               />
               <div className="absolute opacity-0 group-hover:opacity-[80%] bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
                 <ul className="list-none p-0 m-0">
-                  <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
+                  <li
+                    className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md"
+                    onClick={handleProfile}
+                  >
                     Profile
                   </li>
                   <NavLink

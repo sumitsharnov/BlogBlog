@@ -38,7 +38,7 @@ export const googleauth = async (req, res, next) => {
 
     // Send response with user data and token
     const { password: pass, ...userData } = user._doc;
-    res.status(200).cookie("token", token, { httpOnly: true }).json({ ...userData, token: token });
+    res.status(200).cookie("token", token, { httpOnly: true }).json({ ...userData, token: token, type: 'thirdparty' });
   } catch (error) {
     next(error);
   }

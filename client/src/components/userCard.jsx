@@ -26,17 +26,11 @@ export function UserCard({ user }) {
         </svg>
       </button>
       <div className="profile-pic-main">
-        {user.type === "guest" ? (
-          <img
-            src={displayImage}
-            className="border-4 border-white rounded-full"
-          />
-        ) : (
+        {user.type === "user" ?  (
           <label htmlFor="fileInput" className="relative cursor-pointer">
             <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
               <span className="block bg-blue-500 rounded-md ml-2">Update</span>
             </div>
-
             <input
               type="file"
               id="fileInput"
@@ -48,6 +42,11 @@ export function UserCard({ user }) {
               className="border-4 border-white rounded-full"
             />
           </label>
+        ) :(
+          <img
+            src={displayImage}
+            className="border-4 border-white rounded-full"
+          />
         )}
       </div>
       <div className="profile-pic">
@@ -2084,6 +2083,10 @@ UserCard.propTypes = {
     photoURL: PropTypes.string, // Assuming photoURL is a string
     firstName: PropTypes.string, // Assuming first
     lastName: PropTypes.string, // Assuming last is a string
+    type: PropTypes.string, // Assuming type is a string
+    username: PropTypes.string, // Assuming username is a string
+    email: PropTypes.string, // Assuming email is a string
+    recruiter: PropTypes.bool,
     // Add more validations for other properties of the user object if necessary
   }).isRequired,
 };

@@ -20,6 +20,8 @@ import Cookies from "js-cookie";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
 
+
+
 const SignIn = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -88,14 +90,15 @@ const SignIn = () => {
     });
   };
   const handleSubmit = useCallback(
-    async (isGuest) => {
+    async (e) => {
+      e && e.preventDefault();
       setKey((prev) => prev + 1);
       setIsSubmitted(true);
       setLoading(true);
       setErrorMessage(null);
       setShowSignUpSuccess(false);
       try {
-        const res = await (isGuest
+        const res = await (guest
           ? handleGuestLogin(guestFormData)
           : handleSignIn(formData));
         const data = await res.json();
@@ -120,6 +123,7 @@ const SignIn = () => {
       setKey,
       setIsSubmitted,
       setLoading,
+      guest
     ]
   );
 
@@ -141,7 +145,7 @@ const SignIn = () => {
     setGuestFormData({ name: "", recruiter: false });
     document.body.style.overflow = "auto";
   };
-  console.log(isSignedIn, "Sumit");
+
   return (
     <>
     {isSignedIn && < Home />}
@@ -190,7 +194,6 @@ const SignIn = () => {
             />
             <Input
               id="email"
-              type="email"
               value={formData.email}
               onChange={handleChange}
               required={true}
@@ -220,6 +223,7 @@ const SignIn = () => {
               gradientDuoTone="purpleToBlue"
               outline
               onClick={() => handleSubmit(false)}
+             type="submit"
             >
               Log on
             </Button>
@@ -244,7 +248,7 @@ const SignIn = () => {
             <span className="text-gray-500 text-md font-semibold">
               Log in with
             </span>
-            <button className=" hover:text-gray-900 dark:hover:text-blue-700">
+            <button type="button" className=" hover:text-gray-900 dark:hover:text-blue-700">
               <svg
                 className="w-6 h-6"
                 fill="currentColor"
@@ -254,7 +258,7 @@ const SignIn = () => {
                 <path d="M19 0h-14c-2.8 0-5 2.2-5 5v14c0 2.8 2.2 5 5 5h14c2.8 0 5-2.2 5-5v-14c0-2.8-2.2-5-5-5zm-14 4h3v2h-3v-2zm0 4h3v12h-3v-12zm5 0h3v1.6h.1c.4-.8 1.5-1.6 3.1-1.6 3.3 0 3.9 2.2 3.9 5v7h-3v-6c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1v6.1h-3v-12z" />
               </svg>
             </button>
-            <button>
+            <button type="button">
               <svg
                 className="w-6 h-6 text-white bg-black border-black rounded-lg hover:bg-white hover:text-black"
                 fill="currentColor"
@@ -336,7 +340,7 @@ const SignIn = () => {
                 </button>
                 <button
                   className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                  onClick={() => handleSubmit(true)}
+                  onClick={ handleSubmit}
                 >
                   Skip
                 </button>

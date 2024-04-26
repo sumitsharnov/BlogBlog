@@ -39,7 +39,7 @@ export default function ViaGoogleLogin() {
   };
   return (
     <>
-      <button onClick={handleClick}>
+      <button type="button" onClick={handleClick}>
         {/* Google Icon */}
         <svg
           className="w-[24px] h-[24px] bg-slate-300 border rounded-md p-[2px] hover:bg-white"
