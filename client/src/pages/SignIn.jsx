@@ -18,6 +18,7 @@ import ViaGoogleLogin from "../components/GoogleAuth";
 import { handleGuestLogin, handleSignIn } from "../services/signin_api";
 import Cookies from "js-cookie";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
+import Home from "./Home";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +35,7 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const signUpSuccess = useSelector((state) => state.user.signUpSuccess);
+  const isSignedIn = useSelector((state) => state.user.signInSuccess);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const source = queryParams.get("source");
@@ -77,7 +79,7 @@ const SignIn = () => {
       [id]: value,
     });
   };
-
+  
   const guestInfoChange = (e) => {
     const { id, value, type, checked } = e.target;
     setGuestFormData({
@@ -92,7 +94,6 @@ const SignIn = () => {
       setLoading(true);
       setErrorMessage(null);
       setShowSignUpSuccess(false);
-
       try {
         const res = await (isGuest
           ? handleGuestLogin(guestFormData)
@@ -140,8 +141,10 @@ const SignIn = () => {
     setGuestFormData({ name: "", recruiter: false });
     document.body.style.overflow = "auto";
   };
-
+  console.log(isSignedIn, "Sumit");
   return (
+    <>
+    {isSignedIn && < Home />}
     <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
       {message && (
         <MessagesCentre type="success" messageText={message} top={16} mt={0} />
@@ -343,6 +346,7 @@ const SignIn = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
