@@ -25,6 +25,9 @@ const userSchema = new mongoose.Schema({
     },
     recruiter:{
         type: Boolean,
+    }, 
+    photoURL:{
+        type: String,
     }
 }, {timestamps: true})
 

@@ -22,6 +22,7 @@ export default function ViaGoogleLogin() {
         body: JSON.stringify({
           name: result.user.displayName,
           email: result.user.email,
+          photoURL: result.user.photoURL
         }),
       });
       const data = await res.json();

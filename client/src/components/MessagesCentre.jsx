@@ -104,39 +104,3 @@ MessagesCentre.propTypes = {
 
 export default MessagesCentre;
 
-// CSS for sliding animations
-const css = `
-/* Define the sliding in animation */
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-/* Define the sliding out animation */
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-
-/* Apply the animations to the appropriate elements */
-.animate-slideIn {
-  animation: slideIn 0.5s ease forwards;
-}
-
-.animate-slideOut {
-  animation: slideOut 0.5s ease forwards;
-}
-`;
-
-// Inject CSS into the document
-const style = document.createElement("style");
-style.appendChild(document.createTextNode(css));
-document.head.appendChild(style);

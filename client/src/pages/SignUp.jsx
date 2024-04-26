@@ -124,8 +124,8 @@ const SignUp = () => {
             messageText={signupSuccess}
             type="success"
             click={key}
-            top={12}
-            mt={3}
+            top={16}
+            mt={0}
           />
         )}
         {errorMessage && (

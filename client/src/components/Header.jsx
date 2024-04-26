@@ -1,15 +1,16 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
-
+import anonuser from "../images/home/anonuser.png";
 export default function Header() {
   const location = useLocation();
   const { signInSuccess } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
+  const displayImage = currentUser && currentUser.photoURL || anonuser;
   const dispatch = useDispatch();
   return (
     <>
@@ -35,30 +36,39 @@ export default function Header() {
           <Button className="w-12 h-10 lg:hidden" color="gray" pill>
             <AiOutlineSearch />
           </Button>
-          <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
+          {/* <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
             <FaMoon />
-          </Button>
-          {signInSuccess ? (
-            <NavLink
-              to="/sign-in"
-              onClick={() => {
-                Cookies.set("loginSuccess", "false");
-                dispatch(clearSignInSuccess());
-                dispatch(setDefaultColor());
-                Cookies.set("timeout", "You have been logeed out");
-              }}
-            >
-              <Button gradientDuoTone="purpleToBlue" outline>
-                Log Out
-              </Button>
-            </NavLink>
-          ) : (
-            <NavLink to="/sign-in">
-              <Button gradientDuoTone="purpleToBlue" outline>
-                Sign In
-              </Button>
-            </NavLink>
+          </Button> */}
+          {currentUser && signInSuccess && (
+            <div className="relative group">
+              <img
+                src={displayImage}
+                alt="profile"
+                className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
+              />
+              <div className="absolute hidden group-hover:block bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
+                <ul className="list-none p-0 m-0">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
+                    Profile
+                  </li>
+                  <NavLink
+                    to="/sign-in"
+                    onClick={() => {
+                      Cookies.set("loginSuccess", "false");
+                      dispatch(clearSignInSuccess());
+                      dispatch(setDefaultColor());
+                      Cookies.set("timeout", "You have been logged out");
+                    }}
+                  >
+                    <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
+                      Log Out
+                    </li>
+                  </NavLink>
+                </ul>
+              </div>
+            </div>
           )}
+
           <Navbar.Toggle />
         </div>
         <Navbar.Collapse>
