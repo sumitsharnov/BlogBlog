@@ -2,6 +2,10 @@ import "../../styles.css";
 import PropTypes from "prop-types";
 export function UserCard({ user }) {
   const displayImage = user.photoURL || user;
+  console.log(user)
+  const handleFileSelection = (e) => {
+    console.log(e, "This has been selected");
+  };
   return (
     <div className="card w-[70%] h-[60vh]">
       <button className="mail">
@@ -22,10 +26,22 @@ export function UserCard({ user }) {
         </svg>
       </button>
       <div className="profile-pic-main">
-        <img
-          src={displayImage}
-          className="border-4 border-white rounded-full"
-        />
+        <label htmlFor="fileInput" className="relative cursor-pointer">
+          <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
+            <span className="block bg-blue-500 rounded-md ml-2">Update</span>
+          </div>
+
+          <input
+            type="file"
+            id="fileInput"
+            className="hidden"
+            onChange={(e) => handleFileSelection(e.target.files[0])} // Handle file selection here
+          />
+          <img
+            src={displayImage}
+            className="border-4 border-white rounded-full"
+          />
+        </label>
       </div>
       <div className="profile-pic">
         <svg
@@ -1982,15 +1998,36 @@ export function UserCard({ user }) {
           </g>
         </svg>
       </div>
-      
-      <div className="text-gray-500 font-bold text-2xl p-2 ">Name
-          <div className="border-b-2 border-gray-500 "></div>
-          <div className="text-6xl text-green-100 sm:text-4xl">
-            {user.firstName} {user.lastName}
-          </div>
-          </div>
+
+      <div className="text-gray-500 font-bold text-2xl p-2 ">
+        Name
+        <div className="border-b-2 border-gray-500 "></div>
+        <div className="text-6xl text-violet-600 sm:text-4xl">
+          {user.firstName} {user.lastName}
+        </div>
+      </div>
       <div className="bottom">
-      
+        <div className="bg-blue-200 m-[1rem] rounded-lg opacity-[90%] w-[1em]">
+          <div className="flex flex-row justify-start items-start ">
+            <span className="flex justify-start items-start p-2 text-xl">Email</span>
+            <span className="flex justify-start items-start p-2">
+              {user.email}
+            </span>
+          </div>
+          <div className="border-b-2 border-gray-500 w-96 ml-4"></div>
+          <div className="flex flex-row">
+            <span className="flex justify-start items-start p-2">Username</span>
+            <span className="flex justify-start items-start p-2">
+              {user.username}
+            </span>
+          </div>
+          <div className="flex flex-row">
+            <span className="flex justify-start items-start p-2">Recruiter</span>
+            <span className="flex justify-start items-start p-2">
+              {user.recruiter === true && "ndfksnlsdkn"}
+            </span>
+          </div>
+        </div>
       </div>
       {/* <div className="bottom ">
         <div className="p-6 bg-gradient-to-br from-green-300 via-yellow-200 via-orange-300 to-violet-100">

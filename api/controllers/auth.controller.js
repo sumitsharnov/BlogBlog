@@ -69,7 +69,7 @@ export const guestlogin = async (req, res, next) => {
   try {
     const { name, recruiter } = req.body;
     const newGuestUser = new GuestUser({ name: name, recruiter: recruiter });
-    const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+    const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: 15 }); // Token expires in 1 hour
     
     // Set the cookie
     res.cookie("token", token, { httpOnly: true });

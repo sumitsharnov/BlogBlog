@@ -46,7 +46,7 @@ export default function Header() {
                 alt="profile"
                 className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
               />
-              <div className="absolute hidden group-hover:block bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
+              <div className="absolute opacity-0 group-hover:opacity-[80%] bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
                 <ul className="list-none p-0 m-0">
                   <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
                     Profile

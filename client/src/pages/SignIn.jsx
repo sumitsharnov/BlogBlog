@@ -98,7 +98,6 @@ const SignIn = () => {
           ? handleGuestLogin(guestFormData)
           : handleSignIn(formData));
         const data = await res.json();
-
         if (!res.ok) {
           await handleErrorReponse(data.message);
         } else {

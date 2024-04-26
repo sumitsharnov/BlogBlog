@@ -160,7 +160,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                     Show Credentials
                   </span>
                 </a>
-                <span
+                <div
                   className="relative"
                   title={
                     currentUser.type === "guest"
@@ -184,7 +184,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                     )}{" "}
                     <FontAwesomeIcon icon={faDownload} className="ml-2" />
                   </button>
-                </span>
+                </div>
               </div>
 
               <span className="text-lg font-semibold text-slate-600">
