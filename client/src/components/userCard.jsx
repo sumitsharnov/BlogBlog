@@ -26,7 +26,7 @@ export function UserCard({ user }) {
         </svg>
       </button>
       <div className="profile-pic-main">
-        {user.type === "user" ?  (
+        {user.type === "user" ? (
           <label htmlFor="fileInput" className="relative cursor-pointer">
             <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
               <span className="block bg-blue-500 rounded-md ml-2">Update</span>
@@ -42,7 +42,7 @@ export function UserCard({ user }) {
               className="border-4 border-white rounded-full"
             />
           </label>
-        ) :(
+        ) : (
           <img
             src={displayImage}
             className="border-4 border-white rounded-full"
@@ -2012,25 +2012,38 @@ export function UserCard({ user }) {
           {user.firstName} {user.lastName}
         </div>
       </div>
-      <div className="bottom">
-        <div className="bg-blue-200 m-[1rem] rounded-lg opacity-[90%] w-[1em]">
-          <div className="flex flex-row justify-start items-start ">
-            <span className="flex justify-start items-start p-2 text-xl">
+      <div className="bottom overflow-auto">
+        <div className=" m-[1rem] rounded-lg opacity-[90%] ">
+          <div className="flex flex-row ">
+            <span className="flex justify-between items-start p-2 text-xl mr-12">
               Email
             </span>
-            <span className="flex justify-start items-start p-2">
-              {user.email}
-            </span>
+            <div className="flex flex-row justify-between items-center mr-2  w-full ">
+              <span className="flex justify-start items-start p-2 bg-gradient-to-tr from-green-100 via-violet-50 rounded-lg shadow-2xl text-gray-900 font-semibold hover:text-violet-700 relative">
+                {user.email}
+              </span>
+              <button className="p-1 border-2 border-gray-500 rounded-lg shadow-2xl hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white ml-[2em] ">
+                Edit
+              </button>
+            </div>
           </div>
           <div className="border-b-2 border-gray-500 w-96 ml-4"></div>
           <div className="flex flex-row">
-            <span className="flex justify-start items-start p-2">Username</span>
-            <span className="flex justify-start items-start p-2">
-              {user.username}
+            <span className="flex justify-between items-start p-2 text-xl mr-2">
+              Username
             </span>
+            <div className="flex flex-row justify-between items-center mr-2  w-full ">
+              <span className="flex justify-start items-start p-2 bg-gradient-to-tr from-green-100 via-violet-50 rounded-lg shadow-2xl text-gray-900 font-semibold hover:text-violet-700 relative">
+                {user.username}
+              </span>
+              <button className="p-1 border-2 border-gray-500 rounded-lg shadow-2xl hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white ml-[2em] ">
+                Edit
+              </button>
+            </div>
           </div>
+          <div className="border-b-2 border-gray-500 w-96 ml-4"></div>
           <div className="flex flex-row">
-            <span className="flex justify-start items-start p-2">
+            <span className="flex justify-start items-start p-2 text-xl mr-2">
               Recruiter
             </span>
             <span className="flex justify-start items-start p-2">

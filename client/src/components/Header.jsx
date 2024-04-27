@@ -7,6 +7,8 @@ import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 export default function Header() {
   const location = useLocation();
   const { signInSuccess } = useSelector((state) => state.user);
@@ -57,6 +59,7 @@ export default function Header() {
                     className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md"
                     onClick={handleProfile}
                   >
+                    <FontAwesomeIcon icon={faUserEdit} className="pr-2" />
                     Profile
                   </li>
                   <NavLink
@@ -69,6 +72,7 @@ export default function Header() {
                     }}
                   >
                     <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
+                      <FontAwesomeIcon icon={faSignOut} className="pr-2" />
                       Log Out
                     </li>
                   </NavLink>

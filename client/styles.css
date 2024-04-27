@@ -147,8 +147,9 @@
 }
 
 .card:hover .bottom {
-  top: 7rem;
+  top: 12rem;
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.2s;
+  overflow: auto;
 }
 
 .card:hover .profile-pic-main {
