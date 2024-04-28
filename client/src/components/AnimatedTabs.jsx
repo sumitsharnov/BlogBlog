@@ -148,7 +148,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
               </a>
             </div>
             <div className="overflow-auto flex flex-col gap-2 justify-centre p-2">
-              <div className=" text-gray-600 text-2xl gap-2">
+              <div className=" text-gray-600 text-2xl gap-2 lg:flex">
                 <span className="mr-2 flex">{tab.name}</span>
                 <a
                   href={tab.link}
@@ -170,7 +170,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                 >
                   <button
                     onClick={handleDownload}
-                    className={`text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[7rem] flex justify-center md:inline-block text-center mt-1 ${
+                    className={`text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[9rem] flex justify-center md:inline-block text-center mt-1 ${
                       currentUser.type === "guest"
                         ? "opacity-50 pointer-events-none"
                         : ""
