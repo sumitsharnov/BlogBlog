@@ -5,7 +5,7 @@ const fileSchema = new mongoose.Schema({
   filename: String,
   contentType: String,
   uploadDate: { type: Date, default: Date.now },
-  metadata: { type: String}
+  metadata: { userId: String}
 });
 
 const File = mongoose.model("File", fileSchema);

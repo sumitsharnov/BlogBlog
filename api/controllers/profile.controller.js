@@ -28,9 +28,12 @@ export const upload = (req, next) => {
 export const getProfilePhoto = async (req, res, next) => {
   console.log("Sumit")
   const { userId } = req.body;
-  
-  const photo = File.findOne({"metadata": {
-    "userId": 1234
-  }});
-  console.log(photo )
+  console.log(userId)
+
+    const photo = await File.findOne({"metadata.userId": userId}); // Correctly referencing userId from the request body
+    console.log(photo);
+    
+    if (!photo) {
+      return res.status(404).json({ error: 'Photo not found' });
+    }
 }
