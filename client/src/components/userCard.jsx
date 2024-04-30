@@ -2,22 +2,24 @@ import "../../styles.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { updateProfilePhoto } from "../services/userphotoupdate";
-import {useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import Cookies from "js-cookie";
 export function UserCard({ user, token }) {
   const displayImage = user.photoURL || user;
   const [file, setFile] = useState(null);
+  const [updateBtn, setUpdateBtn] = useState(false);
   const dispatch = useDispatch();
 
-  const handleFileSelection =  (event) => {
+  const handleFileSelection = (event) => {
+    console.log("I am in")
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
+    setUpdateBtn(true);
   };
 
   const handleUpload = async (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
+    //setUpdateBtn(false)
     if (!file) {
       alert("Please select a file.");
       return;
@@ -29,7 +31,7 @@ export function UserCard({ user, token }) {
       body: formData,
       headers: {
         userId: user._id ? user._id : null,
-        Authorization: token
+        authorization: token,
       },
     };
     try {
@@ -37,32 +39,38 @@ export function UserCard({ user, token }) {
       alert("File uploaded successfully!");
     } catch (error) {
       console.log(error);
-      if(error.message === "403") {
+      if (error.message === "403") {
         dispatch(clearSignInSuccess());
         Cookies.set("timeout", "You have been logged out");
       }
       //alert("An error occurred while uploading the file.");
     }
   };
+  console.log(updateBtn, "Sumt", file);
   return (
     <div className="card w-[70%] h-[60vh]">
-      <button className="mail">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="lucide lucide-mail"
-        >
-          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-        </svg>
+    
+      <button className="mail m-4">
+       
+        {updateBtn ? <span className="p-2 border border-gray-400 bg-gray-400 hover:bg-gray-500 focus:bg-gray-500 focus:outline-none w-20 text-center m-2 rounded-lg cursor-pointer ease-in-out translate-x-4"
+        onClick={handleUpload}>Update</span> : 
+         <svg
+         xmlns="http://www.w3.org/2000/svg"
+         width="24"
+         height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         strokeWidth="2"
+         strokeLinecap="round"
+         strokeLinejoin="round"
+         className="lucide lucide-mail"
+       >
+         <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+       </svg>}
       </button>
+
       <div className="profile-pic-main">
         {user.type === "user" ? (
           <label htmlFor="fileInput" className="relative cursor-pointer">
@@ -72,7 +80,7 @@ export function UserCard({ user, token }) {
             <input
               type="file"
               id="fileInput"
-             className="hidden"
+              className="hidden"
               onChange={handleFileSelection} // Handle file selection here
             />
             <img

@@ -14,7 +14,6 @@ export const upload = (req, res) => {
 
     // Verify the token using the secret key
     try {
-      console.log("Verifying");
        jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       console.log("Verifying");
