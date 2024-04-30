@@ -1,10 +1,48 @@
 import "../../styles.css";
 import PropTypes from "prop-types";
-export function UserCard({ user }) {
+import { useState } from "react";
+import { updateProfilePhoto } from "../services/userphotoupdate";
+import {useDispatch } from "react-redux"
+import { clearSignInSuccess } from "../redux/user/userSlice";
+import Cookies from "js-cookie";
+export function UserCard({ user, token }) {
   const displayImage = user.photoURL || user;
-  console.log(user);
-  const handleFileSelection = (e) => {
-    console.log(e, "This has been selected");
+  const [file, setFile] = useState(null);
+  const dispatch = useDispatch();
+
+  const handleFileSelection =  (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleUpload = async (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    if (!file) {
+      alert("Please select a file.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    const requestOptions = {
+      method: "POST",
+      body: formData,
+      headers: {
+        userId: user._id ? user._id : null,
+        Authorization: token
+      },
+    };
+    try {
+      await updateProfilePhoto(requestOptions);
+      alert("File uploaded successfully!");
+    } catch (error) {
+      console.log(error);
+      if(error.message === "403") {
+        dispatch(clearSignInSuccess());
+        Cookies.set("timeout", "You have been logged out");
+      }
+      //alert("An error occurred while uploading the file.");
+    }
   };
   return (
     <div className="card w-[70%] h-[60vh]">
@@ -34,8 +72,8 @@ export function UserCard({ user }) {
             <input
               type="file"
               id="fileInput"
-              className="hidden"
-              onChange={(e) => handleFileSelection(e.target.files[0])} // Handle file selection here
+             className="hidden"
+              onChange={handleFileSelection} // Handle file selection here
             />
             <img
               src={displayImage}
@@ -2100,6 +2138,8 @@ UserCard.propTypes = {
     username: PropTypes.string, // Assuming username is a string
     email: PropTypes.string, // Assuming email is a string
     recruiter: PropTypes.bool,
+    _id: PropTypes.string,
+    token: PropTypes.string,
     // Add more validations for other properties of the user object if necessary
   }).isRequired,
 };

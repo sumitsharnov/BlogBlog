@@ -21,6 +21,7 @@ const logger = pino({
 });
 
 let bucket; // Declare bucket variable outside of the promise chain
+let profilephotobucket;
 
 // Connect to MongoDB
 mongoose
@@ -29,6 +30,7 @@ mongoose
     console.log("MongoDB connected");
     const db = mongoose.connection.db;
     bucket = new GridFSBucket(db, { bucketName: 'filesBucket' }); // Initialize GridFS bucket
+    profilephotobucket = new GridFSBucket(db, { bucketName: 'profilePhotoBucket' });
   })
   .catch((err) => {
     console.error(err); // Log MongoDB connection error
@@ -51,6 +53,7 @@ app.use(express.json());
 app.use('/images', express.static("api/utils/images"));
 
 // Routes
+app.use("/api", fileRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/google", googleauthRoutes); 
@@ -79,4 +82,4 @@ app.listen(port, () => {
 });
 
 // Export app and bucket separately
-export { app, bucket, logger };
+export { app, bucket, logger, profilephotobucket };

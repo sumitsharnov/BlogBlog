@@ -6,9 +6,8 @@ import { useState, useEffect } from 'react';
 import Loader from '../components/Loader';
 
 export default function UserProfile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, token } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
-
   // Determine user object based on currentUser data
   const user =
     currentUser.firstName === 'Guest' || !currentUser.photoURL
@@ -35,7 +34,7 @@ export default function UserProfile() {
       ) : (
         // Display UserCard component with user data once loading is complete
         <div className='flex justify-center items-center mt-[10rem]'>
-          <UserCard user={user} />
+          <UserCard user={user} token={token} />
         </div>
       )}
     </>

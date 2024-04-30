@@ -1,19 +1,18 @@
 import express from "express";
 import { upload, getProfilePhoto } from "../controllers/profile.controller.js"
+import { profilephotobucket } from "../index.js";
 
 const router = express.Router();
 
-router.post("/update", upload(), async (req, res) => {
-    try {
-      res.status(201).json({ text: "File uploaded successfully !" });
-    } catch (error) {
-      console.log(error);
-      res.status(400).json({
-        error: { text: "Unable to upload the file", error },
-      });
-    }
-  });
+router.post("/update", upload)
 
 router.get("/find", getProfilePhoto)
+
+router.get('/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const downloadStream = profilephotobucket.openDownloadStreamByName(filename);
+  downloadStream.pipe(res);
+});
+
 
 export default router;

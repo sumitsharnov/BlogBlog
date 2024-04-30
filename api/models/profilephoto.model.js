@@ -5,8 +5,9 @@ const fileSchema = new mongoose.Schema({
   filename: String,
   contentType: String,
   uploadDate: { type: Date, default: Date.now },
+  metadata: { userId: String}
 });
 
-const File = mongoose.model("File", fileSchema);
+const ProfilePhoto = mongoose.model("ProfilePhoto", fileSchema);
 
-export default File;
+export default ProfilePhoto;
