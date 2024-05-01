@@ -12,7 +12,6 @@ export const updateProfilePhotoURL = async (formData) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
   });
-  console.log(response)
   if (!response.ok) {
     throw new Error(response.status);
   }

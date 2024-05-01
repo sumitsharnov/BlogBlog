@@ -8,7 +8,6 @@ export const upload = (req, res) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
-    console.log(token, "TOKEN");
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -17,8 +16,7 @@ export const upload = (req, res) => {
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-      console.log("Verifying");
-       return res.status(403).json({ message: "Invalid token" });
+      return res.status(403).json({ message: "Invalid token" });
     }
 
     // Handle file upload and userId as needed

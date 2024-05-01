@@ -5,7 +5,6 @@ import Certification from "../models/certifications.model.js";
 dotenv.config();
 export const certifications = async (req, res, next) => {
   const token = req.headers.authorization;
-console.log(token , "This isral")
   try {
     // If no token is found, return 401 Unauthorized
     if (!token) {

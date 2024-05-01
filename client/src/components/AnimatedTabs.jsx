@@ -148,20 +148,20 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
               </a>
             </div>
             <div className="overflow-auto flex flex-col gap-2 justify-centre p-2">
-              <div className=" text-gray-600 text-2xl gap-2 lg:flex">
-                <span className="mr-2 flex">{tab.name}</span>
+              <div className=" text-gray-600 text-2xl flex lg:flex-row flex-col">
+                <span className="mr-2">{tab.name}</span>
                 <a
                   href={tab.link}
                   target="_blank"
                   title={tab.link}
                   rel="noreferrer"
                 >
-                  <span className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[9rem] md:inline-block text-center mr-2 mb-1">
+                  <div className="text-xs  text-white border rounded-md  p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700  w-[9rem] md:inline-block text-center mr-2 mt-2">
                     Show Credentials
-                  </span>
+                  </div>
                 </a>
                 <div
-                  className="relative"
+                  className="relative w-[9rem]"
                   title={
                     currentUser.type === "guest"
                       ? "Download button only enabled for logged-in users"
@@ -170,7 +170,7 @@ const FadeInDiv = ({ tabs, hovering, handleDownload, downloading }) => {
                 >
                   <button
                     onClick={handleDownload}
-                    className={`text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[9rem] flex justify-center md:inline-block text-center mt-1 ${
+                    className={`text-xs text-white border rounded-md p-[.2rem] cursor-pointer hover:bg-gray-300 hover:text-gray-700 w-[9rem]  md:inline-block text-center mt-1 ${
                       currentUser.type === "guest"
                         ? "opacity-50 pointer-events-none"
                         : ""
