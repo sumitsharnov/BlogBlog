@@ -69,13 +69,13 @@ export async function downloadCfts(cft, token) {
     });
     let res;
     if (cft.name === "All") {
-      res = await fetch(`http://localhost:3000/api/download/all/files`, {
+      res = await fetch(`/api/download/all/files`, {
         method: "GET",
         headers: { Authorization: token },
       });
     } else {
       res = await fetch(
-        `http://localhost:3000/api/download/${cft.name}.${cft.type}`,
+        `/api/download/${cft.name}.${cft.type}`,
         {
           method: "GET",
           headers: { Authorization: token },

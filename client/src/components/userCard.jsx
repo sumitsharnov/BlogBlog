@@ -1,7 +1,7 @@
 import "../../styles.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { updateProfilePhoto } from "../services/userphotoupdate";
+import { updateProfilePhoto, updateProfilePhotoURL } from "../services/userphotoupdate";
 import { useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import Cookies from "js-cookie";
@@ -10,12 +10,16 @@ export function UserCard({ user, token }) {
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
   const dispatch = useDispatch();
-  console.log(user.type,"Right")
+  
+
   const handleFileSelection = async (event) => {
-    console.log(user.type)
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setUpdateBtn(true);
+  };
+
+  const handleCancel = async () => {
+    setUpdateBtn(false);
   };
 
   const handleUpload = async () => {
@@ -37,8 +41,8 @@ export function UserCard({ user, token }) {
     try {
       await updateProfilePhoto(requestOptions);
       alert("File uploaded successfully!");
+      findAndSetProfilePhoto();
     } catch (error) {
-      console.log(error);
       if (error.message === "403") {
         dispatch(clearSignInSuccess());
         Cookies.set("timeout", "You have been logged out");
@@ -46,29 +50,57 @@ export function UserCard({ user, token }) {
       //alert("An error occurred while uploading the file.");
     }
   };
-  console.log(updateBtn, "Sumt", file);
+
+  const findAndSetProfilePhoto = async () =>{
+    console.log("The call has been successful", user._id)
+    const response = await fetch("http://localhost:3000/api/profile/photo/find", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"userId": user._id}),
+    });
+    // const requestOptions = {
+    //   method: "POST",
+    //   body: ({"userId": user._id}),
+    // };
+    // const newPhotoUrl = await updateProfilePhotoURL(requestOptions);
+    console.log(response, "Sumit");
+  };
   return (
     <div className="card w-[70%] h-[60vh]">
-    
       <button className="mail m-4">
-       
-        {updateBtn ? <span className="p-2 border border-gray-400 bg-gray-400 hover:bg-gray-500 focus:bg-gray-500 focus:outline-none w-20 text-center m-2 rounded-lg cursor-pointer ease-in-out translate-x-4"
-        onClick={handleUpload}>Update</span> : 
-         <svg
-         xmlns="http://www.w3.org/2000/svg"
-         width="24"
-         height="24"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         strokeWidth="2"
-         strokeLinecap="round"
-         strokeLinejoin="round"
-         className="lucide lucide-mail"
-       >
-         <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-       </svg>}
+        {updateBtn ? (
+        <div className="flex lg:flex-row flex-col justify-around lg:gap-4 gap-1 w-full">
+          <span className="lg:inline-block hidden">{file && file.name}</span>
+        <span
+          className="inline-block bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
+          onClick={handleUpload}
+        >
+          Update
+        </span>
+        <span
+          className="inline-block bg-red-500 hover:bg-red-600 focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
+          onClick={findAndSetProfilePhoto}
+        >
+          Cancel
+        </span>
+      </div>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-mail"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        )}
       </button>
 
       <div className="profile-pic-main">

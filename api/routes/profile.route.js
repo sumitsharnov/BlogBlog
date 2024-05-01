@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/update", upload)
 
-router.get("/find", getProfilePhoto)
+router.post("/find", getProfilePhoto)
 
 router.get('/:filename', (req, res) => {
   const filename = req.params.filename;

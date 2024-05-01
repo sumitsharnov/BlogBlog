@@ -13,7 +13,6 @@ export const upload = (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
     const t = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(t, "T");
     // Verify the token using the secret key
     try {
       jwt.verify(token, process.env.JWT_SECRET);
