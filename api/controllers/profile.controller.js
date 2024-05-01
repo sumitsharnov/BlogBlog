@@ -1,20 +1,22 @@
 import multer from "multer";
 import { GridFsStorage } from "multer-gridfs-storage";
-import ProfilePhoto from "../models/profilephoto.model.js";
 import { profilephotobucket } from "../index.js";
+import jwt from "jsonwebtoken";
 const mongodbUrl = process.env.MONGO;
 
 export const upload = (req, res) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
+    console.log(token, "TOKEN");
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
+    const t = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(t, "T");
     // Verify the token using the secret key
     try {
-       jwt.verify(token, process.env.JWT_SECRET);
+      jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       console.log("Verifying");
        return res.status(403).json({ message: "Invalid token" });

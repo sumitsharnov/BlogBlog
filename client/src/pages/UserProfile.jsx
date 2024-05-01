@@ -25,7 +25,7 @@ export default function UserProfile() {
 
     // Specify dependencies for useEffect (empty array means it runs only on mount)
   }, []);
-
+  console.log(user);
   return (
     <>
       {loading ? (

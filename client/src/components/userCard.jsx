@@ -10,15 +10,15 @@ export function UserCard({ user, token }) {
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
   const dispatch = useDispatch();
-
-  const handleFileSelection = (event) => {
-    console.log("I am in")
+  console.log(user.type,"Right")
+  const handleFileSelection = async (event) => {
+    console.log(user.type)
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setUpdateBtn(true);
   };
 
-  const handleUpload = async (event) => {
+  const handleUpload = async () => {
     //setUpdateBtn(false)
     if (!file) {
       alert("Please select a file.");
@@ -2147,7 +2147,7 @@ UserCard.propTypes = {
     email: PropTypes.string, // Assuming email is a string
     recruiter: PropTypes.bool,
     _id: PropTypes.string,
-    token: PropTypes.string,
     // Add more validations for other properties of the user object if necessary
   }).isRequired,
+  token: PropTypes.string,
 };
