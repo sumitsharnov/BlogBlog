@@ -28,6 +28,7 @@ export const signup = async (req, res, next) => {
     email: email,
     password: hashedPassword,
     recruiter: isRecruiter,
+    photoURL: null,
   });
   try {
     await newUser.save();

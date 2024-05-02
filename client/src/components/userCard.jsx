@@ -16,13 +16,12 @@ export function UserCard({ user, token }) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [updateClicks, setUpdateClicks] = useState(0);
   const dispatch = useDispatch();
-
   const handleFileSelection = async (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setUpdateBtn(true);
   };
-
+console.log(displayImage, "Sumit", user.photoURL);
   const handleCancel = async () => {
     setUpdateBtn(false);
   };
@@ -58,9 +57,8 @@ export function UserCard({ user, token }) {
 
   const findAndSetProfilePhoto = async () => {
     try {
-      const response = await updateProfilePhotoURL({ userId: user._id });
-      const data = await response.json();
-      const photoURL = data.photoUrl;
+      await updateProfilePhotoURL({ userId: user._id });
+      console.log(response, "Sumirt");
     } catch (error) {
       setUpdateClicks((prev) => prev + 1);
       setErrorMessage("Couldn't update profile photo");
@@ -81,19 +79,19 @@ export function UserCard({ user, token }) {
       <div className="card w-[70%] h-[60vh]">
         <button className="mail m-4">
           {updateBtn ? (
-            <div className="flex lg:flex-row flex-col justify-around lg:gap-4 gap-1 w-full">
-              <span className="md:inline-block hidden p-2 border rounded-xl disabled">
+            <div className="flex md:flex-row flex-col justify-center items-center lg:gap-4 gap-1 w-full">
+              <span className="md:inline-block hidden p-2 border rounded-xl disabled ml-2 max-w-[200px]">
                 <span className="mr-2 text-gray-500">File Info: {file && (file.name)}</span>
                 <span className="mr-2 text-gray-500">{file && `(${Math.floor(file.size/1000)} KB)`}</span>
               </span>
               <span
-                className="inline-block bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
+                className="max-h-[3rem] flex justify-center items-center bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
                 onClick={handleUpload}
               >
                 Update
               </span>
               <span
-                className="inline-block bg-red-500 hover:bg-red-600 focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
+                className="max-h-[3rem] flex justify-center items-center bg-red-500 hover:bg-red-600 focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:-translate-x-2 cursor-pointer"
                 onClick={handleCancel}
               >
                 Cancel
