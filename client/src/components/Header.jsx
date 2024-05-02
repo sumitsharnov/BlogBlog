@@ -49,7 +49,7 @@ export default function Header() {
           {currentUser && signInSuccess && (
             <div className="relative group">
               <img
-                // src={displayImage}
+                src={displayImage}
                 alt="profile"
                 className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
               />

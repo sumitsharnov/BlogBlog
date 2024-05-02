@@ -88,8 +88,8 @@ export const getProfilePhoto = async (req, res, next) => {
     const photoUrl = `/api/profile/photo/${encodeURIComponent(
       photo[0].filename
     )}`;
-    update(photoUrl, userId)
-    return res.status(200).json("Profile photo has been updated");
+    const updatedUser = await update(photoUrl, userId)
+    return res.status(200).json(photoUrl);
   } catch (error) {
     // Handle any unexpected errors
     return res.status(500).json({ error: "Error updating profile photo" });
@@ -100,7 +100,6 @@ export const update = async (photourl, userid) => {
   try {
     // Find the user by _id
     const user = await User.findOne({ _id: userid });
-    console.log(photourl, "ksdjhfkshdkh")
     if (!user) {
       // If user not found, handle accordingly (e.g., throw error or return)
       throw new Error('Errorin updating profile photo');
@@ -113,7 +112,7 @@ export const update = async (photourl, userid) => {
     const updatedUser = await user.save();
 
     // Optionally, return the updated user object
-    return updatedUser;
+    return {...updatedUser, type:"user"};
   } catch (error) {
     // Handle errors (e.g., log, return specific error response)
     throw error; // Propagate the error to the caller

@@ -5,11 +5,13 @@ import {
   updateProfilePhoto,
   updateProfilePhotoURL,
 } from "../services/userphotoupdate";
-import { useDispatch } from "react-redux";
+import { signInSuccess } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import MessagesCentre from "../components/MessagesCentre";
 import Cookies from "js-cookie";
 export function UserCard({ user, token }) {
+  const { currentUser } = useSelector((state) => state.user);
   const displayImage = user.photoURL || user;
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
@@ -21,13 +23,11 @@ export function UserCard({ user, token }) {
     setFile(selectedFile);
     setUpdateBtn(true);
   };
-console.log(displayImage, "Sumit", user.photoURL);
   const handleCancel = async () => {
     setUpdateBtn(false);
   };
 
   const handleUpload = async () => {
-    console.log(file);
     if (!file) {
       alert("Please select a file.");
       return;
@@ -57,12 +57,13 @@ console.log(displayImage, "Sumit", user.photoURL);
 
   const findAndSetProfilePhoto = async () => {
     try {
-      await updateProfilePhotoURL({ userId: user._id });
-      console.log(response, "Sumirt");
+      const res = await updateProfilePhotoURL({ userId: user._id })
+      const photoURL =  await res.json();
+      dispatch(signInSuccess({...currentUser, photoURL:photoURL}));
+      setUpdateBtn(false);
     } catch (error) {
       setUpdateClicks((prev) => prev + 1);
-      setErrorMessage("Couldn't update profile photo");
-      console.log(errorMessage);
+      setErrorMessage("Couldn't update profile photo");  
     }
   };
   return (
@@ -80,7 +81,7 @@ console.log(displayImage, "Sumit", user.photoURL);
         <button className="mail m-4">
           {updateBtn ? (
             <div className="flex md:flex-row flex-col justify-center items-center lg:gap-4 gap-1 w-full">
-              <span className="md:inline-block hidden p-2 border rounded-xl disabled ml-2 max-w-[200px]">
+              <span className="md:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[15rem] text-">
                 <span className="mr-2 text-gray-500">File Info: {file && (file.name)}</span>
                 <span className="mr-2 text-gray-500">{file && `(${Math.floor(file.size/1000)} KB)`}</span>
               </span>
@@ -116,7 +117,7 @@ console.log(displayImage, "Sumit", user.photoURL);
           )}
         </button>
 
-        <div className="profile-pic-main">
+        <div className="profile-pic-main rounded-full">
           {user.type === "user" ? (
             <label htmlFor="fileInput" className="relative cursor-pointer">
               <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
