@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import MessagesCentre from "../components/MessagesCentre";
 import Cookies from "js-cookie";
+
 export function UserCard({ user, token }) {
   const { currentUser } = useSelector((state) => state.user);
   const displayImage = user.photoURL || user;
@@ -57,15 +58,24 @@ export function UserCard({ user, token }) {
 
   const findAndSetProfilePhoto = async () => {
     try {
-      const res = await updateProfilePhotoURL({ userId: user._id })
-      const photoURL =  await res.json();
-      dispatch(signInSuccess({...currentUser, photoURL:photoURL}));
+      const res = await updateProfilePhotoURL({ userId: user._id });
+      const photoURL = await res.json();
+      dispatch(signInSuccess({ ...currentUser, photoURL: photoURL }));
       setUpdateBtn(false);
     } catch (error) {
       setUpdateClicks((prev) => prev + 1);
-      setErrorMessage("Couldn't update profile photo");  
+      setErrorMessage("Couldn't update profile photo");
     }
   };
+
+  // Function to truncate file name if it exceeds 20 characters
+  const truncateFileName = (fileName, maxLength) => {
+    if (fileName.length > maxLength) {
+      return fileName.slice(0, maxLength) + "...";
+    }
+    return fileName;
+  };
+
   return (
     <>
       {errorMessage && (
@@ -81,9 +91,17 @@ export function UserCard({ user, token }) {
         <button className="mail m-4">
           {updateBtn ? (
             <div className="flex md:flex-row flex-col justify-center items-center lg:gap-4 gap-1 w-full">
-              <span className="md:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[15rem] text-">
-                <span className="mr-2 text-gray-500">File Info: {file && (file.name)}</span>
-                <span className="mr-2 text-gray-500">{file && `(${Math.floor(file.size/1000)} KB)`}</span>
+              <span
+                className="md:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[15rem]"
+                title={file?.name} // Set the tooltip content to the full file name
+                data-multiline="true" // Allow multiline content in tooltip
+              >
+                <span className="mr-2 text-gray-500">
+                  File Info: {file && truncateFileName(file.name, 20)}
+                </span>
+                <span className="mr-2 text-gray-500">
+                  {file && `(${Math.floor(file.size / 1000)} KB)`}
+                </span>
               </span>
               <span
                 className="max-h-[3rem] flex justify-center items-center bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"

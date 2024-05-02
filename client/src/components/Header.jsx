@@ -2,7 +2,7 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSignInSuccess } from "../redux/user/userSlice";
+import { clearSignInSuccess, signInSuccess } from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
@@ -11,13 +11,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 export default function Header() {
   const location = useLocation();
-  const { signInSuccess } = useSelector((state) => state.user);
+  // const { signInSuccess } = useSelector((state) => state.user);
   const { currentUser } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleProfile = () => {
     navigate("/profile");
+  };
+
+  const handleErrorImage = () => {
+    dispatch(signInSuccess({...currentUser, photoURL:anonuser}));
   };
   return (
     <>
@@ -52,6 +56,7 @@ export default function Header() {
                 src={displayImage}
                 alt="profile"
                 className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
+                onError={handleErrorImage}
               />
               <div className="absolute opacity-0 group-hover:opacity-[80%] bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
                 <ul className="list-none p-0 m-0">
