@@ -1,81 +1,19 @@
 import "../../styles.css";
 import PropTypes from "prop-types";
-import { useState } from "react";
-import {
-  updateProfilePhoto,
-  updateProfilePhotoURL,
-} from "../services/userphotoupdate";
-import { signInSuccess } from "../redux/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { clearSignInSuccess } from "../redux/user/userSlice";
 import MessagesCentre from "../components/MessagesCentre";
-import Cookies from "js-cookie";
 
-export function UserCard({ user, token }) {
-  const { currentUser } = useSelector((state) => state.user);
-  const displayImage = user.photoURL || user;
-  const [file, setFile] = useState(null);
-  const [updateBtn, setUpdateBtn] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [updateClicks, setUpdateClicks] = useState(0);
-  const dispatch = useDispatch();
-  const handleFileSelection = async (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    setUpdateBtn(true);
-  };
-  const handleCancel = async () => {
-    setUpdateBtn(false);
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file.");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-      headers: {
-        userId: user._id ? user._id : null,
-        authorization: token,
-      },
-    };
-    try {
-      await updateProfilePhoto(requestOptions);
-      alert("File uploaded successfully!");
-      findAndSetProfilePhoto();
-    } catch (error) {
-      if (error.message === "403") {
-        dispatch(clearSignInSuccess());
-        Cookies.set("timeout", "You have been logged out");
-      }
-      setErrorMessage("Couldn't update profile photo");
-    }
-  };
-
-  const findAndSetProfilePhoto = async () => {
-    try {
-      const res = await updateProfilePhotoURL({ userId: user._id });
-      const photoURL = await res.json();
-      dispatch(signInSuccess({ ...currentUser, photoURL: photoURL }));
-      setUpdateBtn(false);
-    } catch (error) {
-      setUpdateClicks((prev) => prev + 1);
-      setErrorMessage("Couldn't update profile photo");
-    }
-  };
-
-  // Function to truncate file name if it exceeds 20 characters
-  const truncateFileName = (fileName, maxLength) => {
-    if (fileName.length > maxLength) {
-      return fileName.slice(0, maxLength) + "...";
-    }
-    return fileName;
-  };
-
+export function UserCard({
+  user,
+  truncateFileName,
+  handleUpload,
+  handleFileSelection,
+  handleCancel,
+  displayImage,
+  updateBtn,
+  errorMessage,
+  updateClicks,
+  file,
+}) {
   return (
     <>
       {errorMessage && (
@@ -2214,7 +2152,18 @@ UserCard.propTypes = {
     email: PropTypes.string, // Assuming email is a string
     recruiter: PropTypes.bool,
     _id: PropTypes.string,
+    
     // Add more validations for other properties of the user object if necessary
   }).isRequired,
   token: PropTypes.string,
+  truncateFileName: PropTypes.func.isRequired,
+  findAndSetProfilePhoto: PropTypes.func.isRequired,
+  handleUpload: PropTypes.func.isRequired,
+  handleFileSelection: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+  displayImage: PropTypes.string.isRequired,
+  updateBtn: PropTypes.bool.isRequired,
+  errorMessage: PropTypes.string, // errorMessage is optional, so it's defined as a string
+  updateClicks: PropTypes.func.isRequired,
+  file: PropTypes.object,
 };
