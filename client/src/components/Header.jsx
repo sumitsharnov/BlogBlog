@@ -2,7 +2,7 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSignInSuccess, signInSuccess } from "../redux/user/userSlice";
+import { clearSignInSuccess, signInSuccess as success} from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
@@ -12,7 +12,7 @@ import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 export default function Header() {
   const location = useLocation();
   // const { signInSuccess } = useSelector((state) => state.user);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, signInSuccess } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   const handleErrorImage = () => {
-    dispatch(signInSuccess({...currentUser, photoURL:anonuser}));
+    dispatch(success({...currentUser, photoURL:anonuser}));
   };
   return (
     <>

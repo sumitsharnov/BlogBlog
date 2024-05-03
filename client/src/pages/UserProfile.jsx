@@ -17,6 +17,7 @@ export default function UserProfile() {
   const { currentUser, token } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   // Determine user object based on currentUser data
+  console.log(currentUser, "Sumit");
   const displayImage = currentUser.photoURL || currentUser;
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
