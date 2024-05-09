@@ -16,9 +16,8 @@ import Cookies from "js-cookie";
 export default function UserProfile() {
   const { currentUser, token } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
-  // Determine user object based on currentUser data
-  console.log(currentUser, "Sumit");
-  const displayImage = currentUser.photoURL || currentUser;
+  // Determine user object based on currentUser data 
+  const displayImage = currentUser.photoURL || anonuser;
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -57,6 +56,7 @@ export default function UserProfile() {
       setUpdating(true);
       findAndSetProfilePhoto();
     } catch (error) {
+      setUploading(false);
       if (error.message === "403") {
         dispatch(clearSignInSuccess());
         Cookies.set("timeout", "You have been logged out");
@@ -74,7 +74,9 @@ export default function UserProfile() {
       setTimeout(() => {
         setUpdating(false); // Set loading state to false after 3 seconds (simulating data loading)
       }, 3000);
+      setErrorMessage(null);
     } catch (error) {
+      setUpdating(false);
       setUpdateClicks((prev) => prev + 1);
       setErrorMessage("Couldn't update profile photo");
     }

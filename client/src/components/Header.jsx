@@ -13,6 +13,7 @@ export default function Header() {
   const location = useLocation();
   // const { signInSuccess } = useSelector((state) => state.user);
   const { currentUser, signInSuccess } = useSelector((state) => state.user);
+  console.log(currentUser, "Suim,it");  
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,7 +21,9 @@ export default function Header() {
     navigate("/profile");
   };
 
-  const handleErrorImage = () => {
+ 
+  const handleErrorImage = (event) => {
+    console.log(event, "ASumit");
     dispatch(success({...currentUser, photoURL:anonuser}));
   };
   return (

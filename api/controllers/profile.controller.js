@@ -88,7 +88,7 @@ export const getProfilePhoto = async (req, res, next) => {
     const photoUrl = `/api/profile/photo/${encodeURIComponent(
       photo[0].filename
     )}`;
-    const updatedUser = await update(photoUrl, userId)
+    const updatedUser = await updateProfilePhoto(photoUrl, userId)
     return res.status(200).json(photoUrl);
   } catch (error) {
     // Handle any unexpected errors
@@ -96,7 +96,7 @@ export const getProfilePhoto = async (req, res, next) => {
   }
 };
 
-export const update = async (photourl, userid) => {
+export const updateProfilePhoto = async (photourl, userid) => {
   try {
     // Find the user by _id
     const user = await User.findOne({ _id: userid });

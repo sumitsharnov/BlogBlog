@@ -75,29 +75,32 @@ export function UserCard({
 
         <div className="profile-pic-main rounded-full">
           {user.type === "user" ? (
-            <label htmlFor="fileInput" className="relative cursor-pointer">
-              <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
-                <span className="block bg-blue-500 rounded-md ml-2">
-                  Update
-                </span>
-              </div>
-              <input
-                type="file"
-                id="fileInput"
-                className="hidden"
-                onChange={handleFileSelection} // Handle file selection here
-              />
-              <img
-                src={displayImage}
-                className="border-4 border-white rounded-full"
-              />
-            </label>
+            <>
+              <label htmlFor="fileInput" className="relative cursor-pointer">
+                <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
+                  <span className="block bg-blue-500 rounded-md ml-2">
+                    Update
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  id="fileInput"
+                  className="hidden"
+                  onChange={handleFileSelection} // Handle file selection here
+                />
+                <img
+                  src={displayImage}
+                  className="border-4 border-white rounded-full"
+                />
+              </label>
+            </>
           ) : (
             <img
               src={displayImage}
               className="border-4 border-white rounded-full"
             />
           )}
+
         </div>
         <div className="profile-pic">
           <svg
@@ -2152,7 +2155,7 @@ UserCard.propTypes = {
     email: PropTypes.string, // Assuming email is a string
     recruiter: PropTypes.bool,
     _id: PropTypes.string,
-    
+
     // Add more validations for other properties of the user object if necessary
   }).isRequired,
   token: PropTypes.string,
@@ -2164,6 +2167,6 @@ UserCard.propTypes = {
   displayImage: PropTypes.string.isRequired,
   updateBtn: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string, // errorMessage is optional, so it's defined as a string
-  updateClicks: PropTypes.func.isRequired,
+  updateClicks: PropTypes.number,
   file: PropTypes.object,
 };
