@@ -24,6 +24,7 @@ export default function UserProfile() {
   const [updateClicks, setUpdateClicks] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [options, setOptions] = useState(false);
   const dispatch = useDispatch();
   const handleFileSelection = async (event) => {
     const selectedFile = event.target.files[0];
@@ -31,7 +32,12 @@ export default function UserProfile() {
     setUpdateBtn(true);
   };
   const handleCancel = async () => {
-    setUpdateBtn(false);
+    setOptions(false);
+    setFile(null);
+  };
+
+  const handleOptions = () => {
+    setOptions(true);
   };
 
   const handleUpload = async () => {
@@ -57,12 +63,14 @@ export default function UserProfile() {
       findAndSetProfilePhoto();
     } catch (error) {
       setUploading(false);
-      if (error.message === "403") {
+      if (error.message === "401" || error.message.includes("Failed to fetch")) {
         dispatch(clearSignInSuccess());
         Cookies.set("timeout", "You have been logged out");
       }
       setErrorMessage("Couldn't update profile photo");
     }
+    setFile(null);
+    setOptions(false);
   };
 
   const findAndSetProfilePhoto = async () => {
@@ -118,7 +126,8 @@ export default function UserProfile() {
           <UserCard user={user} token={token} truncateFileName={truncateFileName} 
           findAndSetProfilePhoto={findAndSetProfilePhoto} handleUpload={handleUpload}
           handleFileSelection={handleFileSelection} handleCancel={handleCancel}
-          displayImage={displayImage} updateBtn={updateBtn} errorMessage={errorMessage} updateClicks={updateClicks} file={file}/>
+          displayImage={displayImage} updateBtn={updateBtn} errorMessage={errorMessage} updateClicks={updateClicks} file={file}
+          handleOptions={handleOptions} options={options}/>
         </div>
       )}
     </>

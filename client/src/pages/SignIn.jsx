@@ -105,7 +105,6 @@ const SignIn = () => {
         if (!res.ok) {
           await handleErrorReponse(data.message);
         } else {
-          console.log(data, "This is man data")
           dispatch(signInSuccess(data));
           navigate("/?source=signin");
         }

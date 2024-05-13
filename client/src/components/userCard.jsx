@@ -9,11 +9,13 @@ export function UserCard({
   handleFileSelection,
   handleCancel,
   displayImage,
-  updateBtn,
   errorMessage,
   updateClicks,
   file,
+  handleOptions,
+  options
 }) {
+  
   return (
     <>
       {errorMessage && (
@@ -27,10 +29,10 @@ export function UserCard({
       )}
       <div className="card w-[70%] h-[60vh]">
         <button className="mail m-4">
-          {updateBtn ? (
+          {options ? (
             <div className="flex md:flex-row flex-col justify-center items-center lg:gap-4 gap-1 w-full">
-              <span
-                className="md:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[15rem]"
+              {file && <span
+                className="lg:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[12rem]"
                 title={file?.name} // Set the tooltip content to the full file name
                 data-multiline="true" // Allow multiline content in tooltip
               >
@@ -41,14 +43,30 @@ export function UserCard({
                   {file && `(${Math.floor(file.size / 1000)} KB)`}
                 </span>
               </span>
+}
+              <label htmlFor="fileInput" className={`relative cursor-pointer`}>
+                <span
+                  className="max-h-[3rem] flex justify-center items-center bg-teal-500 hover:bg-white hover:text-teal-500 hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
+                  // onClick={handleUpload}
+                >
+                  Select File
+                </span>
+
+                <input
+                  type="file"
+                  id="fileInput"
+                  className="hidden"
+                  onChange={handleFileSelection} // Handle file selection here
+                />
+              </label>
               <span
-                className="max-h-[3rem] flex justify-center items-center bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
-                onClick={handleUpload}
-              >
-                Update
-              </span>
+                  className={`max-h-[3rem] flex justify-center items-center ${file ? 'bg-green-500' : 'bg-red-500'} hover:bg-white ${file ? 'hover:text-green-500' : 'hover:text-red-500'}  hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer`}
+                  onClick={file && handleUpload}
+                >
+                 {file ? 'Update' : 'Delete'}
+                </span>
               <span
-                className="max-h-[3rem] flex justify-center items-center bg-red-500 hover:bg-red-600 focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:-translate-x-2 cursor-pointer"
+                className="max-h-[3rem] flex justify-center items-center bg-gray-500 hover:bg-white focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:-translate-x-2 cursor-pointer hover:text-gray-500 hover:border-2"
                 onClick={handleCancel}
               >
                 Cancel
@@ -76,23 +94,19 @@ export function UserCard({
         <div className="profile-pic-main rounded-full">
           {user.type === "user" ? (
             <>
-              <label htmlFor="fileInput" className="relative cursor-pointer">
-                <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
-                  <span className="block bg-blue-500 rounded-md ml-2">
-                    Update
-                  </span>
-                </div>
-                <input
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                  onChange={handleFileSelection} // Handle file selection here
-                />
-                <img
-                  src={displayImage}
-                  className="border-4 border-white rounded-full"
-                />
-              </label>
+              <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
+                <span
+                  className="block bg-blue-500 rounded-md ml-2 cursor-pointer"
+                  onClick={handleOptions}
+                >
+                  Update
+                </span>
+              </div>
+
+              <img
+                src={displayImage}
+                className="border-4 border-white rounded-full"
+              />
             </>
           ) : (
             <img
@@ -100,7 +114,6 @@ export function UserCard({
               className="border-4 border-white rounded-full"
             />
           )}
-
         </div>
         <div className="profile-pic">
           <svg
@@ -2057,7 +2070,6 @@ export function UserCard({
             </g>
           </svg>
         </div>
-
         <div className="text-gray-500 font-bold text-2xl p-2 ">
           Name
           <div className="border-b-2 border-gray-500 "></div>
@@ -2169,4 +2181,7 @@ UserCard.propTypes = {
   errorMessage: PropTypes.string, // errorMessage is optional, so it's defined as a string
   updateClicks: PropTypes.number,
   file: PropTypes.object,
+  handleUpdate: PropTypes.func.isRequired,
+  options: PropTypes.bool,
+  handleOptions: PropTypes.func.isRequired
 };
