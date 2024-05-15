@@ -9,8 +9,33 @@ import About from "./pages/About";
 import Header from "./components/Header";
 import PrivateRoutes from "./components/PrivateRoutes";
 import UserProfile from "./pages/UserProfile";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserInfo } from "./services/user_api";
+import { updateCurrentUser } from "./redux/user/userSlice";
+import { clearSignInSuccess } from "./redux/user/userSlice";
+import Cookies from "js-cookie";
 
 export default function App() {
+  const { currentUser, token } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("Checking")
+    if (currentUser && currentUser._id && token) {
+     const fetch = async () => {
+      try{
+      const res = await getUserInfo(currentUser._id, token);
+      const userInfo = await res.json();
+      dispatch(updateCurrentUser({...userInfo, token:token}));
+      }catch(error){
+        dispatch(clearSignInSuccess());
+        Cookies.set("timeout", "You have been logged out");
+      }
+     } 
+     fetch();
+    }
+  }, [])
+
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">

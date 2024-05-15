@@ -41,9 +41,17 @@ const initialState = {
           token: null
         };
       },
+
+      updateCurrentUser(state, action) { 
+        return {
+         ...state,
+          currentUser :action.payload,
+          token: action.payload.token,
+        };
+      }, 
     },
   });
 
-  export const { signUpSuccess, clearSignUpSuccess, signInSuccess, clearSignInSuccess } = userSlice.actions;
+  export const { signUpSuccess, clearSignUpSuccess, signInSuccess, clearSignInSuccess, updateCurrentUser } = userSlice.actions;
   export default userSlice.reducer;
   

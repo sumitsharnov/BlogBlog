@@ -63,7 +63,7 @@ export default function UserProfile() {
       findAndSetProfilePhoto();
     } catch (error) {
       setUploading(false);
-      if (error.message === "401" || error.message.includes("Failed to fetch")) {
+      if (error.message === "403") {
         dispatch(clearSignInSuccess());
         Cookies.set("timeout", "You have been logged out");
       }

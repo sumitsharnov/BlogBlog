@@ -1,5 +1,5 @@
 import express from "express";
-import { upload, getProfilePhoto } from "../controllers/profile.controller.js"
+import { upload, getProfilePhoto, deleteProfilePhoto } from "../controllers/profile.controller.js"
 import { profilephotobucket } from "../index.js";
 
 const router = express.Router();
@@ -24,4 +24,5 @@ router.get('/:filename', (req, res) => {
   downloadStream.pipe(res);
 });
 
+router.post("/delete", deleteProfilePhoto)
 export default router;

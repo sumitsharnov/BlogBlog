@@ -2,7 +2,7 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSignInSuccess, signInSuccess as success} from "../redux/user/userSlice";
+import { clearSignInSuccess, updateCurrentUser} from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 export default function Header() {
   const location = useLocation();
-  // const { signInSuccess } = useSelector((state) => state.user);
   const { currentUser, signInSuccess } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ export default function Header() {
  
   const handleErrorImage = (event) => {
     console.log(event);
-    dispatch(success({...currentUser, photoURL:anonuser}));
+    dispatch(updateCurrentUser({...currentUser, photoURL:anonuser}));
   };
   return (
     <>
@@ -73,9 +72,9 @@ export default function Header() {
                     to="/sign-in"
                     onClick={() => {
                       Cookies.set("loginSuccess", "false");
+                      Cookies.set("timeout", "You have been logged out");
                       dispatch(clearSignInSuccess());
                       dispatch(setDefaultColor());
-                      Cookies.set("timeout", "You have been logged out");
                     }}
                   >
                     <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">

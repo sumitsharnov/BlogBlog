@@ -23,16 +23,6 @@ import Home from "./Home";
 
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const [guestFormData, setGuestFormData] = useState({
-    name: "",
-    recruiter: false,
-  });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,8 +37,19 @@ const SignIn = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [showSignUpSuccess, setShowSignUpSuccess] = useState(false); // New state to manage showing sign-up success message
   const [guest, setGuest] = useState(false);
-  const message = Cookies.get("timeout");
+  const [message] = useState(Cookies.get("timeout"));
   Cookies.set("timeout", "");
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [guestFormData, setGuestFormData] = useState({
+    name: "",
+    recruiter: false,
+  });
 
   useEffect(() => {
     if (signUpSuccess && source === "signup") {

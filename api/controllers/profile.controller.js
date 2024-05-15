@@ -4,18 +4,17 @@ import { profilephotobucket } from "../index.js";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import User from "../models/user.model.js";
+import { errorHandler } from "../utils/error.js";
 const mongodbUrl = process.env.MONGO;
 
-export const upload = (req, res) => {
+export const upload = async (req, res, next) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
     if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
+      next(errorHandler(401, "Unauthorized"));
     }
-    const isValid = jwt.verify(token, process.env.JWT_SECRET);
-    // Verify the token using the secret key
-    if (!isValid) return res.status(403).json({ message: "Invalid token" });
+   jwt.verify(token, process.env.JWT_SECRET);
 
     // Handle file upload and userId as needed
     const storage = new GridFsStorage({
@@ -52,15 +51,14 @@ export const upload = (req, res) => {
       (err) => {
         if (err) {
           console.error("Error uploading file:", err);
-          return res.status(400).json({ error: "Unable to upload the file" });
+          next(errorHandler(400, "Unable to upload the file"));
         }
         return res.status(201).json({ text: "File uploaded successfully!" });
       }
     );
   } catch (error) {
-    res.status(400).json({
-      error: { text: "Unable to upload the file", error },
-    });
+    error.message.includes('jwt expired') && next(errorHandler(403, "token expired"));
+    next(error);
   }
 };
 
@@ -69,9 +67,7 @@ export const getProfilePhoto = async (req, res, next) => {
     const { userId } = req.body;
     // Validate userId
     if (!userId) {
-      return res
-        .status(400)
-        .json({ error: "userId is required in the request body" });
+      next(errorHandler(400, "userId is required in the request body" ));
     }
 
     // Find the profile photo based on userId
@@ -81,18 +77,16 @@ export const getProfilePhoto = async (req, res, next) => {
 
     // Check if photo exists
     if (photo.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Profile photo not found for the specified userId" });
+      next(errorHandler(400, "Profile photo not found for the specified userId"));
     }
     const photoUrl = `/api/profile/photo/${encodeURIComponent(
       photo[0].filename
     )}`;
-    const updatedUser = await updateProfilePhoto(photoUrl, userId)
+    const updatedUser = await updateProfilePhoto(photoUrl, userId);
     return res.status(200).json(photoUrl);
   } catch (error) {
     // Handle any unexpected errors
-    return res.status(500).json({ error: "Error updating profile photo" });
+    return next(error);
   }
 };
 
@@ -102,7 +96,7 @@ export const updateProfilePhoto = async (photourl, userid) => {
     const user = await User.findOne({ _id: userid });
     if (!user) {
       // If user not found, handle accordingly (e.g., throw error or return)
-      throw new Error('Errorin updating profile photo');
+      throw new Error("Errorin updating profile photo");
     }
 
     // Update the photoURL field
@@ -110,11 +104,31 @@ export const updateProfilePhoto = async (photourl, userid) => {
 
     // Save the updated user
     const updatedUser = await user.save();
-
+    const {password: pass, ...args} = updatedUser._doc;
     // Optionally, return the updated user object
-    return {...updatedUser, type:"user"};
+    return { ...args, type: "user" };
   } catch (error) {
     // Handle errors (e.g., log, return specific error response)
     throw error; // Propagate the error to the caller
   }
-}
+};
+
+export const deleteProfilePhoto = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    // Validate userId
+    if (!userId) {
+      next(errorHandler(400, "userId is required in the request body"));
+    } else {
+      const user = await User.findOne({ _id: userId });
+      user.photoURL = "";
+      const updatedUser = await user.save();
+      const {password: pass, ...args} = updatedUser._doc;
+      // Optionally, return the updated user object
+     res.status(200).json({...args});
+    }
+  } catch (error) {
+    // Handle any unexpected errors
+    return next(error);
+  }
+};

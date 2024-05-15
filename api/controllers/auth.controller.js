@@ -56,7 +56,7 @@ export const signin = async (req, res, next) => {
     if (!isMatch) {
       return next(errorHandler(401, "Invalid Credentials"));
     }
-    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: "1h" });
     const {password : pass, ...args} = user._doc;
     res.status(200).cookie("token", token,  {
       hTTPOnly: true,
@@ -70,7 +70,7 @@ export const guestlogin = async (req, res, next) => {
   try {
     const { name, recruiter } = req.body;
     const newGuestUser = new GuestUser({ name: name, recruiter: recruiter });
-    const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: 15 }); // Token expires in 1 hour
+    const token = jwt.sign({ type: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
     
     // Set the cookie
     res.cookie("token", token, { httpOnly: true });

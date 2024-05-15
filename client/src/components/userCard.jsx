@@ -2181,7 +2181,7 @@ UserCard.propTypes = {
   errorMessage: PropTypes.string, // errorMessage is optional, so it's defined as a string
   updateClicks: PropTypes.number,
   file: PropTypes.object,
-  handleUpdate: PropTypes.func.isRequired,
+  handleUpdate: PropTypes.func,
   options: PropTypes.bool,
   handleOptions: PropTypes.func.isRequired
 };
