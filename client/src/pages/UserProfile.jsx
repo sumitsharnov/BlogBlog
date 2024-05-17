@@ -7,8 +7,9 @@ import Loader from "../components/Loader";
 import {
   updateProfilePhoto,
   updateProfilePhotoURL,
-} from "../services/userphotoupdate";
-import { signInSuccess, updateCurrentUser } from "../redux/user/userSlice";
+  deleteProfilePhoto,
+} from "../services/userphotoupdate_api";
+import { updateCurrentUser } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
 import { updateUserRecruiter } from "../services/user_api";
@@ -20,6 +21,7 @@ export default function UserProfile() {
   // Determine user object based on currentUser data
   const displayImage = currentUser.photoURL || anonuser;
   const [file, setFile] = useState(null);
+  const [remove, setRemove] = useState(false);
   const [updateBtn, setUpdateBtn] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [updateClicks, setUpdateClicks] = useState(0);
@@ -76,11 +78,30 @@ export default function UserProfile() {
     setOptions(false);
   };
 
+  const handleDelete = async () => {
+    try {
+      setRemove(true);
+      const res = await deleteProfilePhoto({ userId: user._id, token: token });
+      const { photoURL } = await res.json();
+      dispatch(updateCurrentUser({ ...currentUser, photoURL: photoURL }));
+      setTimeout(() => {
+        setRemove(false); // Set loading state to false after 3 seconds (simulating data loading)
+      }, 3000);
+    } catch (error) {
+      setRemove(false);
+      if (error.message === "403") {
+        dispatch(clearSignInSuccess());
+        Cookies.set("timeout", "You have been logged out");
+      }
+      setErrorMessage("Couldn't delete profile photo");
+    }
+  };
+
   const findAndSetProfilePhoto = async () => {
     try {
       const res = await updateProfilePhotoURL({ userId: user._id });
       const photoURL = await res.json();
-      dispatch(signInSuccess({ ...currentUser, photoURL: photoURL }));
+      dispatch(updateCurrentUser({ ...currentUser, photoURL: photoURL }));
       setUpdateBtn(false);
       setTimeout(() => {
         setUpdating(false); // Set loading state to false after 3 seconds (simulating data loading)
@@ -136,7 +157,7 @@ export default function UserProfile() {
 
   const handlePopup = async () => {
     setPopup(!popup);
-  }
+  };
 
   return (
     <>
@@ -155,6 +176,13 @@ export default function UserProfile() {
           <Loader />
           <div className="text-2xl text-green-600">
             Setting up your new Avatar...
+          </div>
+        </div>
+      ) : remove ? (
+        <div className=" flex flex-col justify-center items-center h-screen">
+          <Loader />
+          <div className="text-2xl text-green-600">
+            Setting up default image...
           </div>
         </div>
       ) : (
@@ -179,6 +207,7 @@ export default function UserProfile() {
             popup={popup}
             checked={checked}
             handlePopup={handlePopup}
+            handleDelete={handleDelete}
           />
         </div>
       )}

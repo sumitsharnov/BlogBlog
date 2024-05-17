@@ -18,9 +18,9 @@ export function UserCard({
   handleToggle,
   popup,
   checked,
-  handlePopup
+  handlePopup,
+  handleDelete,
 }) {
-  
   return (
     <>
       {errorMessage && (
@@ -36,19 +36,20 @@ export function UserCard({
         <button className="mail m-4">
           {options ? (
             <div className="flex md:flex-row flex-col justify-center items-center lg:gap-4 gap-1 w-full">
-              {file && <span
-                className="lg:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[12rem]"
-                title={file?.name} // Set the tooltip content to the full file name
-                data-multiline="true" // Allow multiline content in tooltip
-              >
-                <span className="mr-2 text-gray-500">
-                  File Info: {file && truncateFileName(file.name, 20)}
+              {file && (
+                <span
+                  className="lg:inline-block hidden p-4 border rounded-xl disabled ml-2 max-w-[12rem]"
+                  title={file?.name} // Set the tooltip content to the full file name
+                  data-multiline="true" // Allow multiline content in tooltip
+                >
+                  <span className="mr-2 text-gray-500">
+                    File Info: {file && truncateFileName(file.name, 20)}
+                  </span>
+                  <span className="mr-2 text-gray-500">
+                    {file && `(${Math.floor(file.size / 1000)} KB)`}
+                  </span>
                 </span>
-                <span className="mr-2 text-gray-500">
-                  {file && `(${Math.floor(file.size / 1000)} KB)`}
-                </span>
-              </span>
-}
+              )}
               <label htmlFor="fileInput" className={`relative cursor-pointer`}>
                 <span
                   className="max-h-[3rem] flex justify-center items-center bg-teal-500 hover:bg-white hover:text-teal-500 hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer"
@@ -64,12 +65,17 @@ export function UserCard({
                   onChange={handleFileSelection} // Handle file selection here
                 />
               </label>
-              <span
-                  className={`max-h-[3rem] flex justify-center items-center ${file ? 'bg-green-500' : 'bg-red-500'} hover:bg-white ${file ? 'hover:text-green-500' : 'hover:text-red-500'}  hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer`}
-                  onClick={file && handleUpload}
-                >
-                 {file ? 'Update' : 'Delete'}
-                </span>
+              <div
+                className={`max-h-[3rem] flex justify-center items-center ${
+                  file ? "bg-green-500" : "bg-red-500"
+                } hover:bg-white ${
+                  file ? "hover:text-green-500" : "hover:text-red-500"
+                }  hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer
+                ${!file && user.photoURL.includes("anonuser") && 'hidden'}`}
+                onClick={file ? handleUpload : handleDelete}
+              >
+                {file ? "Update" : "Delete"}
+              </div>
               <span
                 className="max-h-[3rem] flex justify-center items-center bg-gray-500 hover:bg-white focus:bg-red-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:-translate-x-2 cursor-pointer hover:text-gray-500 hover:border-2"
                 onClick={handleCancel}
@@ -2117,7 +2123,12 @@ export function UserCard({
                 Recruiter
               </span>
               <span className="flex justify-start items-start p-2">
-                <Toggle handleToggle ={handleToggle} popup={popup} checked={checked} handlePopup={handlePopup} />
+                <Toggle
+                  handleToggle={handleToggle}
+                  popup={popup}
+                  checked={checked}
+                  handlePopup={handlePopup}
+                />
               </span>
             </div>
           </div>
@@ -2192,5 +2203,6 @@ UserCard.propTypes = {
   handleToggle: PropTypes.func,
   popup: PropTypes.bool,
   checked: PropTypes.bool,
-  handlePopup: PropTypes.func
+  handlePopup: PropTypes.func,
+  handleDelete: PropTypes.func,
 };
