@@ -1,22 +1,23 @@
-import { UserCard } from '../components/userCard';
-import '../../styles.css';
-import { useSelector } from 'react-redux';
-import anonuser from '../images/home/anonuser.png';
-import { useState, useEffect } from 'react';
-import Loader from '../components/Loader';
+import { UserCard } from "../components/userCard";
+import "../../styles.css";
+import { useSelector } from "react-redux";
+import anonuser from "../images/home/anonuser.png";
+import { useState, useEffect } from "react";
+import Loader from "../components/Loader";
 import {
   updateProfilePhoto,
   updateProfilePhotoURL,
 } from "../services/userphotoupdate";
-import { signInSuccess } from "../redux/user/userSlice";
+import { signInSuccess, updateCurrentUser } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { clearSignInSuccess } from "../redux/user/userSlice";
+import { updateUserRecruiter } from "../services/user_api";
 
 import Cookies from "js-cookie";
 export default function UserProfile() {
   const { currentUser, token } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
-  // Determine user object based on currentUser data 
+  // Determine user object based on currentUser data
   const displayImage = currentUser.photoURL || anonuser;
   const [file, setFile] = useState(null);
   const [updateBtn, setUpdateBtn] = useState(false);
@@ -25,6 +26,8 @@ export default function UserProfile() {
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [options, setOptions] = useState(false);
+  const [checked, setChecked] = useState(currentUser.recruiter);
+  const [popup, setPopup] = useState(false);
   const dispatch = useDispatch();
   const handleFileSelection = async (event) => {
     const selectedFile = event.target.files[0];
@@ -98,7 +101,7 @@ export default function UserProfile() {
     return fileName;
   };
   const user =
-    currentUser.firstName === 'Guest' || !currentUser.photoURL
+    currentUser.firstName === "Guest" || !currentUser.photoURL
       ? { ...currentUser, photoURL: anonuser }
       : currentUser;
 
@@ -113,21 +116,70 @@ export default function UserProfile() {
 
     // Specify dependencies for useEffect (empty array means it runs only on mount)
   }, []);
-  
+
+  const handleToggle = async () => {
+    try {
+      const res = await updateUserRecruiter(
+        currentUser._id,
+        token,
+        !user.recruiter
+      );
+      const userInfo = await res.json();
+      dispatch(updateCurrentUser({ ...userInfo, token: token }));
+    } catch (error) {
+      dispatch(clearSignInSuccess());
+      Cookies.set("timeout", "You have been logged out");
+    }
+    setChecked(!user.recruiter);
+    setPopup(false);
+  };
+
+  const handlePopup = async () => {
+    setPopup(!popup);
+  }
+
   return (
     <>
       {loading ? (
         // Display Loader component while data is loading
-        <div className=" flex flex-col justify-center items-center h-screen"><Loader /></div>
-      ) : uploading ? <div className=" flex flex-col justify-center items-center h-screen"><Loader /><div className='text-2xl text-violet-600'>Uploading...</div></div> : updating 
-      ? <div className=" flex flex-col justify-center items-center h-screen"><Loader /><div className='text-2xl text-green-600'>Setting up your new Avatar...</div></div> : (
+        <div className=" flex flex-col justify-center items-center h-screen">
+          <Loader />
+        </div>
+      ) : uploading ? (
+        <div className=" flex flex-col justify-center items-center h-screen">
+          <Loader />
+          <div className="text-2xl text-violet-600">Uploading...</div>
+        </div>
+      ) : updating ? (
+        <div className=" flex flex-col justify-center items-center h-screen">
+          <Loader />
+          <div className="text-2xl text-green-600">
+            Setting up your new Avatar...
+          </div>
+        </div>
+      ) : (
         // Display UserCard component with user data once loading is complete
-        <div className='flex justify-center items-center mt-[10rem]'>
-          <UserCard user={user} token={token} truncateFileName={truncateFileName} 
-          findAndSetProfilePhoto={findAndSetProfilePhoto} handleUpload={handleUpload}
-          handleFileSelection={handleFileSelection} handleCancel={handleCancel}
-          displayImage={displayImage} updateBtn={updateBtn} errorMessage={errorMessage} updateClicks={updateClicks} file={file}
-          handleOptions={handleOptions} options={options}/>
+        <div className="flex justify-center items-center mt-[10rem]">
+          <UserCard
+            user={user}
+            token={token}
+            truncateFileName={truncateFileName}
+            findAndSetProfilePhoto={findAndSetProfilePhoto}
+            handleUpload={handleUpload}
+            handleFileSelection={handleFileSelection}
+            handleCancel={handleCancel}
+            displayImage={displayImage}
+            updateBtn={updateBtn}
+            errorMessage={errorMessage}
+            updateClicks={updateClicks}
+            file={file}
+            handleOptions={handleOptions}
+            options={options}
+            handleToggle={handleToggle}
+            popup={popup}
+            checked={checked}
+            handlePopup={handlePopup}
+          />
         </div>
       )}
     </>

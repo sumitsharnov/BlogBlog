@@ -1,6 +1,7 @@
 import "../../styles.css";
 import PropTypes from "prop-types";
 import MessagesCentre from "../components/MessagesCentre";
+import { Toggle } from "./Toggle";
 
 export function UserCard({
   user,
@@ -13,7 +14,11 @@ export function UserCard({
   updateClicks,
   file,
   handleOptions,
-  options
+  options,
+  handleToggle,
+  popup,
+  checked,
+  handlePopup
 }) {
   
   return (
@@ -2112,7 +2117,7 @@ export function UserCard({
                 Recruiter
               </span>
               <span className="flex justify-start items-start p-2">
-                {user.recruiter === true && "ndfksnlsdkn"}
+                <Toggle handleToggle ={handleToggle} popup={popup} checked={checked} handlePopup={handlePopup} />
               </span>
             </div>
           </div>
@@ -2183,5 +2188,9 @@ UserCard.propTypes = {
   file: PropTypes.object,
   handleUpdate: PropTypes.func,
   options: PropTypes.bool,
-  handleOptions: PropTypes.func.isRequired
+  handleOptions: PropTypes.func.isRequired,
+  handleToggle: PropTypes.func,
+  popup: PropTypes.bool,
+  checked: PropTypes.bool,
+  handlePopup: PropTypes.func
 };

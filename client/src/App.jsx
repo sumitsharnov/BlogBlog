@@ -12,29 +12,27 @@ import UserProfile from "./pages/UserProfile";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserInfo } from "./services/user_api";
-import { updateCurrentUser } from "./redux/user/userSlice";
-import { clearSignInSuccess } from "./redux/user/userSlice";
+import { updateCurrentUser, clearSignInSuccess } from "./redux/user/userSlice";
 import Cookies from "js-cookie";
 
 export default function App() {
   const { currentUser, token } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("Checking")
     if (currentUser && currentUser._id && token) {
-     const fetch = async () => {
-      try{
-      const res = await getUserInfo(currentUser._id, token);
-      const userInfo = await res.json();
-      dispatch(updateCurrentUser({...userInfo, token:token}));
-      }catch(error){
-        dispatch(clearSignInSuccess());
-        Cookies.set("timeout", "You have been logged out");
-      }
-     } 
-     fetch();
+      const fetch = async () => {
+        try {
+          const res = await getUserInfo(currentUser._id, token);
+          const userInfo = await res.json();
+          dispatch(updateCurrentUser({ ...userInfo, token: token }));
+        } catch (error) {
+          dispatch(clearSignInSuccess());
+          Cookies.set("timeout", "You have been logged out");
+        }
+      };
+      fetch();
     }
-  }, [])
+  }, []);
 
   return (
     <BrowserRouter>
@@ -61,7 +59,7 @@ export default function App() {
   );
 }
 
-const ScrollbarStyles =`
+const ScrollbarStyles = `
   /* Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 12px; /* width of the entire scrollbar */
@@ -85,4 +83,3 @@ const ScrollbarStyles =`
 const style = document.createElement("style");
 style.appendChild(document.createTextNode(ScrollbarStyles));
 document.head.appendChild(style);
-

@@ -1,6 +1,7 @@
 
+import { Toggle } from "../components/Toggle"
 export default function Projects() {
   return (
-    <div>Projects</div>
+    <div><Toggle /></div>
   )
 }

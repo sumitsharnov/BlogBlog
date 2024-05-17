@@ -9,7 +9,11 @@ import anonuser from "../images/home/anonuser.png";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import MessagesCentre from "./MessagesCentre";
+import { useState } from "react";
 export default function Header() {
+  const [errorImage, setErrorImage] = useState(false);
+  const [count, setCount] = useState(0);
   const location = useLocation();
   const { currentUser, signInSuccess } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
@@ -21,11 +25,14 @@ export default function Header() {
 
  
   const handleErrorImage = (event) => {
+    setErrorImage("Failed to load profile picture, please try again later")
+    setCount(count + 1);
     console.log(event);
     dispatch(updateCurrentUser({...currentUser, photoURL:anonuser}));
   };
   return (
     <>
+    {errorImage && < MessagesCentre messageText={errorImage} type="error"  top={16} mt={0} key={count}/>}
       <Navbar className="top-0 left-0 w-full border-b-2 z-50">
         <NavLink
           to="/"
