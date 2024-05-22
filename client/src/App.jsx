@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Header from "./components/Header";
+import Communication from "./pages/Communication";
 import PrivateRoutes from "./components/PrivateRoutes";
 import UserProfile from "./pages/UserProfile";
 import { useEffect } from "react";
@@ -48,6 +49,7 @@ export default function App() {
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/communications" element={<Communication />} />
             </Route>
             {/* Catch all unmatched routes and redirect to the root */}
             <Route path="*" element={<Navigate to="/" replace />} />

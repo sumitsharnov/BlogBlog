@@ -103,7 +103,7 @@ export default function Header() {
                 to="/"
                 className={
                   location.pathname === "/"
-                    ? "border-b-4 border-purple-400"
+                    ? "border-b-4 border-purple-400 p-2"
                     : ""
                 }
               >
@@ -112,11 +112,25 @@ export default function Header() {
             )}
           </Navbar.Link>
           <Navbar.Link as="div">
+            {signInSuccess && (
+              <NavLink
+                to="/communications"
+                className={
+                  location.pathname === "/communications"
+                    ? "border-b-4 border-purple-400 p-2"
+                    : ""
+                }
+              >
+                Commuinications
+              </NavLink>
+            )}
+          </Navbar.Link>
+          <Navbar.Link as="div">
             <NavLink
               to="/about"
               className={
                 location.pathname === "/about"
-                  ? "border-b-4 border-purple-400"
+                  ? "border-b-4 border-purple-400 p-2"
                   : ""
               }
             >
@@ -128,7 +142,7 @@ export default function Header() {
               to="/projects"
               className={
                 location.pathname === "/projects"
-                  ? "border-b-4 border-purple-400"
+                  ? "border-b-4 border-purple-400 p-2"
                   : ""
               }
             >
