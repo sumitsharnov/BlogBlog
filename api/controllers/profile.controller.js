@@ -11,11 +11,11 @@ export const upload = async (req, res, next) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
-    if (!token) {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
       next(errorHandler(401, "Unauthorized"));
     }
-   jwt.verify(token, process.env.JWT_SECRET);
-
     // Handle file upload and userId as needed
     const storage = new GridFsStorage({
       url: mongodbUrl,

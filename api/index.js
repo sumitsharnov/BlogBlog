@@ -9,6 +9,7 @@ import testimonialRoutes from "./routes/testimonial.route.js";
 import certificateRoutes from "./routes/certificate.route.js";
 import fileRoutes from "./routes/file.route.js";
 import profileRoutes from "./routes/profile.route.js";
+import communications from "./routes/communication.route.js";
 import pino from 'pino';
 import pinoPretty from 'pino-pretty'; // Import pino-pretty
 import { GridFSBucket } from 'mongodb';
@@ -61,6 +62,7 @@ app.use("/api/timeline", timelineRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/profile/photo", profileRoutes);
+app.use("/api/messages", communications);
 
 
 // Error handling middleware
