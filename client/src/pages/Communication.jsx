@@ -3,20 +3,20 @@ import anonuser from "../images/home/anonuser.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { postMessage, getMessages } from "../services/communication_api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessagesCentre from "../components/MessagesCentre";
 const Communication = () => {
   const { currentUser, token } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const [message, setMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const [count, setCount] = useState(0);
-  const [messageThread, setMessageThread] = useState(null);
+  const [messageThread, setMessageThread] = useState("");
   // const {handleSubmit} =
   // useSendMessage(currentUser._id, token, postMessage, message);
 
   const handleSubmit = async () => {
-    if (message.length < 1) {
+    if (message.length <= 0) {
       setErrorMessage("Message cannot be empty");
       setCount(count + 1);
       return;
@@ -27,22 +27,24 @@ const Communication = () => {
       await postMessage(currentUser._id, token, message);
       setErrorMessage(null);
       setMessage("");
-      getMessagesThread();
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
-  const getMessagesThread = async () => {
-    try{
-      setErrorMessage("");
-      setCount(count + 1);
-      const data  = await getMessages(currentUser._id, token);
-      setMessageThread(data.messages);
-    }catch (error) {
-      setErrorMessage(error.message);
-    }
-  }
+  useEffect(() => {
+    const getMessagesThread = async () => {
+      try {
+        setErrorMessage("");
+        setCount(count + 1);
+        const data = await getMessages(currentUser._id, token);
+        data && setMessageThread(data.messages);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    };
+    getMessagesThread();
+  }, []);
 
   console.log(messageThread, "Sumit");
 
@@ -83,9 +85,20 @@ const Communication = () => {
         </div>
       </div>
       <hr className="w-full border border-gray-300"></hr>
-      <div className="flex justify-center border border-green-300 rounded-lg m-12 p-[10rem]">
-        Communication has not been started yet
-      </div>
+      {message.length > 0 || messageThread.length > 0 ? (
+        <div className="flex justify-items-start p-2 gap-3">
+          <img
+            src={displayImage}
+            alt="profile"
+            className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400"
+          />
+          <span className="font-semibold">{currentUser.firstName}</span>
+        </div>
+      ) : (
+        <div className="flex justify-center border border-green-300 rounded-lg m-12 p-[10rem]">
+          Communication has not been started yet
+        </div>
+      )}
     </div>
   );
 };
