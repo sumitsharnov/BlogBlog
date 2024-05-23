@@ -59,14 +59,14 @@ export default function Header() {
             <FaMoon />
           </Button> */}
           {currentUser && signInSuccess && (
-            <div className="relative group">
+            <div className="relative group size-10 mt-1">
               <img
                 src={displayImage}
                 alt="profile"
                 className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
                 onError={handleErrorImage}
               />
-              <div className="absolute opacity-0 group-hover:opacity-[80%] bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
+              <div className="absolute hidden group-hover:inline bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
                 <ul className="list-none p-0 m-0">
                   <li
                     className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md"
@@ -121,7 +121,7 @@ export default function Header() {
                     : ""
                 }
               >
-                Commuinications
+                Communications
               </NavLink>
             )}
           </Navbar.Link>

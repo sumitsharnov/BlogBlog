@@ -24,9 +24,8 @@ export const communication = async (req, res, next) => {
       res.status(200).json({ message: "Message sent successfully" });
     } else {
       const communication = new Communication({
-        messages: { message: message, user: userId },
+        messages: { message: message, user: userId, sentAt: timestamp, },
         user: userId,
-        sentAt: timestamp,
       });
       await communication.save();
       res.status(200).json({ message: "Message sent successfully" });

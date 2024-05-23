@@ -37,7 +37,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col min-w-[100%]">
         <Header />
         <div className="flex-grow">
           <Routes>
