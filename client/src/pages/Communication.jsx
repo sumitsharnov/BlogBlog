@@ -5,13 +5,16 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { postMessage, getMessages } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import MessagesCentre from "../components/MessagesCentre";
+import { useFormatDate } from "../hooks/useFormatDate";
+import { formatDateTimeStamp } from "../../utils/formatDateTimeStamp";
 const Communication = () => {
   const { currentUser, token } = useSelector((state) => state.user);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [count, setCount] = useState(0);
   const [messageThread, setMessageThread] = useState("");
+  const timeStamps = [];
   // const {handleSubmit} =
   // useSendMessage(currentUser._id, token, postMessage, message);
 
@@ -26,27 +29,38 @@ const Communication = () => {
       setCount(count + 1);
       await postMessage(currentUser._id, token, message);
       setErrorMessage(null);
-      setMessage("");
+      setMessage([""]);
+      await getMessagesThread();
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const getMessagesThread = async () => {
+    try {
+      setErrorMessage("");
+      setCount(count + 1);
+      const data = await getMessages(currentUser._id, token);
+      data && setMessageThread(data.messages);
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
   useEffect(() => {
-    const getMessagesThread = async () => {
-      try {
-        setErrorMessage("");
-        setCount(count + 1);
-        const data = await getMessages(currentUser._id, token);
-        data && setMessageThread(data.messages);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
     getMessagesThread();
   }, []);
 
-  console.log(messageThread, "Sumit");
+  
+
+//   useEffect(() => {
+//     timeStamps.push(messageThread.map(message =>{
+//       const {formattedDate, relativeTime } = formatDateTimeStamp(message.sentAt);
+//       return {formattedDate, relativeTime };
+//     } ))
+// })
+
+  console.log(messageThread && typeof(messageThread),messageThread, "Sumit");
 
   return (
     <div className="min-w-96">
@@ -85,14 +99,14 @@ const Communication = () => {
         </div>
       </div>
       <hr className="w-full border border-gray-300"></hr>
-      {message.length > 0 || messageThread.length > 0 ? (
+      {messageThread && messageThread.length > 0 ? (
         <div className="flex justify-items-start p-2 gap-3">
           <img
             src={displayImage}
             alt="profile"
             className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400"
           />
-          <span className="font-semibold">{currentUser.firstName}</span>
+          <span className="font-medium text-justify text-lg">{currentUser.firstName}</span>
         </div>
       ) : (
         <div className="flex justify-center border border-green-300 rounded-lg m-12 p-[10rem]">
