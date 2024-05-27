@@ -27,6 +27,7 @@ export const getMessages = async (userId, token) =>{
       if (!res.ok) {
         throw new Error(data.message);
       }
+      console.log(data, "This is reaaly imprtanmt");
       return data;
     } catch (error) {
       console.error(error);

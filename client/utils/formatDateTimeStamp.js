@@ -1,14 +1,24 @@
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, parseISO, isToday, isYesterday, differenceInDays } from 'date-fns';
+
 
 export const formatDateTimeStamp = (timestamp) => {
-    try{
+    try {
         const date = parseISO(timestamp);
-        const formattedDate = format(date, 'PPpp'); // 'PPpp' provides a formatted date and time string.
+        let formattedDate;
         const relativeTime = formatDistanceToNow(date, { addSuffix: true });
-        return { formattedDate, relativeTime };
-    }catch(err){
+
+        if (isToday(date)) {
+            formattedDate = `Today at ${format(date, 'p')}`;
+        } else if (isYesterday(date)) {
+            formattedDate = `Yesterday at ${format(date, 'p')}`;
+        } else {
+            const daysAgo = differenceInDays(new Date(), date);
+            formattedDate = `${daysAgo} days ago at ${format(date, 'p')}`;
+        }
+
+        return { date, formattedDate, relativeTime };
+    } catch (err) {
         console.error(err);
-        return { formattedDate: '', relativeTime: '' };
+        return { date: null, formattedDate: '', relativeTime: '' };
     }
-    
-  };
+};

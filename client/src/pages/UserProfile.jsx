@@ -1,4 +1,4 @@
-import { UserCard } from "../components/userCard";
+import { UserCard } from "../components/UserCard";
 import "../../styles.css";
 import { useSelector } from "react-redux";
 import anonuser from "../images/home/anonuser.png";
