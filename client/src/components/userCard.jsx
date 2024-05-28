@@ -1,6 +1,6 @@
 import "../../styles.css";
 import PropTypes from "prop-types";
-import MessagesCentre from "../components/MessagesCentre";
+import MessagesCentre from "./MessagesCentre";
 import { Toggle } from "./Toggle";
 
 export function UserCard({

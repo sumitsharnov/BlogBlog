@@ -18,6 +18,9 @@ export async function postMessage(userId, token, message) {
 }
 
 export const getMessages = async (userId, token) =>{
+    await new Promise((resolve) => {
+        setTimeout(resolve, 3000);
+      });
     try {
       const res = await fetch("/api/messages/getMessages", {
         method: "GET",
@@ -27,7 +30,6 @@ export const getMessages = async (userId, token) =>{
       if (!res.ok) {
         throw new Error(data.message);
       }
-      console.log(data, "This is reaaly imprtanmt");
       return data;
     } catch (error) {
       console.error(error);
