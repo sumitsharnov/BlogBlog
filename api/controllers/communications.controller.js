@@ -25,6 +25,7 @@ export const communication = async (req, res, next) => {
         user: userId,
         sentAt: timestamp,
       });
+      messages.user = { firstName, photoURL };
       await messages.save();
       res.status(200).json({ message: "Message sent successfully" });
     } else {
@@ -74,3 +75,24 @@ export const getReplies = async (req, res, next) => {
     next(errorHandler(500, "Something went wrong"));
   }
 };
+
+export const  getMessagesByMessageId = async (req, res, next) => {
+  try {
+    const messageId = req.params.messageId;// Retrieve userId from headers
+    const token = req.headers.authorization;
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      next(errorHandler(401, "Unauthorized"));
+    }
+    messageId || next(errorHandler(500, "Something went wrong"));
+    const message = await Communication.findOne(
+      { "messages.id": messageId }, 
+      { "messages.$": 1 }
+    );
+    res.status(200).json(message);
+  } catch (err) {
+    next(errorHandler(500, "Something went wrong"));
+  }
+};
+

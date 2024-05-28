@@ -71,7 +71,7 @@ export function UserCard({
                 } hover:bg-white ${
                   file ? "hover:text-green-500" : "hover:text-red-500"
                 }  hover:border-2 focus:bg-green-600 focus:outline-none text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:translate-x-2 cursor-pointer
-                ${!file && user.photoURL.includes("anonuser") && 'hidden'}`}
+                ${!file && user.photoURL.includes("anonuser") && "hidden"}`}
                 onClick={file ? handleUpload : handleDelete}
               >
                 {file ? "Update" : "Delete"}

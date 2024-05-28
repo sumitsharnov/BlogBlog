@@ -36,13 +36,13 @@ const Communication = () => {
       await postMessage(currentUser._id, token, message);
       setErrorMessage(null);
       setMessage([""]);
-      await getMessagesThread();
+      await getAllMessages();
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
-  const getMessagesThread = async () => {
+  const getAllMessages = async () => {
     try {
       setLoading(true);
       setErrorMessage("");
@@ -60,11 +60,10 @@ const Communication = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    getMessagesThread();
-    setLoading(false);
+    getAllMessages();
   }, []);
 
+  console.log(messageEntries, "Sumit")
   return (
     <>
       {loading ? (
@@ -164,9 +163,9 @@ const Communication = () => {
               } w-[50%] bg-white shadow-2xl overflow-y-auto`}
               style={{ maxHeight: "calc(100vh - 17rem)" }}
             >
-              <div className="flex justify-between items-center p-4 bg-violet-500 rounded-tl-lg">
-                <h3 className="text-lg font-semibold text-gray-100">
-                  Sumit Sharma
+              <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
+                <h3 className="text-lg font-semibold text-violet-600">
+                  Threads
                 </h3>
                 <button
                   className="rounded-full bg-red-500 inline-flex items-center justify-center text-white hover:bg-red-600 focus:outline-none"
