@@ -24,6 +24,8 @@ export const communication = async (req, res, next) => {
         message: message,
         user: userId,
         sentAt: timestamp,
+        firstName: firstName,
+        photoURL: photoURL
       });
       messages.user = { firstName, photoURL };
       await messages.save();
@@ -31,7 +33,7 @@ export const communication = async (req, res, next) => {
     } else {
       const communication = new Communication({
         _id: userId,
-        messages: { id: randomUuid, message: message, sentAt: timestamp },
+        messages: { id: randomUuid, message: message, sentAt: timestamp, firstName: firstName, photoURL: photoURL },
         user: { firstName: firstName, photoURL: photoURL },
       });
       await communication.save();

@@ -1,69 +1,31 @@
-import { useSelector } from "react-redux";
-import anonuser from "../images/home/anonuser.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { postMessage, getMessages } from "../services/communication_api";
-import { useEffect, useState } from "react";
+import ReplyThread from "../components/ReplyThread";
 import MessagesCentre from "../components/MessagesCentre";
 import TimestampComponent from "../components/TimestampComponent";
 import Loader from "../components/Loader";
+import { useCommunication } from "../hooks/useCommunication";
+import { useSelector } from "react-redux";
+import anonuser from "../images/home/anonuser.png";
 const Communication = () => {
-  const { currentUser, token } = useSelector((state) => state.user);
-  const [message, setMessage] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [count, setCount] = useState(0);
-  const [messageThread, setMessageThread] = useState("");
-  const messageEntries = Object.entries(messageThread).reverse();
-  const [user, setUser] = useState(null);
-  const displayImage = (user && user[0].photoURL) || anonuser;
-  const [showReplies, setShowReplies] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const {
+    handleReplies,
+    showReplies,
+    setShowReplies,
+    replyThread,
+    handleSubmit,
+    errorMessage,
+    count,
+    message,
+    setMessage,
+    loading,
+    messageEntries,
+    user,
+    handleErrorImage
+  } = useCommunication();
+  const { currentUser } = useSelector((state) => state.user);
+  const displayImage = (currentUser && currentUser.photoURL) || anonuser;
 
-  const handleReplies = async (id) => {
-    setShowReplies(!showReplies);
-    console.log(id, "Ruhi");
-  };
-
-  const handleSubmit = async () => {
-    if (message.length <= 0) {
-      setErrorMessage("Message cannot be empty");
-      setCount(count + 1);
-      return;
-    }
-    try {
-      setErrorMessage("");
-      setCount(count + 1);
-      await postMessage(currentUser._id, token, message);
-      setErrorMessage(null);
-      setMessage([""]);
-      await getAllMessages();
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
-  };
-
-  const getAllMessages = async () => {
-    try {
-      setLoading(true);
-      setErrorMessage("");
-      setCount(count + 1);
-      const data = await getMessages(currentUser._id, token);
-      if (data) {
-        setMessageThread(data.messages);
-        setUser(data.user);
-      }
-      setLoading(false);
-    } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getAllMessages();
-  }, []);
-
-  console.log(messageEntries, "Sumit")
   return (
     <>
       {loading ? (
@@ -89,6 +51,7 @@ const Communication = () => {
                 src={displayImage}
                 alt="profile"
                 className="w-16 h-10 rounded-full transition duration-300 transform hover:scale-110 m-4 border border-violet-400"
+                onError={handleErrorImage}
               />
               <textarea
                 type="text"
@@ -121,7 +84,7 @@ const Communication = () => {
                   >
                     <div className="flex-shrink-0 p-2">
                       <img
-                        src={displayImage}
+                        src={msg.photoURL && msg.photoURL}
                         alt="profile"
                         className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400 mr-4"
                       />
@@ -129,10 +92,10 @@ const Communication = () => {
                     <div className="flex flex-col flex-grow min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-lg truncate">
-                          {user[0].firstName}
+                          {msg.firstName && msg.firstName}
                         </span>
                         <span className="text-sm text-gray-500 opacity-70">
-                          <TimestampComponent timestamp={msg.sentAt} />
+                          <TimestampComponent timestamp={msg.sentAt && msg.sentAt} />
                         </span>
                       </div>
                       <div
@@ -140,7 +103,7 @@ const Communication = () => {
                           showReplies && "w-[40%]"
                         }`}
                       >
-                        <p className="break-words">{msg.message}</p>
+                        <p className="break-words">{msg.message && msg.message}</p>
                       </div>
                       <div
                         className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium py-2 px-4 rounded transition duration-300 ease-in-out"
@@ -163,40 +126,7 @@ const Communication = () => {
               } w-[50%] bg-white shadow-2xl overflow-y-auto`}
               style={{ maxHeight: "calc(100vh - 17rem)" }}
             >
-              <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
-                <h3 className="text-lg font-semibold text-violet-600">
-                  Threads
-                </h3>
-                <button
-                  className="rounded-full bg-red-500 inline-flex items-center justify-center text-white hover:bg-red-600 focus:outline-none"
-                  onClick={() => setShowReplies(false)}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
-                </button>
-              </div>
-              <div className="p-4">
-                {/* Container for replies */}
-                <div className="space-y-4">
-                  {/* Replies will be mapped here */}
-                  {/* Example reply */}
-                  <div className="p-2 bg-gray-100 rounded-md shadow-inner">
-                    <p className="text-sm text-gray-700">
-                      Reply 1: This is the first reply.
-                    </p>
-                  </div>
-                  {/* Add more replies as needed */}
-                </div>
-              </div>
+              <ReplyThread setShowReplies={setShowReplies} user={user} replyThread={replyThread} />
             </div>
           </div>
         </div>
