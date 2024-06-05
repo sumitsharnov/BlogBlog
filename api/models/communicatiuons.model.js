@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const contentSchema = new mongoose.Schema({
   messages: Array,
   user: Array,
-  replies: Array,
   reactions: String,
   id: String
 }, {timestamps: true});

@@ -21,11 +21,11 @@ export const communication = async (req, res, next) => {
     if (messages) {
       messages.messages.push({
         id: randomUuid,
-        message: message,
+        message: [message],
         user: userId,
         sentAt: timestamp,
         firstName: firstName,
-        photoURL: photoURL
+        photoURL: photoURL,
       });
       messages.user = { firstName, photoURL };
       await messages.save();
@@ -33,7 +33,13 @@ export const communication = async (req, res, next) => {
     } else {
       const communication = new Communication({
         _id: userId,
-        messages: { id: randomUuid, message: message, sentAt: timestamp, firstName: firstName, photoURL: photoURL },
+        messages: {
+          id: randomUuid,
+          message: [message],
+          sentAt: timestamp,
+          firstName: firstName,
+          photoURL: photoURL,
+        },
         user: { firstName: firstName, photoURL: photoURL },
       });
       await communication.save();
@@ -78,9 +84,9 @@ export const getReplies = async (req, res, next) => {
   }
 };
 
-export const  getMessagesByMessageId = async (req, res, next) => {
+export const getMessagesByMessageId = async (req, res, next) => {
   try {
-    const messageId = req.params.messageId;// Retrieve userId from headers
+    const messageId = req.params.messageId; // Retrieve userId from headers
     const token = req.headers.authorization;
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -89,7 +95,7 @@ export const  getMessagesByMessageId = async (req, res, next) => {
     }
     messageId || next(errorHandler(500, "Something went wrong"));
     const message = await Communication.findOne(
-      { "messages.id": messageId }, 
+      { "messages.id": messageId },
       { "messages.$": 1 }
     );
     res.status(200).json(message);
@@ -98,3 +104,45 @@ export const  getMessagesByMessageId = async (req, res, next) => {
   }
 };
 
+export const addReplies = async (req, res, next) => {
+  try {
+    const messageId = req.params.messageId; // Retrieve messageId from params
+    const { reply, token } = req.body;
+    
+    // Verify token
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+
+    if (!messageId) {
+      return next(errorHandler(500, "Something went wrong"));
+    }
+
+    // Find the document containing the message with the given messageId
+    const communication = await Communication.findOne({ "messages.id": messageId });
+
+    if (!communication) {
+      return next(errorHandler(404, "Message not found"));
+    }
+
+    // Find the specific message and update its message array
+    const messageIndex = communication.messages.findIndex(msg => msg.id === messageId);
+    if (messageIndex === -1) {
+      return next(errorHandler(404, "Message not found"));
+    }
+
+    const s =  [...communication.messages[0].message, reply]
+    communication.messages[0].message = s;
+
+    // Save the updated document
+    await communication.save();
+
+    console.log(communication.messages[0].message, "Updated communication");
+    res.status(200).json(communication.messages[0].message);
+  } catch (err) {
+    console.error(err);
+    next(errorHandler(500, "Something went wrong"));
+  }
+};

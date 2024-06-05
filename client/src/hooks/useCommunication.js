@@ -20,11 +20,14 @@ export const useCommunication = () => {
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
   const [loading, setLoading] = useState(false);
+  const [newReply, setNewReply] = useState("");;
 
   const handleReplies = async (messageId) => {
     setShowReplies(true);
+    setReplyThread(null);
     const data = await getMessagesById(messageId, token);
     setReplyThread(data.messages);
+   
   };
 
   const handleSubmit = async () => {
@@ -101,6 +104,8 @@ export const useCommunication = () => {
     messageEntries,
     user,
     handleErrorImage,
-    getUserDetails
+    getUserDetails,
+    newReply,
+    setNewReply,
   };
 };
