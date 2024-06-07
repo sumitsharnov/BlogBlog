@@ -2,10 +2,11 @@ import PropTypes from "prop-types";
 import TimestampComponent from "./TimestampComponent";
 import { useCommunication } from "../hooks/useCommunication";
 import Loader from "./Loader";
-import MessagesCentre from "./MessagesCentre";
 import { useEffect, useState } from "react";
 import { setActiveMessage } from "../redux/communications/commSlice";
 import { useDispatch} from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReply, faEraser } from "@fortawesome/free-solid-svg-icons";
 
 const ReplyThread = ({ setShowReplies, replyThread }) => {
   const dispatch = useDispatch();
@@ -16,8 +17,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     loading,
     clearReplyText,
     replyThread: rt,
-    postedMessage,
-    count,
+    setErrorMessage
   } = useCommunication();
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
@@ -28,10 +28,11 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
   useEffect(() => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
+
+  console.log(newReply,newReply.toString().trim().length, "Sumit");
   return (
     <>
       <div>
-          {postedMessage && <MessagesCentre messageText={"Posted"} type="success" click={count} />}
         </div>
         <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
           <h3 className="text-lg font-semibold text-violet-600">Threads</h3>
@@ -64,23 +65,23 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
           />
           <div className="flex flex-col p-2 m-1 gap-1">
             <button
-              className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
-          hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all"
+              className={`border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
+          hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all`} disabled={newReply.toString().trim().length <= 0}
               onClick={postAReply}
             >
               {/* <FontAwesomeIcon icon={faPaperPlane} className="flex" /> */}
-              Post
+              {<FontAwesomeIcon icon={faReply} className="text-center  transition-all" />}
             </button>
             <button
               className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-red-200 via-pink-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-t hover:from-red-400 hover:to-red-300 shadow-2xl transition-all"
               onClick={clearReplyText}
             >
-              Clear
+             <FontAwesomeIcon icon={faEraser} className="text-center transition-all" />
             </button>
           </div>
         </div>
         <div className="w-full">
-          {loading && (
+          {loading && newReply.length > 0 &&(
             <span className="flex flex-col justify-center items-center p-2">
               <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
               <Loader />

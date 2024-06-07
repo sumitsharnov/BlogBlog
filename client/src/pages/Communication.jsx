@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faMessage } from "@fortawesome/free-solid-svg-icons";
 import ReplyThread from "../components/ReplyThread";
 import MessagesCentre from "../components/MessagesCentre";
 import TimestampComponent from "../components/TimestampComponent";
@@ -128,7 +128,7 @@ const Communication = () => {
                         handleReplies(msg.id);
                       }} // Pass the index as the message ID
                     >
-                      Reply
+                      <FontAwesomeIcon icon={faMessage} className="flex" />
                     </div>
                   </div>
                 </div>

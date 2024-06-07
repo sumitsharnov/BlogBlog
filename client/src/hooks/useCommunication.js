@@ -36,7 +36,6 @@ export const useCommunication = () => {
     try {
       const replies = await getRepliesByMessageId(messageId, token);
       replies && setReplyThread(replies.reverse());
-      setCount(count+ 1);
       setPostedMessage(true);
     } catch (error) {
       setReplyThread([]);
@@ -63,10 +62,8 @@ export const useCommunication = () => {
 
   const postAReply = async () => {
     try {
-      setPostedMessage(false);
-      setLoading(true);
       setErrorMessage("");
-      setCount(count + 1);
+      setLoading(true);
       await postReply(newReply, token, messageId);
       await handleReplies(messageId);
       setErrorMessage(null);
