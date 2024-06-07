@@ -17,7 +17,6 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     loading,
     clearReplyText,
     replyThread: rt,
-    setErrorMessage
   } = useCommunication();
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
