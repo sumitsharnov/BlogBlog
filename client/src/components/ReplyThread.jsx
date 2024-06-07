@@ -1,23 +1,43 @@
 import PropTypes from "prop-types";
-import anonuser from "../images/home/anonuser.png";
 import TimestampComponent from "./TimestampComponent";
-import { useEffect, useState } from "react";
 import { useCommunication } from "../hooks/useCommunication";
 import Loader from "./Loader";
+import MessagesCentre from "./MessagesCentre";
+import { useEffect, useState } from "react";
+import { setActiveMessage } from "../redux/communications/commSlice";
+import { useDispatch} from "react-redux";
 
-const ReplyThread = ({ setShowReplies, replyThread, loadingReplies }) => {
-  const { newReply, setNewReply } = useCommunication();
-  const replies = replyThread && Object.entries(replyThread);
-  const loading = replyThread === null ? true : false;
+const ReplyThread = ({ setShowReplies, replyThread }) => {
+  const dispatch = useDispatch();
+  const {
+    newReply,
+    setNewReply,
+    postAReply,
+    loading,
+    clearReplyText,
+    replyThread: rt,
+    postedMessage,
+    count,
+  } = useCommunication();
+  const [replies, setReplies] = useState([]);
+  const loadingThreads = replyThread === null ? true : false;
+  useEffect(() => {
+    replyThread && setReplies(Object.entries(replyThread));
+  }, [replyThread]);
 
+  useEffect(() => {
+    rt && setReplies(Object.entries(rt));
+  }, [rt]);
   return (
     <>
       <div>
+          {postedMessage && <MessagesCentre messageText={"Posted"} type="success" click={count} />}
+        </div>
         <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
           <h3 className="text-lg font-semibold text-violet-600">Threads</h3>
           <button
             className="rounded-full bg-red-500 inline-flex items-center justify-center text-white hover:bg-red-600 focus:outline-none"
-            onClick={() => setShowReplies(false)}
+            onClick={() => {setShowReplies(false); dispatch(setActiveMessage(""))}}
           >
             <svg
               className="w-4 h-4"
@@ -46,17 +66,27 @@ const ReplyThread = ({ setShowReplies, replyThread, loadingReplies }) => {
             <button
               className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
           hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all"
+              onClick={postAReply}
             >
               {/* <FontAwesomeIcon icon={faPaperPlane} className="flex" /> */}
               Post
             </button>
-            <button className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-red-200 via-pink-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-t hover:from-red-400 hover:to-red-300 shadow-2xl transition-all">
-              {/* <FontAwesomeIcon icon={faPaperPlane} className="flex" /> */}
+            <button
+              className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-red-200 via-pink-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-t hover:from-red-400 hover:to-red-300 shadow-2xl transition-all"
+              onClick={clearReplyText}
+            >
               Clear
             </button>
           </div>
         </div>
-        {loading ? (
+        <div className="w-full">
+          {loading && (
+            <span className="flex flex-col justify-center items-center p-2">
+              <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
+              <Loader />
+            </span>
+          )}
+        {loadingThreads ? (
           <span className="flex flex-col justify-center items-center p-4">
             <p className="m-2 text-violet-500 p-2">Loading Replies...</p>
             <Loader />

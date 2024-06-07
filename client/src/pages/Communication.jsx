@@ -7,6 +7,9 @@ import Loader from "../components/Loader";
 import { useCommunication } from "../hooks/useCommunication";
 import { useSelector } from "react-redux";
 import anonuser from "../images/home/anonuser.png";
+import { setMessageId } from "../redux/communications/commSlice";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 const Communication = () => {
   const {
     handleReplies,
@@ -24,7 +27,15 @@ const Communication = () => {
     handleErrorImage,
   } = useCommunication();
   const { currentUser } = useSelector((state) => state.user);
+  const { activatedMessage } = useSelector((state) => state.comm);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
+  const dispatch = useDispatch();
+  const [activeThread, setActiveThread] = useState(null);
+
+  console.log(activatedMessage)
+  useEffect(()=>{
+    setActiveThread(activatedMessage);
+  }, [activatedMessage])
 
   return (
     <>
@@ -81,7 +92,7 @@ const Communication = () => {
               messageEntries.map(([key, msg]) => (
                 <div
                   key={key}
-                  className="flex items-start p-4 bg-white rounded-lg shadow-lg mb-4"
+                  className={`flex items-start p-4 rounded-lg shadow-lg mb-4 ${activeThread === msg.id && 'bg-violet-200 m-4 translate-all duration-200'}`}
                 >
                   <div className="flex-shrink-0 p-2">
                     <img
@@ -112,7 +123,10 @@ const Communication = () => {
                     </div>
                     <div
                       className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium py-2 px-4 rounded transition duration-300 ease-in-out"
-                      onClick={() => handleReplies(msg.id)} // Pass the index as the message ID
+                      onClick={async () => {
+                        dispatch(setMessageId(msg.id));
+                        handleReplies(msg.id);
+                      }} // Pass the index as the message ID
                     >
                       Reply
                     </div>

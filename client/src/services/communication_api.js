@@ -57,3 +57,42 @@ export const getMessagesById = async (messageId, token) =>{
     }
   
 }
+
+export const postReply = async (reply, token, messageId) =>{
+  const formData = { reply: reply, token: token};
+  await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+  try {
+    const res = await fetch(`/api/messages/reply/${messageId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
+
+} 
+
+export const getRepliesByMessageId = async (messageId) =>{
+  try {
+    const res = await fetch(`/api/messages/threads/${messageId}`, {
+      method: "GET",
+      headers: { messageId: messageId},
+    })
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+
+}

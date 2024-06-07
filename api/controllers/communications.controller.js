@@ -21,13 +21,14 @@ export const communication = async (req, res, next) => {
     if (messages) {
       messages.messages.push({
         id: randomUuid,
-        message: [message],
+        message: message,
         user: userId,
         sentAt: timestamp,
         firstName: firstName,
         photoURL: photoURL,
       });
       messages.user = { firstName, photoURL };
+      messages.reactions = "";
       await messages.save();
       res.status(200).json({ message: "Message sent successfully" });
     } else {
@@ -35,10 +36,11 @@ export const communication = async (req, res, next) => {
         _id: userId,
         messages: {
           id: randomUuid,
-          message: [message],
+          message: message,
           sentAt: timestamp,
           firstName: firstName,
           photoURL: photoURL,
+          replies: [],
         },
         user: { firstName: firstName, photoURL: photoURL },
       });
@@ -51,23 +53,6 @@ export const communication = async (req, res, next) => {
 };
 
 export const getMessages = async (req, res, next) => {
-  try {
-    const userId = req.headers["userid"]; // Retrieve userId from headers
-    const token = req.headers.authorization;
-    try {
-      jwt.verify(token, process.env.JWT_SECRET);
-    } catch (e) {
-      next(errorHandler(401, "Unauthorized"));
-    }
-    userId || next(errorHandler(500, "Something went wrong"));
-    const messages = await Communication.findOne({ _id: userId });
-    res.status(200).json(messages);
-  } catch (err) {
-    next(errorHandler(500, "Something went wrong"));
-  }
-};
-
-export const getReplies = async (req, res, next) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
@@ -108,41 +93,87 @@ export const addReplies = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
     const { reply, token } = req.body;
-    
     // Verify token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-      return next(errorHandler(401, "Unauthorized"));
+      next(errorHandler(401, "Unauthorized"));
     }
 
     if (!messageId) {
-      return next(errorHandler(500, "Something went wrong"));
+      return next(errorHandler(400, "Message ID is missing"));
     }
 
-    // Find the document containing the message with the given messageId
-    const communication = await Communication.findOne({ "messages.id": messageId });
-
+    // Find the communication document containing the message with the given messageId
+    const communication = await Communication.findOne({
+      "messages.id": messageId,
+    });
     if (!communication) {
-      return next(errorHandler(404, "Message not found"));
+      return next(errorHandler(404, "Communication not found"));
     }
 
-    // Find the specific message and update its message array
-    const messageIndex = communication.messages.findIndex(msg => msg.id === messageId);
+    // Find the specific message and update its replies array
+    const messageIndex = communication.messages.findIndex(
+      (msg) => msg.id === messageId
+    );
     if (messageIndex === -1) {
-      return next(errorHandler(404, "Message not found"));
+      return next(errorHandler(404, "Message not found in the communication"));
     }
 
-    const s =  [...communication.messages[0].message, reply]
-    communication.messages[0].message = s;
+    // Construct the reply object including the photoURL and firstName
+    const replyWithSenderInfo = {
+      message: reply, // Assuming 'reply' is a string containing the reply message
+      photoURL: communication.messages[messageIndex].photoURL,
+      firstName: communication.messages[messageIndex].firstName,
+      sentAt: new Date().toISOString()
+    };
 
-    // Save the updated document
-    await communication.save();
+    // Use findOneAndUpdate with the $push operator to add the reply to the correct message
+    const updatedCommunication = await Communication.findOneAndUpdate(
+      { "messages.id": messageId },
+      { $push: { "messages.$.replies": replyWithSenderInfo } },
+      { new: true } // Return the updated document
+    );
 
-    console.log(communication.messages[0].message, "Updated communication");
-    res.status(200).json(communication.messages[0].message);
+    if (!updatedCommunication) {
+      return next(
+        errorHandler(404, "Communication not found or update failed")
+      );
+    }
+
+    res.status(200).json("Posted a reply");
   } catch (err) {
     console.error(err);
-    next(errorHandler(500, "Something went wrong"));
+    next(errorHandler(500, "An error occurred while saving the reply"));
+  }
+};
+
+
+export const getReplies = async (req, res, next) => {
+  try {
+    const messageId = req.params.messageId; // Retrieve messageId from params
+
+    if (!messageId) {
+      return next(new Error("Message ID is missing"));
+    }
+
+    // Find the communication document containing the message with the given messageId
+    const communication = await Communication.findOne({ "messages.id": messageId }, { "messages.$": 1 });
+    if (!communication) {
+      return next(new Error("Communication not found"));
+    }
+
+    // Extract the replies from the message
+    const messageIndex = communication.messages.findIndex(msg => msg.id === messageId);
+    if (messageIndex === -1) {
+      return next(new Error("Message not found in the communication"));
+    }
+    const replies = communication.messages[messageIndex].replies;
+
+    // Respond with the replies array
+    res.status(200).json(replies);
+  } catch (err) {
+    console.error(err);
+    next(new Error("An error occurred while retrieving the replies"));
   }
 };
