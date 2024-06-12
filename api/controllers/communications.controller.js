@@ -180,11 +180,12 @@ export const getReplies = async (req, res, next) => {
       return next(new Error("Message not found in the communication"));
     }
     const replies = communication.messages[messageIndex].replies;
-    for(const reply of replies){
-      const user = await User.findOne({ _id: reply.user });
-      const { photoURL } = user._doc;
-      reply.photoURL = photoURL;
-    }
+    if (replies)
+      for (const reply of replies) {
+        const user = await User.findOne({ _id: reply.user });
+        const { photoURL } = user._doc;
+        reply.photoURL = photoURL;
+      }
     // Respond with the replies array
     res.status(200).json(replies);
   } catch (err) {
