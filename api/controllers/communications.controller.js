@@ -64,11 +64,12 @@ export const getMessages = async (req, res, next) => {
     }
     userId || next(errorHandler(500, "Something went wrong"));
     const messages = await Communication.findOne({ _id: userId });
-    for (const message of messages.messages) {
-      const user = await User.findOne({ _id: message.user });
-      const { photoURL } = user._doc;
-      message.photoURL = photoURL;
-    }
+    if (messages)
+      for (const message of messages.messages) {
+        const user = await User.findOne({ _id: message.user });
+        const { photoURL } = user._doc;
+        message.photoURL = photoURL;
+      }
     res.status(200).json(messages);
   } catch (err) {
     next(errorHandler(500, "Something went wrong"));

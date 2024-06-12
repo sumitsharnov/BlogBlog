@@ -91,6 +91,7 @@ export const useCommunication = () => {
       }
       setLoading(false);
     } catch (error) {
+      console.log("I am in")
       setErrorMessage(error.message);
       setLoading(false);
     }
