@@ -58,8 +58,8 @@ export const getMessagesById = async (messageId, token) =>{
   
 }
 
-export const postReply = async (reply, token, messageId) =>{
-  const formData = { reply: reply, token: token};
+export const postReply = async (reply, token, messageId, userId) =>{
+  const formData = { reply: reply, token: token, userId: userId };
   await new Promise((resolve) => {
       setTimeout(resolve, 3000);
     });

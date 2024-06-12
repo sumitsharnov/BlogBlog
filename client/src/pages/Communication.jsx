@@ -32,7 +32,6 @@ const Communication = () => {
   const dispatch = useDispatch();
   const [activeThread, setActiveThread] = useState(null);
 
-  console.log(activatedMessage)
   useEffect(()=>{
     setActiveThread(activatedMessage);
   }, [activatedMessage])
@@ -96,7 +95,7 @@ const Communication = () => {
                 >
                   <div className="flex-shrink-0 p-2">
                     <img
-                      src={msg.photoURL && msg.photoURL}
+                      src={msg.photoURL ? msg.photoURL : anonuser}
                       alt="profile"
                       className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400 mr-4"
                     />

@@ -40,6 +40,7 @@ export const communication = async (req, res, next) => {
           sentAt: timestamp,
           firstName: firstName,
           photoURL: photoURL,
+          user: userId,
           replies: [],
         },
         user: { firstName: firstName, photoURL: photoURL },
@@ -63,6 +64,11 @@ export const getMessages = async (req, res, next) => {
     }
     userId || next(errorHandler(500, "Something went wrong"));
     const messages = await Communication.findOne({ _id: userId });
+    for (const message of messages.messages) {
+      const user = await User.findOne({ _id: message.user });
+      const { photoURL } = user._doc;
+      message.photoURL = photoURL;
+    }
     res.status(200).json(messages);
   } catch (err) {
     next(errorHandler(500, "Something went wrong"));
@@ -92,7 +98,7 @@ export const getMessagesByMessageId = async (req, res, next) => {
 export const addReplies = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
-    const { reply, token } = req.body;
+    const { reply, token, userId } = req.body;
     // Verify token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -125,7 +131,8 @@ export const addReplies = async (req, res, next) => {
       message: reply, // Assuming 'reply' is a string containing the reply message
       photoURL: communication.messages[messageIndex].photoURL,
       firstName: communication.messages[messageIndex].firstName,
-      sentAt: new Date().toISOString()
+      sentAt: new Date().toISOString(),
+      user: userId,
     };
 
     // Use findOneAndUpdate with the $push operator to add the reply to the correct message
@@ -148,7 +155,6 @@ export const addReplies = async (req, res, next) => {
   }
 };
 
-
 export const getReplies = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
@@ -158,18 +164,27 @@ export const getReplies = async (req, res, next) => {
     }
 
     // Find the communication document containing the message with the given messageId
-    const communication = await Communication.findOne({ "messages.id": messageId }, { "messages.$": 1 });
+    const communication = await Communication.findOne(
+      { "messages.id": messageId },
+      { "messages.$": 1 }
+    );
     if (!communication) {
       return next(new Error("Communication not found"));
     }
 
     // Extract the replies from the message
-    const messageIndex = communication.messages.findIndex(msg => msg.id === messageId);
+    const messageIndex = communication.messages.findIndex(
+      (msg) => msg.id === messageId
+    );
     if (messageIndex === -1) {
       return next(new Error("Message not found in the communication"));
     }
     const replies = communication.messages[messageIndex].replies;
-
+    for(const reply of replies){
+      const user = await User.findOne({ _id: reply.user });
+      const { photoURL } = user._doc;
+      reply.photoURL = photoURL;
+    }
     // Respond with the replies array
     res.status(200).json(replies);
   } catch (err) {

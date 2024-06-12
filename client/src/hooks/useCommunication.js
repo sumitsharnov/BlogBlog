@@ -64,7 +64,7 @@ export const useCommunication = () => {
     try {
       setErrorMessage("");
       setLoading(true);
-      await postReply(newReply, token, messageId);
+      await postReply(newReply, token, messageId, currentUser._id);
       await handleReplies(messageId);
       setErrorMessage(null);
       setNewReply([""]);
