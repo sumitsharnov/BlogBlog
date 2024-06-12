@@ -145,8 +145,9 @@ export default function UserProfile() {
         token,
         !user.recruiter
       );
-      const userInfo = await res.json();
-      dispatch(updateCurrentUser({ ...userInfo, token: token }));
+      let userInfo = await res.json();
+      userInfo.type = currentUser.type;
+      dispatch(updateCurrentUser({ ...userInfo, token: token}));
     } catch (error) {
       dispatch(clearSignInSuccess());
       Cookies.set("timeout", "You have been logged out");

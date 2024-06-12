@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Input from "../components/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import img1 from "../images/sign-up/img1.jpg";
@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "../components/MessagesCentre";
 import { signUpSuccess } from "../redux/user/userSlice";
+import Home from "./Home";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ const SignUp = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isSignedIn = useSelector((state) => state.user.signInSuccess);
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -143,177 +145,183 @@ const SignUp = () => {
   );
 
   return (
-    <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
-      <div className="lg:inline hidden h-[50rem] w-[50rem]">
-        <Carousel className=" top-0 left-2 " indicators={true}>
-          <img
-            className="border rounded-3xl"
-            src={img1}
-            alt="AI GENERATED IMAGES"
-          />
-          <img
-            className="border rounded-3xl"
-            src={img2}
-            alt="AI GENERATED IMAGES"
-          />
-          <img
-            className="border rounded-3xl"
-            src={img3}
-            alt="AI GENERATED IMAGES"
-          />
-          <img
-            className="border rounded-3xl"
-            src={img4}
-            alt="AI GENERATED IMAGES"
-          />
-          <img
-            className="border rounded-3xl"
-            src={img5}
-            alt="AI GENERATED IMAGES"
-          />
-        </Carousel>
-      </div>
-      <div>
-        <form
-          className="top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex sm:flex-row">
-            <FontAwesomeIcon
-              icon={faUser}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
+    <>
+      {isSignedIn && <Home />}
+      <div className="bg-cover flex flex-row justify-center items-center gap-1.5 sm:mt-4 mt-[5rem]">
+        <div className="lg:inline hidden h-[50rem] w-[50rem]">
+          <Carousel className=" top-0 left-2 " indicators={true}>
+            <img
+              className="border rounded-3xl"
+              src={img1}
+              alt="AI GENERATED IMAGES"
             />
-            <Input
-              id="firstName"
-              type="text"
-              value={formData.firstName}
-              onChange={handleChange}
-              required={true}
-              placeholder={`First Name`}
-              isSubmitted={formData.firstName === "" ? isSubmitted : false}
+            <img
+              className="border rounded-3xl"
+              src={img2}
+              alt="AI GENERATED IMAGES"
             />
-          </div>
-
-          <div className="flex flex-row">
-            <FontAwesomeIcon
-              icon={faUserClock}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100   mr-2 border rounded-full"
+            <img
+              className="border rounded-3xl"
+              src={img3}
+              alt="AI GENERATED IMAGES"
             />
-            <Input
-              required={true}
-              id="lastName"
-              type="text"
-              value={formData.lastName}
-              onChange={handleChange}
-              placeholder={"Last Name"}
-              isSubmitted={formData.lastName === "" ? isSubmitted : false}
+            <img
+              className="border rounded-3xl"
+              src={img4}
+              alt="AI GENERATED IMAGES"
             />
-          </div>
-
-          <div className="flex sm:flex-row">
-            <FontAwesomeIcon
-              icon={faIdCard}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
+            <img
+              className="border rounded-3xl"
+              src={img5}
+              alt="AI GENERATED IMAGES"
             />
-            <Input
-              id="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              required={true}
-              placeholder="Username"
-              isSubmitted={formData.username === "" ? isSubmitted : false}
-            />
-          </div>
-
-          <div className="flex flex-row">
-            <FontAwesomeIcon
-              icon={faEnvelope}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
-            />
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required={true}
-              placeholder="Email"
-              isSubmitted={formData.email === "" ? isSubmitted : false}
-            />
-          </div>
-
-          <div className="flex flex-row">
-            <FontAwesomeIcon
-              icon={faLock}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
-            />
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required={true}
-              placeholder="Password"
-              isSubmitted={formData.password === "" ? isSubmitted : false}
-            />
-          </div>
-
-          <div className="flex flex-row">
-            <FontAwesomeIcon
-              icon={faCheckDouble}
-              className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
-            />
-            <Input
-              id="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required={true}
-              placeholder="Confirm Password"
-              isSubmitted={
-                formData.confirmPassword === "" ? isSubmitted : false
-              }
-            />
-          </div>
-          <div className="flex flex-row justify-center items-center space-x-3">
-            <label htmlFor="isRecruiter" className="font-medium text-gray-700">
-              Are you a recruiter?{" "}
-            </label>
-            <input
-              name="isRecruiter"
-              type="checkbox"
-              checked={formData.isRecruiter}
-              id="isRecruiter"
-              onChange={handleChange}
-              value={formData.isRecruiter}
-              className="mt-1"
-            ></input>
-          </div>
-
-          <Button
-            className="sm:w-full w-auto  hover:bg-purple-200  text-white"
-            gradientDuoTone="purpleToBlue"
-            outline
-            onClick={handleSubmit}
-          >
-            Sign up
-          </Button>
-          {loading && <Loader />}
-        </form>
-        <div className="border-2 border-teal-500 font-sans rounded-md ml-8 mr-8 mt-4 p-2 bg-gray-300 text-center">
-          <span>
-            Already have an account?{" "}
-            <Link
-              to="/sign-in"
-              className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700"
-            >
-              Log-on
-            </Link>
-          </span>
+          </Carousel>
         </div>
-        {memoizedMessagesCentre}
+        <div>
+          <form
+            className="top-0 z-10 flex flex-col justify-center items-center space-y-3.5 bg-gray-300 p-5 mr-5 ml-5 border rounded-3xl"
+            onSubmit={handleSubmit}
+          >
+            <div className="flex sm:flex-row">
+              <FontAwesomeIcon
+                icon={faUser}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
+              />
+              <Input
+                id="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={handleChange}
+                required={true}
+                placeholder={`First Name`}
+                isSubmitted={formData.firstName === "" ? isSubmitted : false}
+              />
+            </div>
+
+            <div className="flex flex-row">
+              <FontAwesomeIcon
+                icon={faUserClock}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100   mr-2 border rounded-full"
+              />
+              <Input
+                required={true}
+                id="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder={"Last Name"}
+                isSubmitted={formData.lastName === "" ? isSubmitted : false}
+              />
+            </div>
+
+            <div className="flex sm:flex-row">
+              <FontAwesomeIcon
+                icon={faIdCard}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  mr-2 border rounded-full"
+              />
+              <Input
+                id="username"
+                type="text"
+                value={formData.username}
+                onChange={handleChange}
+                required={true}
+                placeholder="Username"
+                isSubmitted={formData.username === "" ? isSubmitted : false}
+              />
+            </div>
+
+            <div className="flex flex-row">
+              <FontAwesomeIcon
+                icon={faEnvelope}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
+              />
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required={true}
+                placeholder="Email"
+                isSubmitted={formData.email === "" ? isSubmitted : false}
+              />
+            </div>
+
+            <div className="flex flex-row">
+              <FontAwesomeIcon
+                icon={faLock}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
+              />
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required={true}
+                placeholder="Password"
+                isSubmitted={formData.password === "" ? isSubmitted : false}
+              />
+            </div>
+
+            <div className="flex flex-row">
+              <FontAwesomeIcon
+                icon={faCheckDouble}
+                className="p-4 bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-100  flex justify-center items-center mr-2 border rounded-full"
+              />
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required={true}
+                placeholder="Confirm Password"
+                isSubmitted={
+                  formData.confirmPassword === "" ? isSubmitted : false
+                }
+              />
+            </div>
+            <div className="flex flex-row justify-center items-center space-x-3">
+              <label
+                htmlFor="isRecruiter"
+                className="font-medium text-gray-700"
+              >
+                Are you a recruiter?{" "}
+              </label>
+              <input
+                name="isRecruiter"
+                type="checkbox"
+                checked={formData.isRecruiter}
+                id="isRecruiter"
+                onChange={handleChange}
+                value={formData.isRecruiter}
+                className="mt-1"
+              ></input>
+            </div>
+
+            <Button
+              className="sm:w-full w-auto  hover:bg-purple-200  text-white"
+              gradientDuoTone="purpleToBlue"
+              outline
+              onClick={handleSubmit}
+            >
+              Sign up
+            </Button>
+            {loading && <Loader />}
+          </form>
+          <div className="border-2 border-teal-500 font-sans rounded-md ml-8 mr-8 mt-4 p-2 bg-gray-300 text-center">
+            <span>
+              Already have an account?{" "}
+              <Link
+                to="/sign-in"
+                className="ml-2 text-blue-700 font-semibold hover:font-bold hover:text-teal-700"
+              >
+                Log-on
+              </Link>
+            </span>
+          </div>
+          {memoizedMessagesCentre}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

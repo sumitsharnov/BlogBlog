@@ -24,7 +24,8 @@ export default function App() {
       const fetch = async () => {
         try {
           const res = await getUserInfo(currentUser._id, token);
-          const userInfo = await res.json();
+          let userInfo = await res.json();
+          userInfo.type = currentUser.type;
           dispatch(updateCurrentUser({ ...userInfo, token: token }));
         } catch (error) {
           dispatch(clearSignInSuccess());

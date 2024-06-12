@@ -7,6 +7,7 @@ import { setActiveMessage } from "../redux/communications/commSlice";
 import { useDispatch} from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faEraser } from "@fortawesome/free-solid-svg-icons";
+import anonuser from '../images/home/anonuser.png';
 
 const ReplyThread = ({ setShowReplies, replyThread }) => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
 
-  console.log(newReply,newReply.toString().trim().length, "Sumit");
+  
   return (
     <>
       <div>
@@ -101,7 +102,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
               >
                 <div className="flex-shrink-0 p-2">
                   <img
-                    src={thread.photoURL && thread.photoURL}
+                    src={thread.photoURL ? thread.photoURL : anonuser}
                     alt="profile"
                     className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400 mr-4"
                   />
