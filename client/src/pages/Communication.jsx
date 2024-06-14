@@ -94,7 +94,7 @@ const Communication = () => {
             {loading && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
-                  {messageEntries.length > 0 ? "Posting..." : "Loading..."}
+                  {edit ? "Editing" : messageEntries.length > 0 ? "Posting..." : "Loading..."}
                 </p>
                 <Loader />
               </span>

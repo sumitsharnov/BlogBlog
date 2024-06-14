@@ -198,8 +198,14 @@ export const getReplies = async (req, res, next) => {
 };
 
 export const editMessage = async (req, res, next) => {
-  const messageId = req.params.messageId; // Retrieve messageId from params
-
+  try {
+    const messageId = req.params.messageId; // Retrieve messageId from params
+    const { token, editedText } = req.body;
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      next(errorHandler(401, "Unauthorized"));
+    }
     if (!messageId) {
       return next(new Error("Message ID is missing"));
     }
@@ -209,6 +215,19 @@ export const editMessage = async (req, res, next) => {
       { "messages.id": messageId },
       { "messages.$": 1 }
     );
+    if (!communication) {
+      return next(new Error("Communication not found"));
+    }
 
-    res.status(200).json(communication);
-}
+    const updatedMessage = await Communication.findOneAndUpdate(
+      { "messages.id": messageId },
+      { $set: { "messages.$.message": editedText } },
+      { $set: { "messages.$.edit": true } },
+      { new: true } // Return the updated document
+    );
+
+    res.status(200).json("Message edited successfully");
+  } catch (err) {
+    next(errorHandler(500, "Something went wrong"));
+  }
+};

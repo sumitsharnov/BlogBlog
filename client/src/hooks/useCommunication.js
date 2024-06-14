@@ -4,6 +4,7 @@ import {
   getMessages,
   postReply,
   getRepliesByMessageId,
+  postEditMessage,
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
@@ -49,9 +50,14 @@ export const useCommunication = () => {
   };
 
   const handleEditSave = async (messageId) => {
-    setEdit(false);
-    dispatch(setActiveMessage(""));
-    console.log(messageId);
+    try {
+      dispatch(setActiveMessage(""));
+      await postEditMessage(messageId, token, editMessage);
+      await getAllMessages();
+      setEdit(false);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const handleSubmit = async () => {
@@ -163,6 +169,6 @@ export const useCommunication = () => {
     handleEditSave,
     setEditMessage,
     editMessage,
-    handleCancelEdit
+    handleCancelEdit,
   };
 };

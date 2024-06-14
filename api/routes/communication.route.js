@@ -7,6 +7,6 @@ router.get("/getMessages", getMessages);
 router.get("/getMessages/:messageId", getMessagesByMessageId);
 router.post("/reply/:messageId", addReplies);
 router.get("/threads/:messageId", getReplies);
-router.post("/threads/:messageId", editMessage);
+router.post("/editMessage/:messageId", editMessage);
 
 export default router;
