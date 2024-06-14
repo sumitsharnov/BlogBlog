@@ -13,7 +13,7 @@ export const communication = async (req, res, next) => {
     } catch (e) {
       next(errorHandler(401, "Unauthorized"));
     }
-    userId || next(errorHandler(500, "Something went wrong"));
+    userId || next(errorHandler(500, "User is not authorized"));
     const messages = await Communication.findOne({ _id: userId });
     const user = await User.findOne({ _id: userId });
     const { firstName, photoURL } = user._doc;
@@ -100,6 +100,7 @@ export const addReplies = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
     const { reply, token, userId } = req.body;
+    const randomUuid = uuidv4();
     // Verify token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -129,6 +130,7 @@ export const addReplies = async (req, res, next) => {
 
     // Construct the reply object including the photoURL and firstName
     const replyWithSenderInfo = {
+      id: randomUuid,
       message: reply, // Assuming 'reply' is a string containing the reply message
       photoURL: communication.messages[messageIndex].photoURL,
       firstName: communication.messages[messageIndex].firstName,
@@ -194,3 +196,19 @@ export const getReplies = async (req, res, next) => {
     next(new Error("An error occurred while retrieving the replies"));
   }
 };
+
+export const editMessage = async (req, res, next) => {
+  const messageId = req.params.messageId; // Retrieve messageId from params
+
+    if (!messageId) {
+      return next(new Error("Message ID is missing"));
+    }
+
+    // Find the communication document containing the message with the given messageId
+    const communication = await Communication.findOne(
+      { "messages.id": messageId },
+      { "messages.$": 1 }
+    );
+
+    res.status(200).json(communication);
+}

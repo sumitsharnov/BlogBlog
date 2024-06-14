@@ -25,9 +25,10 @@ export const useCommunication = () => {
   const [loading, setLoading] = useState(false);
   const [newReply, setNewReply] = useState("");
   const [postedMessage, setPostedMessage] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [editMessage, setEditMessage] = useState("");
   const dispatch = useDispatch();
-  
-  
+
   const handleReplies = async (messageId) => {
     setShowReplies(true);
     setReplyThread(null);
@@ -40,6 +41,17 @@ export const useCommunication = () => {
     } catch (error) {
       setReplyThread([]);
     }
+  };
+
+  const handleEdit = async (messageId) => {
+    setEdit(true);
+    dispatch(setActiveMessage(messageId));
+  };
+
+  const handleEditSave = async (messageId) => {
+    setEdit(false);
+    dispatch(setActiveMessage(""));
+    console.log(messageId);
   };
 
   const handleSubmit = async () => {
@@ -91,7 +103,6 @@ export const useCommunication = () => {
       }
       setLoading(false);
     } catch (error) {
-      console.log("I am in")
       setErrorMessage(error.message);
       setLoading(false);
     }
@@ -118,6 +129,11 @@ export const useCommunication = () => {
     setUserImage(anonuser);
   };
 
+  const handleCancelEdit = () => {
+    setEdit(false);
+    dispatch(setActiveMessage(""));
+  };
+
   return {
     handleReplies,
     showReplies,
@@ -142,5 +158,11 @@ export const useCommunication = () => {
     clearReplyText,
     postedMessage,
     activatedMessage,
+    handleEdit,
+    edit,
+    handleEditSave,
+    setEditMessage,
+    editMessage,
+    handleCancelEdit
   };
 };
