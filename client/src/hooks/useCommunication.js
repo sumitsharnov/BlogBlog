@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
 import { getUserInfo } from "../services/user_api";
-import { setActiveMessage } from "../redux/communications/commSlice";
+import { setActiveMessage, setMessageId } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
   const [replyThread, setReplyThread] = useState(null);
@@ -27,7 +27,9 @@ export const useCommunication = () => {
   const [newReply, setNewReply] = useState("");
   const [postedMessage, setPostedMessage] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [editReply, setEditReply] = useState(false);
   const [editMessage, setEditMessage] = useState("");
+  const [editReplyText, setEditReplyText] = useState(false);
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
@@ -44,15 +46,26 @@ export const useCommunication = () => {
     }
   };
 
-  const handleEdit = async (messageId) => {
+  //This is to get whether user has started the edit process, if yes, then we set it to true
+  const handleEdit = async (messageId, message) => {
     setEdit(true);
+    setEditMessage(message);
     dispatch(setActiveMessage(messageId));
   };
 
-  const handleEditSave = async (messageId) => {
+  const handleReplyEdit = async (replyId, editedReply) => {
+    setEditReply(true);
+    setEditReplyText(editedReply);
+    console.log(replyId, editedReply);
+  };
+
+  //To save the main message after editing
+  const handleEditSave = async (messageId, message) => {
     try {
+      message === editMessage && setEdit(false);
       dispatch(setActiveMessage(""));
-      await postEditMessage(messageId, token, editMessage);
+      message !== editMessage &&
+        (await postEditMessage(messageId, token, editMessage));
       await getAllMessages();
       setEdit(false);
     } catch (error) {
@@ -60,6 +73,13 @@ export const useCommunication = () => {
     }
   };
 
+  // To save a reply after editing
+  const handleEditReplySave = async (replyId, editedReply) => {
+    // 
+    console.log(replyId, editedReply);
+  };
+
+  // Post a message - main message
   const handleSubmit = async () => {
     if (message.length <= 0) {
       setErrorMessage("Message cannot be empty");
@@ -137,7 +157,12 @@ export const useCommunication = () => {
 
   const handleCancelEdit = () => {
     setEdit(false);
-    dispatch(setActiveMessage(""));
+    showReplies || dispatch(setActiveMessage(""));
+  };
+
+  const handleCancelReplyEdit = () => {
+    setEditReply(false);
+    dispatch(setMessageId(""));
   };
 
   return {
@@ -170,5 +195,11 @@ export const useCommunication = () => {
     setEditMessage,
     editMessage,
     handleCancelEdit,
+    handleReplyEdit,
+    editReply,
+    editReplyText,
+    setEditReplyText,
+    handleCancelReplyEdit,
+    handleEditReplySave
   };
 };

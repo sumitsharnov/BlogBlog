@@ -35,6 +35,8 @@ const Communication = () => {
     handleEditSave,
     handleCancelEdit,
     setEditMessage,
+    editMessage,
+  
   } = useCommunication();
   const { currentUser } = useSelector((state) => state.user);
   const { activatedMessage } = useSelector((state) => state.comm);
@@ -91,10 +93,16 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
-            {loading && (
+            {loading &&  (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
-                  {edit ? "Editing" : messageEntries.length > 0 ? "Posting..." : "Loading..."}
+                  {edit && editMessage.trim() !== ""
+                    ? "Editing"
+                    : edit && editMessage.trim() === ""
+                    ? "Deleting"
+                    : messageEntries.length > 0
+                    ? "Posting..."
+                    : "Loading..."}
                 </p>
                 <Loader />
               </span>
@@ -120,7 +128,7 @@ const Communication = () => {
                         <span className="font-medium text-lg truncate">
                           {msg.firstName && msg.firstName}
                         </span>
-                        <span className="text-sm text-gray-500 opacity-70">
+                        <span className="text-sm text-gray-500 opacity-70 flex gap-2">
                           <TimestampComponent
                             timestamp={msg.sentAt && msg.sentAt}
                           />
@@ -158,12 +166,13 @@ const Communication = () => {
                         ) : (
                           <p className="break-words">
                             {msg.message && msg.message}
+                            <span className="p-1 text-gray-500">{msg.edit && "(edited)"}</span>
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2  ml-[2%]">
+                      <div className="flex gap-2  ml-[2%] mt-2">
                         <div
-                          className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out mt-[1%]"
+                          className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out"
                           onClick={async () => {
                             dispatch(setMessageId(msg.id));
                             handleReplies(msg.id);
@@ -176,16 +185,16 @@ const Communication = () => {
                             edit && activeThread === msg.id
                               ? "text-green-800"
                               : "text-red-500"
-                          } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out mt-[0.8%]`}
+                          } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
                           onClick={async () => {
                             dispatch(setMessageId(msg.id));
                             edit && activeThread === msg.id
-                              ? handleEditSave(msg.id)
-                              : handleEdit(msg.id);
+                              ? handleEditSave(msg.id, msg.message)
+                              : handleEdit(msg.id, msg.message);
                           }} // Pass the index as the message ID
                         >
                           {edit && activeThread === msg.id ? (
-                            <FontAwesomeIcon icon={faSave} className="flex" />
+                           msg.message.trim()!==editMessage.trim() && <FontAwesomeIcon icon={faSave} className="flex"/>
                           ) : (
                             <FontAwesomeIcon icon={faEdit} className="flex" />
                           )}

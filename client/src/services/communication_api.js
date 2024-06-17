@@ -95,7 +95,6 @@ export const getRepliesByMessageId = async (messageId) => {
 
 export const postEditMessage = async (messageId, token, editedText) => {
   const formData = { editedText: editedText, token: token };
-  console.log(formData);
   try {
     const res = await fetch(`/api/messages/editMessage/${messageId}`, {
       method: "POST",

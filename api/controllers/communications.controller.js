@@ -201,11 +201,15 @@ export const editMessage = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
     const { token, editedText } = req.body;
+
+    // Verify the token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-      next(errorHandler(401, "Unauthorized"));
+      return next(errorHandler(401, "Unauthorized"));
     }
+
+    // Check if messageId is provided
     if (!messageId) {
       return next(new Error("Message ID is missing"));
     }
@@ -215,14 +219,31 @@ export const editMessage = async (req, res, next) => {
       { "messages.id": messageId },
       { "messages.$": 1 }
     );
+
+    // Check if communication is found
     if (!communication) {
       return next(new Error("Communication not found"));
     }
 
+    // If editedText is empty, delete the message
+    if (!editedText.trim()) {
+      const updatedCommunication = await Communication.findOneAndUpdate(
+        { "messages.id": messageId },
+        { $pull: { messages: { id: messageId } } },
+        { new: true }
+      );
+      return res.status(200).json("Message deleted successfully");
+    }
+
+    // If editedText is not empty, update the message
     const updatedMessage = await Communication.findOneAndUpdate(
       { "messages.id": messageId },
-      { $set: { "messages.$.message": editedText } },
-      { $set: { "messages.$.edit": true } },
+      {
+        $set: {
+          "messages.$.message": editedText,
+          "messages.$.edit": true,
+        },
+      },
       { new: true } // Return the updated document
     );
 
