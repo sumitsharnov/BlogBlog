@@ -1,10 +1,36 @@
 import mongoose from 'mongoose';
 
 const contentSchema = new mongoose.Schema({
-  messages: Array,
-  user: Array,
+  messages: [
+    {
+      id: String,
+      message: String,
+      sentAt: Date,
+      firstName: String,
+      photoURL: String,
+      user: String,
+      edit: Boolean,
+      replies: [
+        {
+          id: String,
+          message: String,
+          photoURL: String,
+          firstName: String,
+          sentAt: Date,
+          user: String,
+          edit: Boolean,
+        },
+      ],
+    },
+  ],
+  user: [
+    {
+      firstName: String,
+      photoURL: String,
+    },
+  ],
   reactions: String,
-}, {timestamps: true});
+}, { timestamps: true });
 
 const Communication = mongoose.model('Communication', contentSchema);
 

@@ -5,11 +5,12 @@ import {
   postReply,
   getRepliesByMessageId,
   postEditMessage,
+  postEditReply
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
 import { getUserInfo } from "../services/user_api";
-import { setActiveMessage, setMessageId } from "../redux/communications/commSlice";
+import { setActiveMessage, setReplyId } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
   const [replyThread, setReplyThread] = useState(null);
@@ -29,7 +30,7 @@ export const useCommunication = () => {
   const [edit, setEdit] = useState(false);
   const [editReply, setEditReply] = useState(false);
   const [editMessage, setEditMessage] = useState("");
-  const [editReplyText, setEditReplyText] = useState(false);
+  const [editReplyText, setEditReplyText] = useState("");
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
@@ -39,7 +40,7 @@ export const useCommunication = () => {
     // const data = await getMessagesById(messageId, token);
     try {
       const replies = await getRepliesByMessageId(messageId, token);
-      replies && setReplyThread(replies.reverse());
+      replies && setReplyThread(replies);
       setPostedMessage(true);
     } catch (error) {
       setReplyThread([]);
@@ -53,10 +54,10 @@ export const useCommunication = () => {
     dispatch(setActiveMessage(messageId));
   };
 
-  const handleReplyEdit = async (replyId, editedReply) => {
+  const handleReplyEdit = async (replyId, defaultText) => {
     setEditReply(true);
-    setEditReplyText(editedReply);
-    console.log(replyId, editedReply);
+    setEditReplyText(defaultText);
+    setLoading(false);
   };
 
   //To save the main message after editing
@@ -74,9 +75,17 @@ export const useCommunication = () => {
   };
 
   // To save a reply after editing
-  const handleEditReplySave = async (replyId, editedReply) => {
-    // 
-    console.log(replyId, editedReply);
+  const handleEditReplySave = async (replyId) => {
+    try{
+      setEditReply(false);
+      setLoading(true);
+      const res = await postEditReply(replyId, token, editReplyText, messageId);
+      res && await handleReplies(messageId);
+      setLoading(false);
+      dispatch(setReplyId(""));
+    }catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   // Post a message - main message
@@ -148,12 +157,7 @@ export const useCommunication = () => {
     getAllMessages();
   }, []);
 
-  const handleErrorImage = (event) => {
-    setErrorMessage("Failed to load profile picture, please try again later");
-    setCount(count + 1);
-    console.log(event);
-    setUserImage(anonuser);
-  };
+ 
 
   const handleCancelEdit = () => {
     setEdit(false);
@@ -162,7 +166,7 @@ export const useCommunication = () => {
 
   const handleCancelReplyEdit = () => {
     setEditReply(false);
-    dispatch(setMessageId(""));
+    dispatch(setReplyId(""));
   };
 
   return {
@@ -181,7 +185,6 @@ export const useCommunication = () => {
     userImage,
     messageEntries,
     user,
-    handleErrorImage,
     getUserDetails,
     newReply,
     setNewReply,

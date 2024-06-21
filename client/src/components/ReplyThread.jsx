@@ -5,7 +5,7 @@ import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import {
   setActiveMessage,
-  setMessageId,
+  setReplyId,
 } from "../redux/communications/commSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,7 +35,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
   } = useCommunication();
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
-  const { messageId } = useSelector((state) => state.comm);
+  const { replyId } = useSelector((state) => state.comm);
   useEffect(() => {
     replyThread && setReplies(Object.entries(replyThread));
   }, [replyThread]);
@@ -44,10 +44,11 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
 
+
   return (
     <>
       <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
-        <h3 className="text-lg font-semibold text-violet-600">Threads</h3>
+        <h3 className="text-lg font-semibold text-violet-600">Thread</h3>
         <button
           className="rounded-full bg-red-500 inline-flex items-center justify-center text-white hover:bg-red-600 focus:outline-none"
           onClick={() => {
@@ -105,7 +106,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
         </div>
       </div>
       <div className="w-full">
-        {loading && newReply.length > 0 && (
+        {loading && newReply.length > 0 &&(
           <span className="flex flex-col justify-center items-center p-2">
             <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
             <Loader />
@@ -122,7 +123,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
             return (
               <div
                 key={key}
-                className={`flex items-start p-4 bg-white rounded-lg shadow-lg mb-4 ${thread.id === messageId && "border border-violet-300 transition-all m-2"}`}
+                className={`flex items-start p-4 bg-white rounded-lg shadow-lg mb-4 ${thread.id === replyId && editReply && "border border-violet-300 transition-all m-2"}`}
               >
                 <div className="flex-shrink-0 p-2">
                   <img
@@ -145,7 +146,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                   <div
                     className={`mt-2 p-2 bg-gray-100 rounded-lg border border-gray-200 shadow-sm`}
                   >
-                    {editReply && thread.id === messageId ? (
+                    {editReply && thread.id === replyId ? (
                       <div className="flex flex-row-reverse justify-between items-center ">
                         <textarea
                           defaultValue={thread.message}
@@ -170,27 +171,27 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                         </button>
                       </div>
                     ) : (
-                      <p className="break-words">
-                        {thread.message && thread.message}
+                      (loading && replyId === thread.id) ?  <span className="p-2 flex text-gray-300"><Loader width={2}  height={2}/></span> : <p className="break-words">
+                        {thread.message && thread.message} <span className="p-1 text-gray-500">{thread.edit && "(edited)"}</span>
                       </p>
                     )}
                   </div>
                   <div
                     className={`cursor-pointer ${
-                      editReply && thread.id === messageId
+                      editReply && thread.id === replyId
                         ? "text-green-800"
                         : "text-red-500"
                     } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
                     onClick={async () => {
-                      dispatch(setMessageId(thread.id));
-                      editReply && thread.id === messageId
+                      dispatch(setReplyId(thread.id));
+                      editReply && thread.id === replyId
                         ? handleEditReplySave(thread.id, thread.message)
                         : handleReplyEdit(thread.id, thread.message);
                     }} // Pass the index as the message ID
                   >
-                    {editReply && messageId === thread.id ? (
-                      thread.message.trim() !== editReplyText.trim() && (
-                        <FontAwesomeIcon icon={faSave} className="flex" />
+                    {editReply && replyId === thread.id ? (
+                      thread.message.trim() !== editReplyText.trim() && editReplyText.trim() !== "" && (
+                        <FontAwesomeIcon icon={faSave} className="flex mt-1 ml-2" />
                       )
                     ) : (
                       <FontAwesomeIcon icon={faEdit} className="flex mt-1 ml-2" />

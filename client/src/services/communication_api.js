@@ -110,3 +110,21 @@ export const postEditMessage = async (messageId, token, editedText) => {
     throw new Error(error.message);
   }
 };
+
+export const postEditReply = async (replyId, token, editedText, messageId) => {
+  const formData = { editedText: editedText, token: token, replyId:replyId };
+  try {
+    const res = await fetch(`/api/messages/editReply/${messageId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", messageId: messageId },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

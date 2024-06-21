@@ -34,7 +34,7 @@ export const googleauth = async (req, res, next) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     // Send response with user data and token
     const { password: pass, ...userData } = user._doc;

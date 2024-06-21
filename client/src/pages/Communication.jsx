@@ -4,6 +4,7 @@ import {
   faMessage,
   faEdit,
   faSave,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import ReplyThread from "../components/ReplyThread";
 import MessagesCentre from "../components/MessagesCentre";
@@ -15,6 +16,7 @@ import anonuser from "../images/home/anonuser.png";
 import { setMessageId } from "../redux/communications/commSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+
 const Communication = () => {
   const {
     handleReplies,
@@ -29,18 +31,18 @@ const Communication = () => {
     loading,
     messageEntries,
     user,
-    handleErrorImage,
     handleEdit,
     edit,
     handleEditSave,
     handleCancelEdit,
     setEditMessage,
     editMessage,
-  
   } = useCommunication();
   const { currentUser } = useSelector((state) => state.user);
   const { activatedMessage } = useSelector((state) => state.comm);
-  const displayImage = (currentUser && currentUser.photoURL) || anonuser;
+  const [displayImage, setDisplayImage] = useState(
+    (currentUser && currentUser.photoURL) || anonuser
+  );
   const dispatch = useDispatch();
   const [activeThread, setActiveThread] = useState(null);
 
@@ -48,6 +50,10 @@ const Communication = () => {
     setActiveThread(activatedMessage);
   }, [activatedMessage]);
 
+  const handleErrorImage = (event) => {
+    console.error(event);
+    setDisplayImage(anonuser);
+  };
   return (
     <>
       <div className="min-w-96 overflow-x-hidden">
@@ -68,7 +74,6 @@ const Communication = () => {
               src={displayImage}
               alt="profile"
               className="w-16 h-10 rounded-full transition duration-300 transform hover:scale-110 m-4 border border-violet-400"
-              onError={handleErrorImage}
             />
             <textarea
               type="text"
@@ -93,7 +98,7 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
-            {loading &&  (
+            {loading && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
                   {edit && editMessage.trim() !== ""
@@ -121,6 +126,7 @@ const Communication = () => {
                         src={msg.photoURL ? msg.photoURL : anonuser}
                         alt="profile"
                         className="w-12 h-12 rounded-lg transition duration-300 transform hover:scale-110 border border-violet-400 mr-4"
+                        onError={handleErrorImage}
                       />
                     </div>
                     <div className="flex flex-col flex-grow min-w-0">
@@ -166,7 +172,9 @@ const Communication = () => {
                         ) : (
                           <p className="break-words">
                             {msg.message && msg.message}
-                            <span className="p-1 text-gray-500">{msg.edit && "(edited)"}</span>
+                            <span className="p-1 text-gray-500">
+                              {msg.edit && "(edited)"}
+                            </span>
                           </p>
                         )}
                       </div>
@@ -194,7 +202,12 @@ const Communication = () => {
                           }} // Pass the index as the message ID
                         >
                           {edit && activeThread === msg.id ? (
-                           msg.message.trim()!==editMessage.trim() && <FontAwesomeIcon icon={faSave} className="flex"/>
+                            msg.message.trim() !== editMessage.trim() &&
+                            (editMessage.trim() === "" ? (
+                              <span className="text-gray-500 hover:text-red-500 hover:transition-all"><FontAwesomeIcon icon={faTrash} className="flex" /></span>
+                            ) : (
+                              <FontAwesomeIcon icon={faSave} className="flex" />
+                            ))
                           ) : (
                             <FontAwesomeIcon icon={faEdit} className="flex" />
                           )}

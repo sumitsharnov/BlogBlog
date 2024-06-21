@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     messageId: "",
-    activatedMessage: ""
+    activatedMessage: "",
+    replyId: ""
   };
 
 const commSlice = createSlice({
@@ -14,10 +15,13 @@ const commSlice = createSlice({
         },
         setActiveMessage(state,action){
             state.activatedMessage = action.payload;
+        },
+        setReplyId(state,action){
+            state.replyId = action.payload;
         }
     }
 });
 
-export const {setMessageId, setActiveMessage} = commSlice.actions;
+export const {setMessageId, setActiveMessage, setReplyId} = commSlice.actions;
 
 export default commSlice.reducer;
