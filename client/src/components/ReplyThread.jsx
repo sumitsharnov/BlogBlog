@@ -109,28 +109,47 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     className={`mt-2 p-2 bg-gray-100 rounded-lg border border-gray-200 shadow-sm`}
                   >
                     {editReply && thread.id === replyId ? (
-                      <div className="flex flex-row-reverse justify-between items-center ">
+                      <div className="flex flex-col">
                         <textarea
                           defaultValue={thread.message}
                           onChange={(e) => setEditReplyText(e.target.value)}
-                          className="w-[100%] p-1 relative mr-[1.5rem] max-h-48 focus:outline-none shadow-stone-800"
+                          className="w-[100%] p-1 mr-[1.5rem] max-h-48 focus:outline-none shadow-stone-800"
                         />
-                        <button
-                          className="rounded-full bg-red-500  text-white hover:bg-red-600 focus:outline-none absolute "
-                          onClick={handleCancelReplyEdit}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                        <div className="flex gap-1">
+                          {editReply &&
+                            thread.id === replyId &&
+                            thread.message.trim() !== editReplyText.trim() &&
+                            editReplyText.trim() !== "" && (
+                              <button
+                                onClick={() =>
+                                  handleEditReplySave(thread.id, thread.message)
+                                }
+                                className="rounded-full bg-green-500 inline-flex items-center justify-center text-white hover:bg-green-600 focus:outline-none w-full mt-1 transition-all"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faSave}
+                                  className="flex justify-center items-center p-1"
+                                />
+                              </button>
+                            )}
+
+                          <button
+                            onClick={handleCancelReplyEdit}
+                            className="rounded-full bg-gray-400 inline-flex items-center justify-center text-white hover:bg-red-600 focus:outline-none w-full mt-1 transition-all"
                           >
-                            <path d="M6 18L18 6M6 6l12 12"></path>
-                          </svg>
-                        </button>
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     ) : loading && replyId === thread.id ? (
                       <span className="p-2 flex text-gray-300">
@@ -153,20 +172,11 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
                     onClick={async () => {
                       dispatch(setReplyId(thread.id));
-                      editReply && thread.id === replyId
-                        ? handleEditReplySave(thread.id, thread.message)
-                        : handleReplyEdit(thread.id, thread.message);
+                      (editReply && thread.id === replyId) ||
+                        handleReplyEdit(thread.id, thread.message);
                     }} // Pass the index as the message ID
                   >
-                    {editReply && replyId === thread.id ? (
-                      thread.message.trim() !== editReplyText.trim() &&
-                      editReplyText.trim() !== "" && (
-                        <FontAwesomeIcon
-                          icon={faSave}
-                          className="flex mt-1 ml-2"
-                        />
-                      )
-                    ) : (
+                    {(editReply && replyId === thread.id) || (
                       <FontAwesomeIcon
                         icon={faEdit}
                         className="flex mt-1 ml-2"
@@ -183,7 +193,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
         {loading && newReply.length > 0 && (
           <span className="flex flex-col items-center justify-center">
             <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
-            <Loader height={2} width={2}/>
+            <Loader height={2} width={2} />
           </span>
         )}
         <div className="flex p-4 ">

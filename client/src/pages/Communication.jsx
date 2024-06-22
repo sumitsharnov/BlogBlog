@@ -203,6 +203,9 @@ const Communication = () => {
                             edit && activeThread === msg.id
                               ? handleEditSave(msg.id, msg.message)
                               : handleEdit(msg.id, msg.message);
+      
+                                handleReplies(msg.id, false, false);// Set loading state to false after 3 seconds (simulating data loading)
+                             
                           }} // Pass the index as the message ID
                         >
                           {edit && activeThread === msg.id ? (

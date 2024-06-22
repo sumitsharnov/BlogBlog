@@ -5,12 +5,15 @@ import {
   postReply,
   getRepliesByMessageId,
   postEditMessage,
-  postEditReply
+  postEditReply,
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
 import { getUserInfo } from "../services/user_api";
-import { setActiveMessage, setReplyId } from "../redux/communications/commSlice";
+import {
+  setActiveMessage,
+  setReplyId,
+} from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
   const [replyThread, setReplyThread] = useState(null);
@@ -34,16 +37,16 @@ export const useCommunication = () => {
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
-    setShowReplies(true);
-    setReplyThread(null);
-    dispatch(setActiveMessage(messageId));
-    // const data = await getMessagesById(messageId, token);
-    try {
-      const replies = await getRepliesByMessageId(messageId, token);
-      replies && setReplyThread(replies);
-      setPostedMessage(true);
-    } catch (error) {
-      setReplyThread([]);
+      setShowReplies(true);
+      setReplyThread(null);
+      dispatch(setActiveMessage(messageId));
+      // const data = await getMessagesById(messageId, token);
+      try {
+        const replies = await getRepliesByMessageId(messageId, token);
+        replies && setReplyThread(replies);
+        setPostedMessage(true);
+      } catch (error) {
+        setReplyThread([]);
     }
   };
 
@@ -76,14 +79,14 @@ export const useCommunication = () => {
 
   // To save a reply after editing
   const handleEditReplySave = async (replyId) => {
-    try{
+    try {
       setEditReply(false);
       setLoading(true);
       const res = await postEditReply(replyId, token, editReplyText, messageId);
-      res && await handleReplies(messageId);
+      res && (await handleReplies(messageId));
       setLoading(false);
       dispatch(setReplyId(""));
-    }catch (error) {
+    } catch (error) {
       setErrorMessage(error.message);
     }
   };
@@ -157,8 +160,6 @@ export const useCommunication = () => {
     getAllMessages();
   }, []);
 
- 
-
   const handleCancelEdit = () => {
     setEdit(false);
     showReplies || dispatch(setActiveMessage(""));
@@ -203,6 +204,6 @@ export const useCommunication = () => {
     editReplyText,
     setEditReplyText,
     handleCancelReplyEdit,
-    handleEditReplySave
+    handleEditReplySave,
   };
 };
