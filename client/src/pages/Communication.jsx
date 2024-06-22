@@ -120,6 +120,10 @@ const Communication = () => {
                       activeThread === msg.id &&
                       "bg-violet-200 m-4 translate-all duration-200"
                     }`}
+                    onClick={async () => {
+                      dispatch(setMessageId(msg.id));
+                      handleReplies(msg.id);
+                    }} // Pass the index as the message ID
                   >
                     <div className="flex-shrink-0 p-2">
                       <img
@@ -178,7 +182,7 @@ const Communication = () => {
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2  ml-[2%] mt-2">
+                      <div className="flex gap-2  ml-[2%] mt-2 m-4">
                         <div
                           className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out"
                           onClick={async () => {
@@ -193,7 +197,7 @@ const Communication = () => {
                             edit && activeThread === msg.id
                               ? "text-green-800"
                               : "text-red-500"
-                          } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
+                          } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem] `}
                           onClick={async () => {
                             dispatch(setMessageId(msg.id));
                             edit && activeThread === msg.id

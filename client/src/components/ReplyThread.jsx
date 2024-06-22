@@ -31,7 +31,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     setEditReplyText,
     handleCancelReplyEdit,
     handleEditReplySave,
-    editReplyText
+    editReplyText,
   } = useCommunication();
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
@@ -44,9 +44,8 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
 
-
   return (
-    <>
+    <div className="flex flex-col h-full">
       <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">
         <h3 className="text-lg font-semibold text-violet-600">Thread</h3>
         <button
@@ -69,49 +68,8 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
           </svg>
         </button>
       </div>
-      <div className="flex justify-center items-center mt-2 ml-2">
-        <textarea
-          type="text"
-          value={newReply}
-          placeholder="reply..."
-          className={`w-[98%]  p-4 rounded-lg max-h-24 min-h-16  ${
-            !newReply ? "border border-gray-950" : "border border-green-500"
-          }`}
-          onChange={(e) => setNewReply(e.target.value)}
-        />
-        <div className="flex flex-col p-2 m-1 gap-1">
-          <button
-            className={`border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
-          hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all`}
-            disabled={newReply.toString().trim().length <= 0}
-            onClick={postAReply}
-          >
-            {/* <FontAwesomeIcon icon={faPaperPlane} className="flex" /> */}
-            {
-              <FontAwesomeIcon
-                icon={faReply}
-                className="text-center  transition-all"
-              />
-            }
-          </button>
-          <button
-            className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-red-200 via-pink-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-t hover:from-red-400 hover:to-red-300 shadow-2xl transition-all"
-            onClick={clearReplyText}
-          >
-            <FontAwesomeIcon
-              icon={faEraser}
-              className="text-center transition-all"
-            />
-          </button>
-        </div>
-      </div>
-      <div className="w-full">
-        {loading && newReply.length > 0 &&(
-          <span className="flex flex-col justify-center items-center p-2">
-            <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
-            <Loader />
-          </span>
-        )}
+
+      <div className="flex-grow overflow-y-auto">
         {loadingThreads ? (
           <span className="flex flex-col justify-center items-center p-4">
             <p className="m-2 text-violet-500 p-2">Loading Replies...</p>
@@ -123,7 +81,11 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
             return (
               <div
                 key={key}
-                className={`flex items-start p-4 bg-white rounded-lg shadow-lg mb-4 ${thread.id === replyId && editReply && "border border-violet-300 transition-all m-2"}`}
+                className={`flex items-start p-4 bg-white rounded-lg shadow-lg mb-4 ${
+                  thread.id === replyId &&
+                  editReply &&
+                  "border border-violet-300 transition-all m-2"
+                }`}
               >
                 <div className="flex-shrink-0 p-2">
                   <img
@@ -170,9 +132,16 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                           </svg>
                         </button>
                       </div>
+                    ) : loading && replyId === thread.id ? (
+                      <span className="p-2 flex text-gray-300">
+                        <Loader width={2} height={2} />
+                      </span>
                     ) : (
-                      (loading && replyId === thread.id) ?  <span className="p-2 flex text-gray-300"><Loader width={2}  height={2}/></span> : <p className="break-words">
-                        {thread.message && thread.message} <span className="p-1 text-gray-500">{thread.edit && "(edited)"}</span>
+                      <p className="break-words">
+                        {thread.message && thread.message}{" "}
+                        <span className="p-1 text-gray-500">
+                          {thread.edit && "(edited)"}
+                        </span>
                       </p>
                     )}
                   </div>
@@ -190,11 +159,18 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     }} // Pass the index as the message ID
                   >
                     {editReply && replyId === thread.id ? (
-                      thread.message.trim() !== editReplyText.trim() && editReplyText.trim() !== "" && (
-                        <FontAwesomeIcon icon={faSave} className="flex mt-1 ml-2" />
+                      thread.message.trim() !== editReplyText.trim() &&
+                      editReplyText.trim() !== "" && (
+                        <FontAwesomeIcon
+                          icon={faSave}
+                          className="flex mt-1 ml-2"
+                        />
                       )
                     ) : (
-                      <FontAwesomeIcon icon={faEdit} className="flex mt-1 ml-2" />
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        className="flex mt-1 ml-2"
+                      />
                     )}
                   </div>
                 </div>
@@ -203,7 +179,48 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
           })
         )}
       </div>
-    </>
+      <div className="flex flex-col border-t border-gray-300 ">
+        {loading && newReply.length > 0 && (
+          <span className="flex flex-col items-center justify-center">
+            <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>
+            <Loader height={2} width={2}/>
+          </span>
+        )}
+        <div className="flex p-4 ">
+          <textarea
+            type="text"
+            value={newReply}
+            placeholder="reply..."
+            className={`w-[98%] p-4 rounded-lg max-h-24 min-h-16 ${
+              !newReply ? "border border-gray-950" : "border border-green-500"
+            }`}
+            onChange={(e) => setNewReply(e.target.value)}
+          />
+          <div className="flex flex-col p-2 m-1 gap-1">
+            <button
+              className={`border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
+            hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all`}
+              disabled={newReply.toString().trim().length <= 0}
+              onClick={postAReply}
+            >
+              <FontAwesomeIcon
+                icon={faReply}
+                className="text-center  transition-all"
+              />
+            </button>
+            <button
+              className="border border-violet-200 rounded-2xl p-2 bg-gradient-to-tr from-red-200 via-pink-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-t hover:from-red-400 hover:to-red-300 shadow-2xl transition-all"
+              onClick={clearReplyText}
+            >
+              <FontAwesomeIcon
+                icon={faEraser}
+                className="text-center transition-all"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
