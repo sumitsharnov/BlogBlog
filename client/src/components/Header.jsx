@@ -2,7 +2,7 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSignInSuccess, updateCurrentUser} from "../redux/user/userSlice";
+import { clearSignInSuccess, updateCurrentUser } from "../redux/user/userSlice";
 import { setDefaultColor } from "../redux/home/homeSlice";
 import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
@@ -11,6 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
 import { useState } from "react";
+import Tooltip from "./Tooltip";
+
 export default function Header() {
   const [errorImage, setErrorImage] = useState(false);
   const [count, setCount] = useState(0);
@@ -23,16 +25,24 @@ export default function Header() {
     navigate("/profile");
   };
 
- 
   const handleErrorImage = (event) => {
-    setErrorImage("Failed to load profile picture, please try again later")
+    setErrorImage("Failed to load profile picture, please try again later");
     setCount(count + 1);
     console.log(event);
-    dispatch(updateCurrentUser({...currentUser, photoURL:anonuser}));
+    dispatch(updateCurrentUser({ ...currentUser, photoURL: anonuser }));
   };
+ 
   return (
     <>
-    {errorImage && < MessagesCentre messageText={errorImage} type="error"  top={16} mt={0} key={count}/>}
+      {errorImage && (
+        <MessagesCentre
+          messageText={errorImage}
+          type="error"
+          top={16}
+          mt={0}
+          key={count}
+        />
+      )}
       <Navbar className="top-0 left-0 w-full border-b-2 z-50">
         <NavLink
           to="/"
@@ -112,18 +122,25 @@ export default function Header() {
             )}
           </Navbar.Link>
           <Navbar.Link as="div">
-            {signInSuccess && (
-              <NavLink
-                to="/communications"
-                className={
-                  location.pathname === "/communications"
-                    ? "border-b-4 border-purple-400 p-2"
-                    : ""
-                }
-              >
-                Communications
-              </NavLink>
-            )}
+            {signInSuccess &&
+              (currentUser.type.toLowerCase() === "guest" ? (
+                <Tooltip message="Communication can only be initiated when you are logged in">
+                <span className="text-gray-500 p-2 cursor-not-allowed">
+                  Communications
+                </span>
+              </Tooltip>
+              ) : (
+                <NavLink
+                  to="/communications"
+                  className={
+                    location.pathname === "/communications"
+                      ? "border-b-4 border-purple-400 p-2"
+                      : ""
+                  }
+                >
+                  Communications
+                </NavLink>
+              ))}
           </Navbar.Link>
           <Navbar.Link as="div">
             <NavLink

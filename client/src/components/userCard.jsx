@@ -103,7 +103,7 @@ export function UserCard({
         </button>
 
         <div className="profile-pic-main rounded-full">
-          {user.type === "user" ? (
+          {user.type === "user" || user.type === "admin" ? (
             <>
               <div className="absolute opacity-0 hover:opacity-50 text-white z-10 h-full w-[6rem] text-center mt-[2rem] transition duration-300 transform hover:translate-y-1 hover:shadow-lg">
                 <span

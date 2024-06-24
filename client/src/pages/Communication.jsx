@@ -4,7 +4,7 @@ import {
   faMessage,
   faEdit,
   faSave,
-  faTrash
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import ReplyThread from "../components/ReplyThread";
 import MessagesCentre from "../components/MessagesCentre";
@@ -54,7 +54,8 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
-  return (
+  return currentUser.type.toLowerCase() === "user" ||
+    currentUser.type.toLowerCase() === "thirdparty" ? (
     <>
       <div className="min-w-96 overflow-x-hidden">
         {errorMessage && (
@@ -203,15 +204,19 @@ const Communication = () => {
                             edit && activeThread === msg.id
                               ? handleEditSave(msg.id, msg.message)
                               : handleEdit(msg.id, msg.message);
-      
-                                handleReplies(msg.id, false, false);// Set loading state to false after 3 seconds (simulating data loading)
-                             
+
+                            handleReplies(msg.id, false, false); // Set loading state to false after 3 seconds (simulating data loading)
                           }} // Pass the index as the message ID
                         >
                           {edit && activeThread === msg.id ? (
                             msg.message.trim() !== editMessage.trim() &&
                             (editMessage.trim() === "" ? (
-                              <span className="text-gray-500 hover:text-red-500 hover:transition-all"><FontAwesomeIcon icon={faTrash} className="flex" /></span>
+                              <span className="text-gray-500 hover:text-red-500 hover:transition-all">
+                                <FontAwesomeIcon
+                                  icon={faTrash}
+                                  className="flex"
+                                />
+                              </span>
                             ) : (
                               <FontAwesomeIcon icon={faSave} className="flex" />
                             ))
@@ -244,6 +249,8 @@ const Communication = () => {
         </div>
       </div>
     </>
+  ) : (
+    <div>Sumit</div>
   );
 };
 
