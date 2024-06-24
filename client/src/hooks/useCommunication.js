@@ -37,6 +37,8 @@ export const useCommunication = () => {
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
+    console.log("I am in")
+      setErrorMessage("");
       setShowReplies(true);
       setReplyThread(null);
       dispatch(setActiveMessage(messageId));
@@ -46,6 +48,7 @@ export const useCommunication = () => {
         replies && setReplyThread(replies);
         setPostedMessage(true);
       } catch (error) {
+        setErrorMessage(error.message);
         setReplyThread([]);
     }
   };
@@ -115,11 +118,13 @@ export const useCommunication = () => {
       setNewReply([""]);
       setErrorMessage("");
       setLoading(true);
-      await postReply(newReply, token, messageId, currentUser._id);
+      const s = await postReply(newReply, token, messageId, currentUser._id);
+      console.log(s, "Sumit");
       await handleReplies(messageId);
       setErrorMessage(null);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       setErrorMessage(error.message);
     }
   };
