@@ -19,15 +19,16 @@ export const commuincationsAdmin = async (token) => {
 
 export const getUsersFromCommunication = async (req, res, next) => {
   try {
-    const { token } = req.body;
-    const communications  = await commuincationsAdmin(token);
+    const { token } = req.query;
+    const communications = await commuincationsAdmin(token);
     const usersDetails = [];
 
     for (const comm of communications) {
-      const { password, ...userDetails } = await User.findOne({
-        _id: comm._id,
-      });
-      usersDetails.push(userDetails._doc);
+      const user = await User.findOne({ _id: comm._id }).lean();
+      if (user) {
+        delete user.password;  // Explicitly delete the password field
+        usersDetails.push(user);
+      }
     }
 
     res.status(200).json(usersDetails);

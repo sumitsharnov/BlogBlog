@@ -17,6 +17,7 @@ import anonuser from "../images/home/anonuser.png";
 import { setMessageId } from "../redux/communications/commSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import AdminComm from "../components/AdminComm";
 
 const Communication = () => {
   const {
@@ -254,7 +255,7 @@ const Communication = () => {
       </div>
     </>
   ) : (
-    <div>Sumit</div>
+    < AdminComm />
   );
 };
 
