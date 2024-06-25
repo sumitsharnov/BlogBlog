@@ -1,5 +1,4 @@
-import Communication from "../models/communicatiuons.model.js";
-import mongoose from 'mongoose';
+import Communication from "../models/communications.model.js";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
@@ -102,6 +101,7 @@ export const addReplies = async (req, res, next) => {
     const messageId = req.params.messageId; // Retrieve messageId from params
     const { reply, token, userId } = req.body;
     const randomUuid = uuidv4();
+    const timestamp = new Date().toISOString();
     // Verify token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -135,7 +135,7 @@ export const addReplies = async (req, res, next) => {
       message: reply, // Assuming 'reply' is a string containing the reply message
       photoURL: communication.messages[messageIndex].photoURL,
       firstName: communication.messages[messageIndex].firstName,
-      sentAt: new Date().toISOString(),
+      sentAt: timestamp,
       user: userId,
     };
 

@@ -84,6 +84,7 @@ export const getRepliesByMessageId = async (messageId) => {
       headers: { messageId: messageId },
     });
     const data = await res.json();
+    await data;
     if (!res.ok) {
       throw new Error(data.message);
     }
@@ -112,7 +113,7 @@ export const postEditMessage = async (messageId, token, editedText) => {
 };
 
 export const postEditReply = async (replyId, token, editedText, messageId) => {
-  const formData = { editedText: editedText, token: token, replyId:replyId };
+  const formData = { editedText: editedText, token: token, replyId: replyId };
   try {
     const res = await fetch(`/api/messages/editReply/${messageId}`, {
       method: "POST",

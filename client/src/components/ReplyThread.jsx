@@ -102,11 +102,11 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     <span className="font-medium text-lg truncate">
                       {thread.firstName && thread.firstName}
                     </span>
-                    <span className="text-sm text-gray-500 opacity-70">
+                    <div className="text-sm text-gray-500 opacity-70" key={thread.id}>
                       {thread.sentAt && (
-                        <TimestampComponent timestamp={thread.sentAt} />
+                        <TimestampComponent timestamp={thread.sentAt && thread.sentAt}  key={key} />
                       )}
-                    </span>
+                    </div>
                   </div>
                   <div
                     className={`mt-2 p-2 bg-gray-100 rounded-lg border border-gray-200 shadow-sm`}

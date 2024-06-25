@@ -6,6 +6,7 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import Home from "./Home";
 import ReplyThread from "../components/ReplyThread";
 import MessagesCentre from "../components/MessagesCentre";
 import TimestampComponent from "../components/TimestampComponent";
@@ -54,7 +55,9 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
-  return currentUser.type.toLowerCase() === "user" ||
+  return currentUser.type.toLowerCase() === "guest" ? (
+    <Home />
+  ) : currentUser.type.toLowerCase() === "user" ||
     currentUser.type.toLowerCase() === "thirdparty" ? (
     <>
       <div className="min-w-96 overflow-x-hidden">
@@ -139,7 +142,7 @@ const Communication = () => {
                         <span className="font-medium text-lg truncate">
                           {msg.firstName && msg.firstName}
                         </span>
-                        <span className="text-sm text-gray-500 opacity-70 flex gap-2">
+                        <span className="text-sm text-gray-500 opacity-70 flex gap-2" key = {msg.id}>
                           <TimestampComponent
                             timestamp={msg.sentAt && msg.sentAt}
                           />
@@ -244,6 +247,7 @@ const Communication = () => {
               setShowReplies={setShowReplies}
               user={user}
               replyThread={replyThread}
+              count={count}
             />
           </div>
         </div>

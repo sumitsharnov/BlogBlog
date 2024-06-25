@@ -37,19 +37,19 @@ export const useCommunication = () => {
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
-    console.log("I am in")
-      setErrorMessage("");
-      setShowReplies(true);
-      setReplyThread(null);
-      dispatch(setActiveMessage(messageId));
-      // const data = await getMessagesById(messageId, token);
-      try {
-        const replies = await getRepliesByMessageId(messageId, token);
-        replies && setReplyThread(replies);
-        setPostedMessage(true);
-      } catch (error) {
-        setErrorMessage(error.message);
-        setReplyThread([]);
+    setErrorMessage("");
+    setShowReplies(true);
+    setReplyThread(null);
+    dispatch(setActiveMessage(messageId));
+    setCount(count+1);
+    // const data = await getMessagesById(messageId, token);
+    try {
+      const replies = await getRepliesByMessageId(messageId, token);
+      (await replies) && setReplyThread(replies);
+      setPostedMessage(true);
+    } catch (error) {
+      setErrorMessage(error.message);
+      setReplyThread([]);
     }
   };
 
