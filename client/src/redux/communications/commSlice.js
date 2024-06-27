@@ -3,7 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     messageId: "",
     activatedMessage: "",
-    replyId: ""
+    replyId: "",
+    messageThread: "",
+    communicationUserId : ""
   };
 
 const commSlice = createSlice({
@@ -18,10 +20,16 @@ const commSlice = createSlice({
         },
         setReplyId(state,action){
             state.replyId = action.payload;
+        },
+        setMessageThread(state,action){
+            state.messageThread = action.payload;
+        },
+        setCommunicationUserId(state,action){
+            state.communicationUserId = action.payload;
         }
     }
 });
 
-export const {setMessageId, setActiveMessage, setReplyId} = commSlice.actions;
+export const {setMessageId, setActiveMessage, setReplyId, setMessageThread, setCommunicationUserId} = commSlice.actions;
 
 export default commSlice.reducer;

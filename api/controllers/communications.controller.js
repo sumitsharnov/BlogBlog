@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const communication = async (req, res, next) => {
   try {
-    const { userId, message, token } = req.body;
+    const { userId, message, token, userType } = req.body;
     const timestamp = new Date().toISOString();
     try {
       jwt.verify(token, process.env.JWT_SECRET);

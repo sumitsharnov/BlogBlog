@@ -13,6 +13,7 @@ import { getUserInfo } from "../services/user_api";
 import {
   setActiveMessage,
   setReplyId,
+  setMessageThread
 } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
@@ -21,10 +22,8 @@ export const useCommunication = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
-  const { messageId, activatedMessage } = useSelector((state) => state.comm);
+  const { messageId, activatedMessage, communicationUserId } = useSelector((state) => state.comm);
   const [message, setMessage] = useState([]);
-  const [messageThread, setMessageThread] = useState("");
-  const messageEntries = Object.entries(messageThread).reverse();
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
   const [loading, setLoading] = useState(false);
@@ -104,7 +103,7 @@ export const useCommunication = () => {
     try {
       setErrorMessage("");
       setCount(count + 1);
-      await postMessage(currentUser._id, token, message);
+      await postMessage(communicationUserId, token, message);
       setErrorMessage(null);
       setMessage([""]);
       await getAllMessages();
@@ -133,14 +132,14 @@ export const useCommunication = () => {
     setNewReply([""]);
   };
 
-  const getAllMessages = async () => {
+  const getAllMessages = async (userId) => {
     try {
       setLoading(true);
       setErrorMessage("");
       setCount(count + 1);
-      const data = await getMessages(currentUser._id, token);
+      const data = await getMessages(userId || currentUser._id, token);
       if (data) {
-        setMessageThread(data.messages);
+        dispatch(setMessageThread(data.messages));
         setUser(data.user);
         setUserImage((data.user && data.user[0].photoURL) || anonuser);
       }
@@ -189,7 +188,6 @@ export const useCommunication = () => {
     setMessage,
     loading,
     userImage,
-    messageEntries,
     user,
     getUserDetails,
     newReply,
@@ -210,5 +208,6 @@ export const useCommunication = () => {
     setEditReplyText,
     handleCancelReplyEdit,
     handleEditReplySave,
+    getAllMessages
   };
 };

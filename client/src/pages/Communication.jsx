@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from 'prop-types';
 import {
   faPaperPlane,
   faMessage,
@@ -19,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
 
-const Communication = () => {
+const Communication = ({showMessagesToAdmin}) => {
   const {
     handleReplies,
     showReplies,
@@ -31,7 +32,6 @@ const Communication = () => {
     message,
     setMessage,
     loading,
-    messageEntries,
     user,
     handleEdit,
     edit,
@@ -40,8 +40,10 @@ const Communication = () => {
     setEditMessage,
     editMessage,
   } = useCommunication();
+  // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
-  const { activatedMessage } = useSelector((state) => state.comm);
+  const { activatedMessage, messageThread } = useSelector((state) => state.comm);
+  const messageEntries = messageThread && Object.entries(messageThread).reverse();
   const [displayImage, setDisplayImage] = useState(
     (currentUser && currentUser.photoURL) || anonuser
   );
@@ -56,10 +58,11 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
+  console.log(showMessagesToAdmin, "This is great", messageEntries );
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
-    currentUser.type.toLowerCase() === "thirdparty" ? (
+    currentUser.type.toLowerCase() === "thirdparty" || showMessagesToAdmin ? (
     <>
       <div className="min-w-96 overflow-x-hidden">
         {errorMessage && (
@@ -110,14 +113,14 @@ const Communication = () => {
                     ? "Editing"
                     : edit && editMessage.trim() === ""
                     ? "Deleting"
-                    : messageEntries.length > 0
+                    : messageEntries && messageEntries.length > 0
                     ? "Posting..."
                     : "Loading..."}
                 </p>
                 <Loader />
               </span>
             )}
-            {messageEntries.length > 0
+            {messageEntries && messageEntries.length > 0 
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
@@ -260,3 +263,8 @@ const Communication = () => {
 };
 
 export default Communication;
+
+Communication.propTypes = {
+ showMessagesToAdmin : PropTypes.bool
+};
+
