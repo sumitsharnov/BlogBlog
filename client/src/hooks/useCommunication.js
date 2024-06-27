@@ -132,12 +132,13 @@ export const useCommunication = () => {
     setNewReply([""]);
   };
 
-  const getAllMessages = async (userId) => {
+  const getAllMessages = async () => {
+    console.log(communicationUserId);
     try {
       setLoading(true);
       setErrorMessage("");
       setCount(count + 1);
-      const data = await getMessages(userId || currentUser._id, token);
+      const data = await getMessages(communicationUserId, token);
       if (data) {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);

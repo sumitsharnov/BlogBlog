@@ -58,7 +58,6 @@ const Communication = ({showMessagesToAdmin}) => {
     console.error(event);
     setDisplayImage(anonuser);
   };
-  console.log(showMessagesToAdmin, "This is great", messageEntries );
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
