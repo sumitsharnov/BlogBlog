@@ -6,23 +6,34 @@ import { v4 as uuidv4 } from "uuid";
 
 export const communication = async (req, res, next) => {
   try {
-    const { userId, message, token, userType } = req.body;
+    let { communicationUserId, currentUserId, message, token, userType } =
+      req.body;
     const timestamp = new Date().toISOString();
+    let messages = "";
+    let user = "";
+    communicationUserId = communicationUserId || currentUserId;
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       next(errorHandler(401, "Unauthorized"));
     }
-    userId || next(errorHandler(500, "User is not authorized"));
-    const messages = await Communication.findOne({ _id: userId });
-    const user = await User.findOne({ _id: userId });
+    currentUserId ||
+      next(errorHandler(500, "User is not authorized"));
+    if (currentUserId === communicationUserId) {
+      messages = await Communication.findOne({ _id: communicationUserId });
+      user = await User.findOne({ _id: communicationUserId });
+    } else {
+      messages = await Communication.findOne({ _id: communicationUserId });
+      user = await User.findOne({ _id: currentUserId });
+    }
+
     const { firstName, photoURL } = user._doc;
     const randomUuid = uuidv4();
     if (messages) {
       messages.messages.push({
         id: randomUuid,
         message: message,
-        user: userId,
+        user: currentUserId,
         sentAt: timestamp,
         firstName: firstName,
         photoURL: photoURL,
@@ -33,7 +44,7 @@ export const communication = async (req, res, next) => {
       res.status(200).json({ message: "Message sent successfully" });
     } else {
       const communication = new Communication({
-        _id: userId,
+        _id: currentUserId,
         messages: {
           id: randomUuid,
           message: message,
@@ -45,6 +56,7 @@ export const communication = async (req, res, next) => {
         },
         user: { firstName: firstName, photoURL: photoURL },
       });
+      console.log(communication, "EFKEFKEWFBKJEWBFKJWEBFKJWE");
       await communication.save();
       res.status(200).json({ message: "Message sent successfully" });
     }
@@ -254,10 +266,9 @@ export const editMessage = async (req, res, next) => {
   }
 };
 
-
 export const editReply = async (req, res, next) => {
   try {
-    const messageId = req.params.messageId; 
+    const messageId = req.params.messageId;
     const { replyId, editedText, token } = req.body;
 
     console.log(messageId, replyId, token, editedText, "Sumit");
@@ -267,21 +278,25 @@ export const editReply = async (req, res, next) => {
       return next(errorHandler(401, "Unauthorized"));
     }
 
-   // Find the communication document by message ID
-   const communication = await Communication.findOne({ "messages.id": messageId });
-   if (!communication) return res.status(404).json({ error: 'Message not found' });
+    // Find the communication document by message ID
+    const communication = await Communication.findOne({
+      "messages.id": messageId,
+    });
+    if (!communication)
+      return res.status(404).json({ error: "Message not found" });
 
-   const reply = communication.messages.find((msg) => msg.id === messageId)
-     .replies.find((rep) => rep.id === replyId);
-   if (!reply) return res.status(404).json({ error: 'Reply not found' });
+    const reply = communication.messages
+      .find((msg) => msg.id === messageId)
+      .replies.find((rep) => rep.id === replyId);
+    if (!reply) return res.status(404).json({ error: "Reply not found" });
 
-   reply.message = editedText;
-   reply.edit = true;
-   await communication.save();
+    reply.message = editedText;
+    reply.edit = true;
+    await communication.save();
 
-   return res.status(200).json({ message: 'Reply updated successfully' });
- } catch (error) {
-   console.error('Error updating reply:', error);
-   return res.status(500).json({ error: 'Internal server error' });
- }
+    return res.status(200).json({ message: "Reply updated successfully" });
+  } catch (error) {
+    console.error("Error updating reply:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };

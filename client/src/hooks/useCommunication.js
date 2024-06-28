@@ -103,7 +103,8 @@ export const useCommunication = () => {
     try {
       setErrorMessage("");
       setCount(count + 1);
-      await postMessage(communicationUserId, token, message);
+      console.log(currentUser._id, "Ram", communicationUserId)
+      await postMessage(communicationUserId, currentUser._id, token, message);
       setErrorMessage(null);
       setMessage([""]);
       await getAllMessages();
@@ -117,8 +118,7 @@ export const useCommunication = () => {
       setNewReply([""]);
       setErrorMessage("");
       setLoading(true);
-      const s = await postReply(newReply, token, messageId, currentUser._id);
-      console.log(s, "Sumit");
+      await postReply(newReply, token, messageId, currentUser._id);
       await handleReplies(messageId);
       setErrorMessage(null);
       setLoading(false);
@@ -133,12 +133,11 @@ export const useCommunication = () => {
   };
 
   const getAllMessages = async () => {
-    console.log(communicationUserId);
     try {
       setLoading(true);
       setErrorMessage("");
       setCount(count + 1);
-      const data = await getMessages(communicationUserId, token);
+      const data = await getMessages(communicationUserId || currentUser._id, token);
       if (data) {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);

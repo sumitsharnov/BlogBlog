@@ -12,6 +12,7 @@ import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
 import { useState } from "react";
 import Tooltip from "./Tooltip";
+import { setCommunicationUserId, setMessageThread } from "../redux/communications/commSlice";
 
 export default function Header() {
   const [errorImage, setErrorImage] = useState(false);
@@ -90,6 +91,8 @@ export default function Header() {
                     onClick={() => {
                       Cookies.set("loginSuccess", "false");
                       Cookies.set("timeout", "You have been logged out");
+                      dispatch(setCommunicationUserId(""));
+                      dispatch(setMessageThread(""));
                       dispatch(clearSignInSuccess());
                       dispatch(setDefaultColor());
                     }}
