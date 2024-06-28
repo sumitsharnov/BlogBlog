@@ -56,7 +56,6 @@ export const communication = async (req, res, next) => {
         },
         user: { firstName: firstName, photoURL: photoURL },
       });
-      console.log(communication, "EFKEFKEWFBKJEWBFKJWEBFKJWE");
       await communication.save();
       res.status(200).json({ message: "Message sent successfully" });
     }
@@ -141,12 +140,13 @@ export const addReplies = async (req, res, next) => {
       return next(errorHandler(404, "Message not found in the communication"));
     }
 
+    const user = await User.findOne({ _id: userId });
     // Construct the reply object including the photoURL and firstName
     const replyWithSenderInfo = {
       id: randomUuid,
       message: reply, // Assuming 'reply' is a string containing the reply message
-      photoURL: communication.messages[messageIndex].photoURL,
-      firstName: communication.messages[messageIndex].firstName,
+      photoURL: user.photoURL,
+      firstName: user.firstName,
       sentAt: timestamp,
       user: userId,
     };

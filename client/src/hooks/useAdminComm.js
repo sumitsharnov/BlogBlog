@@ -14,7 +14,6 @@ export const useAdminComm = () => {
   const [showMessagesToAdmin, setShowMessagesToAdmin] = useState(false);
   const getUsersCommunicated = async () => {
     const res = await getCommunicationsUsers(token);
-    console.log(res, "Sumit")
     setCommUsers(res);
   };
 
@@ -23,10 +22,8 @@ export const useAdminComm = () => {
   }, []);
 
   const selectedComm = async () =>{
-    console.log(commUsers, "Right")
     dispatch(setCommunicationUserId(commUsers[1]._id))
     const res = await getAllMessages();
-    console.log(res, "Selected", commUsers[0]._id)
     dispatch(setMessageThread(res))
     setShowMessagesToAdmin(true);
   }

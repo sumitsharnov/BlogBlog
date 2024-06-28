@@ -227,7 +227,7 @@ const Communication = ({showMessagesToAdmin}) => {
                               <FontAwesomeIcon icon={faSave} className="flex" />
                             ))
                           ) : (
-                            <FontAwesomeIcon icon={faEdit} className="flex" />
+                            currentUser._id === msg.user && <FontAwesomeIcon icon={faEdit} className="flex" />
                           )}
                         </div>
                       </div>

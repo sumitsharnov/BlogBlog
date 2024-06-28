@@ -45,8 +45,6 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
 
-  console.log(errorMessage, "Sumit");
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center p-4 bg-gray-200 rounded-tl-lg">

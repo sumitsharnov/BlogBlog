@@ -45,6 +45,7 @@ export const useCommunication = () => {
     try {
       const replies = await getRepliesByMessageId(messageId, token);
       (await replies) && setReplyThread(replies);
+
       setPostedMessage(true);
     } catch (error) {
       setErrorMessage(error.message);
@@ -103,7 +104,6 @@ export const useCommunication = () => {
     try {
       setErrorMessage("");
       setCount(count + 1);
-      console.log(currentUser._id, "Ram", communicationUserId)
       await postMessage(communicationUserId, currentUser._id, token, message);
       setErrorMessage(null);
       setMessage([""]);
