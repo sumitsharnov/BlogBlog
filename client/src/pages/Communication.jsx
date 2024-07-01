@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
   faPaperPlane,
   faMessage,
   faEdit,
   faSave,
   faTrash,
+  faMultiply,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
 import ReplyThread from "../components/ReplyThread";
@@ -19,6 +20,7 @@ import { setMessageId } from "../redux/communications/commSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
+import { setShowMessagesToAdmin } from "../redux/communications/commSlice";
 
 const Communication = () => {
   const {
@@ -37,12 +39,18 @@ const Communication = () => {
     handleCancelEdit,
     setEditMessage,
     editMessage,
-    messageThread
+    messageThread,
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
-  const { activatedMessage, showMessagesToAdmin, loading, errorText:errorMessage} = useSelector((state) => state.comm);
-  const messageEntries = messageThread && Object.entries(messageThread).reverse();
+  const {
+    activatedMessage,
+    showMessagesToAdmin,
+    loading,
+    errorText: errorMessage,
+  } = useSelector((state) => state.comm);
+  const messageEntries =
+    messageThread && Object.entries(messageThread).reverse();
   const [displayImage, setDisplayImage] = useState(
     (currentUser && currentUser.photoURL) || anonuser
   );
@@ -61,7 +69,8 @@ const Communication = () => {
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
-    currentUser.type.toLowerCase() === "thirdparty" || showMessagesToAdmin ? (
+    currentUser.type.toLowerCase() === "thirdparty" ||
+    showMessagesToAdmin ? (
     <>
       <div className="min-w-96 overflow-x-hidden">
         {errorMessage && (
@@ -93,13 +102,23 @@ const Communication = () => {
             />
 
             <button
-              className="flex gap-2 justify-center items-center mr-12 ml-2 border border-violet-200 rounded-full p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
+              className="flex gap-2 justify-center items-center  ml-2 border border-violet-200 rounded-full p-2 bg-gradient-to-tr from-green-200 via-violet-200 to-blue-200 text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
           hover:from-gray-500 hover:via-green-600 hover:to-blue-400 shadow-2xl transition-all"
               onClick={handleSubmit}
             >
               <FontAwesomeIcon icon={faPaperPlane} className="flex" />
               Post
             </button>
+            {showMessagesToAdmin && (
+              <button
+                className="flex gap-2 justify-center items-center border border-red-500 rounded-full p-2 bg-white text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
+          hover:from-red-300 hover:via-red-400 hover:to-red-300 shadow-2xl transition-all"
+                onClick={() => dispatch(setShowMessagesToAdmin(false))}
+              >
+                <FontAwesomeIcon icon={faMultiply} className="flex" />
+                Exit
+              </button>
+            )}
           </div>
         </div>
         <hr className="w-full border border-gray-300"></hr>
@@ -119,7 +138,7 @@ const Communication = () => {
                 <Loader />
               </span>
             )}
-            {messageEntries && messageEntries.length > 0 
+            {messageEntries && messageEntries.length > 0
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
@@ -145,7 +164,10 @@ const Communication = () => {
                         <span className="font-medium text-lg truncate">
                           {msg.firstName && msg.firstName}
                         </span>
-                        <span className="text-sm text-gray-500 opacity-70 flex gap-2" key = {msg.id}>
+                        <span
+                          className="text-sm text-gray-500 opacity-70 flex gap-2"
+                          key={msg.id}
+                        >
                           <TimestampComponent
                             timestamp={msg.sentAt && msg.sentAt}
                           />
@@ -214,21 +236,27 @@ const Communication = () => {
                             handleReplies(msg.id, false, false); // Set loading state to false after 3 seconds (simulating data loading)
                           }} // Pass the index as the message ID
                         >
-                          {edit && activeThread === msg.id ? (
-                            msg.message.trim() !== editMessage.trim() &&
-                            (editMessage.trim() === "" ? (
-                              <span className="text-gray-500 hover:text-red-500 hover:transition-all">
+                          {edit && activeThread === msg.id
+                            ? msg.message.trim() !== editMessage.trim() &&
+                              (editMessage.trim() === "" ? (
+                                <span className="text-gray-500 hover:text-red-500 hover:transition-all">
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="flex"
+                                  />
+                                </span>
+                              ) : (
                                 <FontAwesomeIcon
-                                  icon={faTrash}
+                                  icon={faSave}
                                   className="flex"
                                 />
-                              </span>
-                            ) : (
-                              <FontAwesomeIcon icon={faSave} className="flex" />
-                            ))
-                          ) : (
-                            currentUser._id === msg.user && <FontAwesomeIcon icon={faEdit} className="flex" />
-                          )}
+                              ))
+                            : currentUser._id === msg.user && (
+                                <FontAwesomeIcon
+                                  icon={faEdit}
+                                  className="flex"
+                                />
+                              )}
                         </div>
                       </div>
                     </div>
@@ -257,13 +285,12 @@ const Communication = () => {
       </div>
     </>
   ) : (
-    < AdminComm />
+    <AdminComm />
   );
 };
 
 export default Communication;
 
 Communication.propTypes = {
- showMessagesToAdmin : PropTypes.bool
+  showMessagesToAdmin: PropTypes.bool,
 };
-
