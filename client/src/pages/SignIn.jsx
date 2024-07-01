@@ -19,6 +19,9 @@ import { handleGuestLogin, handleSignIn } from "../services/signin_api";
 import Cookies from "js-cookie";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
+import {
+  setCommunicationUserId
+} from "../redux/communications/commSlice";
 
 
 
@@ -107,6 +110,7 @@ const SignIn = () => {
           await handleErrorReponse(data.message);
         } else {
           dispatch(signInSuccess(data));
+          dispatch(setCommunicationUserId(data._id));
           navigate("/?source=signin");
         }
       } catch (error) {

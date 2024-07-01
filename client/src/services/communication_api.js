@@ -1,5 +1,15 @@
-export async function postMessage(userId, token, message) {
-  const formData = { userId: userId, token: token, message: message };
+export async function postMessage(
+  communicationUserId,
+  currentUserId,
+  token,
+  message
+) {
+  const formData = {
+    communicationUserId: communicationUserId,
+    currentUserId: currentUserId,
+    token: token,
+    message: message,
+  };
   try {
     const res = await fetch("/api/messages/send", {
       method: "POST",
@@ -18,9 +28,6 @@ export async function postMessage(userId, token, message) {
 }
 
 export const getMessages = async (userId, token) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
   try {
     const res = await fetch("/api/messages/getMessages", {
       method: "GET",

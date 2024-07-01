@@ -23,7 +23,6 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     newReply,
     setNewReply,
     postAReply,
-    loading,
     clearReplyText,
     replyThread: rt,
     handleReplyEdit,
@@ -32,11 +31,12 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     handleCancelReplyEdit,
     handleEditReplySave,
     editReplyText,
-    errorMessage
+    errorMessage,
   } = useCommunication();
+  const { currentUser } = useSelector((state) => state.user);
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
-  const { replyId } = useSelector((state) => state.comm);
+  const { replyId, loading } = useSelector((state) => state.comm);
   useEffect(() => {
     replyThread && setReplies(Object.entries(replyThread));
   }, [replyThread]);
@@ -44,8 +44,6 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
   useEffect(() => {
     rt && setReplies(Object.entries(rt));
   }, [rt]);
-
-  console.log(errorMessage, "Sumit");
 
   return (
     <div className="flex flex-col h-full">
@@ -102,9 +100,15 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     <span className="font-medium text-lg truncate">
                       {thread.firstName && thread.firstName}
                     </span>
-                    <div className="text-sm text-gray-500 opacity-70" key={thread.id}>
+                    <div
+                      className="text-sm text-gray-500 opacity-70"
+                      key={thread.id}
+                    >
                       {thread.sentAt && (
-                        <TimestampComponent timestamp={thread.sentAt && thread.sentAt}  key={key} />
+                        <TimestampComponent
+                          timestamp={thread.sentAt && thread.sentAt}
+                          key={key}
+                        />
                       )}
                     </div>
                   </div>
@@ -122,21 +126,19 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                           {editReply &&
                             thread.id === replyId &&
                             thread.message.trim() !== editReplyText.trim() &&
-                            editReplyText.trim() !== "" && 
+                            editReplyText.trim() !== "" && (
                               <button
                                 onClick={() =>
                                   handleEditReplySave(thread.id, thread.message)
                                 }
                                 className="rounded-full bg-green-500 inline-flex items-center justify-center text-white hover:bg-green-600 focus:outline-none w-full mt-1 transition-all"
                               >
-                                
                                 <FontAwesomeIcon
                                   icon={faSave}
                                   className="flex justify-center items-center p-1"
                                 />
-                                
                               </button>
-                            }
+                            )}
 
                           <button
                             onClick={handleCancelReplyEdit}
@@ -181,12 +183,13 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                         handleReplyEdit(thread.id, thread.message);
                     }} // Pass the index as the message ID
                   >
-                    {(editReply && replyId === thread.id) || (
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="flex mt-1 ml-2"
-                      />
-                    )}
+                    {(editReply && replyId === thread.id) ||
+                      (thread.user === currentUser._id && (
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          className="flex mt-1 ml-2"
+                        />
+                      ))}
                   </div>
                 </div>
               </div>
@@ -195,7 +198,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
         )}
       </div>
       <div className="flex flex-col border-t border-gray-300 ">
-      {errorMessage && <p className="p-2 text-red-700">{errorMessage}</p> }
+        {errorMessage && <p className="p-2 text-red-700">{errorMessage}</p>}
         {loading && newReply.length > 0 && (
           <span className="flex flex-col items-center justify-center">
             <p className="m-1 text-violet-500 p-1">{"Posting..."}</p>

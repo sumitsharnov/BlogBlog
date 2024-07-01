@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from 'prop-types';
 import {
   faPaperPlane,
   faMessage,
@@ -26,12 +27,9 @@ const Communication = () => {
     setShowReplies,
     replyThread,
     handleSubmit,
-    errorMessage,
     count,
     message,
     setMessage,
-    loading,
-    messageEntries,
     user,
     handleEdit,
     edit,
@@ -39,9 +37,12 @@ const Communication = () => {
     handleCancelEdit,
     setEditMessage,
     editMessage,
+    messageThread
   } = useCommunication();
+  // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
-  const { activatedMessage } = useSelector((state) => state.comm);
+  const { activatedMessage, showMessagesToAdmin, loading, errorText:errorMessage} = useSelector((state) => state.comm);
+  const messageEntries = messageThread && Object.entries(messageThread).reverse();
   const [displayImage, setDisplayImage] = useState(
     (currentUser && currentUser.photoURL) || anonuser
   );
@@ -56,10 +57,11 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
+
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
-    currentUser.type.toLowerCase() === "thirdparty" ? (
+    currentUser.type.toLowerCase() === "thirdparty" || showMessagesToAdmin ? (
     <>
       <div className="min-w-96 overflow-x-hidden">
         {errorMessage && (
@@ -110,14 +112,14 @@ const Communication = () => {
                     ? "Editing"
                     : edit && editMessage.trim() === ""
                     ? "Deleting"
-                    : messageEntries.length > 0
+                    : messageEntries && messageEntries.length > 0
                     ? "Posting..."
                     : "Loading..."}
                 </p>
                 <Loader />
               </span>
             )}
-            {messageEntries.length > 0
+            {messageEntries && messageEntries.length > 0 
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
@@ -225,7 +227,7 @@ const Communication = () => {
                               <FontAwesomeIcon icon={faSave} className="flex" />
                             ))
                           ) : (
-                            <FontAwesomeIcon icon={faEdit} className="flex" />
+                            currentUser._id === msg.user && <FontAwesomeIcon icon={faEdit} className="flex" />
                           )}
                         </div>
                       </div>
@@ -260,3 +262,8 @@ const Communication = () => {
 };
 
 export default Communication;
+
+Communication.propTypes = {
+ showMessagesToAdmin : PropTypes.bool
+};
+
