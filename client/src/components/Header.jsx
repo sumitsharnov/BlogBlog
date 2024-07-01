@@ -12,7 +12,11 @@ import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
 import { useState } from "react";
 import Tooltip from "./Tooltip";
-import { setCommunicationUserId, setMessageThread } from "../redux/communications/commSlice";
+import {
+  setCommunicationUserId,
+  setMessageThread,
+  setShowMessagesToAdmin,
+} from "../redux/communications/commSlice";
 
 export default function Header() {
   const [errorImage, setErrorImage] = useState(false);
@@ -32,7 +36,7 @@ export default function Header() {
     console.log(event);
     dispatch(updateCurrentUser({ ...currentUser, photoURL: anonuser }));
   };
- 
+
   return (
     <>
       {errorImage && (
@@ -54,14 +58,14 @@ export default function Header() {
           </span>
           <span className="p-1">Portfolio</span>
         </NavLink>
-        <form>
+        {/* <form>
           <TextInput
             type="text"
             placeholder="Search..."
             rightIcon={AiOutlineSearch}
             className="hidden lg:inline"
           />
-        </form>
+        </form> */}
         <div className="flex gap-2 md:order-2">
           <Button className="w-12 h-10 lg:hidden" color="gray" pill>
             <AiOutlineSearch />
@@ -71,12 +75,34 @@ export default function Header() {
           </Button> */}
           {currentUser && signInSuccess && (
             <div className="relative group size-10 mt-1">
-              <img
-                src={displayImage}
-                alt="profile"
-                className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
-                onError={handleErrorImage}
-              />
+              <div className="flex justify-center items-center">
+                <span
+                  className={`mr-2 ${(() => {
+                    const colors = [
+                      "text-yellow-500",
+                      "text-red-500",
+                      "text-violet-500",
+                      "text-green-500",
+                      "text-white",
+                    ];
+                    return colors[Math.floor(Math.random() * colors.length)];
+                  })()} transition-all duration-300 ease-in-out transform hover:scale-110 hover:underline cursor-pointer text-pretty`}
+                >
+                  {(() => {
+                    const firstName = currentUser.firstName;
+                    return (
+                      firstName.charAt(0).toUpperCase() +
+                      firstName.slice(1).toLowerCase()
+                    );
+                  })()}
+                </span>
+                <img
+                  src={displayImage}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
+                  onError={handleErrorImage}
+                />
+              </div>
               <div className="absolute hidden group-hover:inline bg-white bg-opacity-75 backdrop-blur-sm shadow-md py-2 rounded-md mt-2 right-0 w-32">
                 <ul className="list-none p-0 m-0">
                   <li
@@ -95,6 +121,7 @@ export default function Header() {
                       dispatch(setMessageThread(""));
                       dispatch(clearSignInSuccess());
                       dispatch(setDefaultColor());
+                      dispatch(setShowMessagesToAdmin(false));
                     }}
                   >
                     <li className="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors duration-300 rounded-md">
@@ -128,10 +155,10 @@ export default function Header() {
             {signInSuccess &&
               (currentUser.type.toLowerCase() === "guest" ? (
                 <Tooltip message="Communication can only be initiated when you are logged in">
-                <span className="text-gray-500 p-2 cursor-not-allowed">
-                  Communications
-                </span>
-              </Tooltip>
+                  <span className="text-gray-500 p-2 cursor-not-allowed">
+                    Communications
+                  </span>
+                </Tooltip>
               ) : (
                 <NavLink
                   to="/communications"
@@ -145,7 +172,7 @@ export default function Header() {
                 </NavLink>
               ))}
           </Navbar.Link>
-          <Navbar.Link as="div">
+          {/* <Navbar.Link as="div">
             <NavLink
               to="/about"
               className={
@@ -156,8 +183,8 @@ export default function Header() {
             >
               About
             </NavLink>
-          </Navbar.Link>
-          <Navbar.Link as="div">
+          </Navbar.Link> */}
+          {/* <Navbar.Link as="div">
             <NavLink
               to="/projects"
               className={
@@ -168,7 +195,7 @@ export default function Header() {
             >
               Projects
             </NavLink>
-          </Navbar.Link>
+          </Navbar.Link> */}
         </Navbar.Collapse>
       </Navbar>
       <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-1 w-full"></div>

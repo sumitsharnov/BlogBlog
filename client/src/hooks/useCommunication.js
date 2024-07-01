@@ -13,20 +13,21 @@ import { getUserInfo } from "../services/user_api";
 import {
   setActiveMessage,
   setReplyId,
-  setMessageThread
+  setMessageThread,
+  setLoading,
+  setErrorText
 } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
   const [replyThread, setReplyThread] = useState(null);
   const [showReplies, setShowReplies] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
-  const { messageId, activatedMessage, communicationUserId } = useSelector((state) => state.comm);
+  const { messageId, activatedMessage, communicationUserId, messageThread } =
+    useSelector((state) => state.comm);
   const [message, setMessage] = useState([]);
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
-  const [loading, setLoading] = useState(false);
   const [newReply, setNewReply] = useState("");
   const [postedMessage, setPostedMessage] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -36,11 +37,11 @@ export const useCommunication = () => {
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
-    setErrorMessage("");
+    dispatch(setErrorText(""));
     setShowReplies(true);
     setReplyThread(null);
     dispatch(setActiveMessage(messageId));
-    setCount(count+1);
+    setCount(count + 1);
     // const data = await getMessagesById(messageId, token);
     try {
       const replies = await getRepliesByMessageId(messageId, token);
@@ -48,7 +49,7 @@ export const useCommunication = () => {
 
       setPostedMessage(true);
     } catch (error) {
-      setErrorMessage(error.message);
+      dispatch(setErrorText(error.message));
       setReplyThread([]);
     }
   };
@@ -63,7 +64,7 @@ export const useCommunication = () => {
   const handleReplyEdit = async (replyId, defaultText) => {
     setEditReply(true);
     setEditReplyText(defaultText);
-    setLoading(false);
+    dispatch(setLoading(false));
   };
 
   //To save the main message after editing
@@ -76,7 +77,7 @@ export const useCommunication = () => {
       await getAllMessages();
       setEdit(false);
     } catch (error) {
-      setErrorMessage(error.message);
+      dispatch(setErrorText(error.message));
     }
   };
 
@@ -84,47 +85,47 @@ export const useCommunication = () => {
   const handleEditReplySave = async (replyId) => {
     try {
       setEditReply(false);
-      setLoading(true);
+      dispatch(setLoading(true));
       const res = await postEditReply(replyId, token, editReplyText, messageId);
       res && (await handleReplies(messageId));
-      setLoading(false);
+      dispatch(setLoading(false));
       dispatch(setReplyId(""));
     } catch (error) {
-      setErrorMessage(error.message);
+      dispatch(setErrorText(error.message));
     }
   };
 
   // Post a message - main message
   const handleSubmit = async () => {
     if (message.length <= 0) {
-      setErrorMessage("Message cannot be empty");
+      dispatch(setErrorText("Me)ssage cannot be empty"));
       setCount(count + 1);
       return;
     }
     try {
-      setErrorMessage("");
+      dispatch(setErrorText(""));
       setCount(count + 1);
       await postMessage(communicationUserId, currentUser._id, token, message);
-      setErrorMessage(null);
+      dispatch(setErrorText(null));
       setMessage([""]);
       await getAllMessages();
     } catch (error) {
-      setErrorMessage(error.message);
+      dispatch(setErrorText(error.message));
     }
   };
 
   const postAReply = async () => {
     try {
       setNewReply([""]);
-      setErrorMessage("");
-      setLoading(true);
+      dispatch(setErrorText(""));
+      dispatch(setLoading(true));
       await postReply(newReply, token, messageId, currentUser._id);
       await handleReplies(messageId);
-      setErrorMessage(null);
-      setLoading(false);
+      dispatch(setErrorText(null));
+      dispatch(setLoading(false));
     } catch (error) {
-      setLoading(false);
-      setErrorMessage(error.message);
+      dispatch(setLoading(false));
+      dispatch(setErrorText(error.message));
     }
   };
 
@@ -134,19 +135,24 @@ export const useCommunication = () => {
 
   const getAllMessages = async () => {
     try {
-      setLoading(true);
-      setErrorMessage("");
+      dispatch(setLoading(true));
+      dispatch(setErrorText(""));
       setCount(count + 1);
-      const data = await getMessages(communicationUserId || currentUser._id, token);
+      const data = await getMessages(
+        communicationUserId || currentUser._id,
+        token
+      );
       if (data) {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);
         setUserImage((data.user && data.user[0].photoURL) || anonuser);
-      }
-      setLoading(false);
+        
+      } 
+      dispatch(setLoading(false));
+      
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(setErrorText(error.message));
+      dispatch(setLoading(false));
     }
   };
 
@@ -156,7 +162,7 @@ export const useCommunication = () => {
       const userInfo = await res.json();
       setUser(userInfo);
     } catch (error) {
-      setErrorMessage(error.message);
+      dispatch(setErrorText(error.message));
     }
   };
 
@@ -180,13 +186,10 @@ export const useCommunication = () => {
     setShowReplies,
     replyThread,
     handleSubmit,
-    errorMessage,
-    setErrorMessage,
-    count,
+    count, 
     setCount,
     message,
     setMessage,
-    loading,
     userImage,
     user,
     getUserDetails,
@@ -208,6 +211,7 @@ export const useCommunication = () => {
     setEditReplyText,
     handleCancelReplyEdit,
     handleEditReplySave,
-    getAllMessages
+    getAllMessages,
+    messageThread,
   };
 };

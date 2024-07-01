@@ -28,9 +28,6 @@ export async function postMessage(
 }
 
 export const getMessages = async (userId, token) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
   try {
     const res = await fetch("/api/messages/getMessages", {
       method: "GET",

@@ -20,18 +20,16 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
 
-const Communication = ({showMessagesToAdmin}) => {
+const Communication = () => {
   const {
     handleReplies,
     showReplies,
     setShowReplies,
     replyThread,
     handleSubmit,
-    errorMessage,
     count,
     message,
     setMessage,
-    loading,
     user,
     handleEdit,
     edit,
@@ -39,10 +37,11 @@ const Communication = ({showMessagesToAdmin}) => {
     handleCancelEdit,
     setEditMessage,
     editMessage,
+    messageThread
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
-  const { activatedMessage, messageThread } = useSelector((state) => state.comm);
+  const { activatedMessage, showMessagesToAdmin, loading, errorText:errorMessage} = useSelector((state) => state.comm);
   const messageEntries = messageThread && Object.entries(messageThread).reverse();
   const [displayImage, setDisplayImage] = useState(
     (currentUser && currentUser.photoURL) || anonuser
@@ -58,6 +57,7 @@ const Communication = ({showMessagesToAdmin}) => {
     console.error(event);
     setDisplayImage(anonuser);
   };
+
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
