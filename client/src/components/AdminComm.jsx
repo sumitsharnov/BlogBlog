@@ -8,7 +8,9 @@ const AdminComm = () => {
   const { loading } = useSelector((state) => state.comm);
 
   return loading ? (
-    <Loader />
+    <span className="flex flex-col justify-center items-center h-screen">
+      <Loader />
+    </span>
   ) : (
     <div>
       {showMessagesToAdmin ? (

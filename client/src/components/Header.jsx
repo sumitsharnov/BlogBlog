@@ -1,4 +1,4 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Button, Navbar } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";

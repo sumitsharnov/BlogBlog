@@ -32,9 +32,6 @@ export const useAdminComm = () => {
   const selectedComm = async (userID) =>{
     dispatch(setLoading(true));
     dispatch(setCommunicationUserId(userID))
-    // const res = await getAllMessages();
-    // console.log(res, "GREAT")
-    // dispatch(setMessageThread(await res))
     dispatch(setShowMessagesToAdmin(true));
     dispatch(setLoading(false));
   }
