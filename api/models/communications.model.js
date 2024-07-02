@@ -10,6 +10,7 @@ const contentSchema = new mongoose.Schema({
       photoURL: String,
       user: String,
       edit: Boolean,
+      read: Boolean,
       replies: [
         {
           id: String,

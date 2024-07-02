@@ -7,6 +7,7 @@ import {
   faSave,
   faTrash,
   faMultiply,
+  faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
 import ReplyThread from "../components/ReplyThread";
@@ -20,7 +21,7 @@ import { setMessageId } from "../redux/communications/commSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
-import { setShowMessagesToAdmin } from "../redux/communications/commSlice";
+import Tooltip from "../components/Tooltip";
 
 const Communication = () => {
   const {
@@ -40,6 +41,7 @@ const Communication = () => {
     setEditMessage,
     editMessage,
     messageThread,
+    backToCommUsers,
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
@@ -113,7 +115,7 @@ const Communication = () => {
               <button
                 className="flex gap-2 justify-center items-center border border-red-500 rounded-full p-2 bg-white text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
           hover:from-red-300 hover:via-red-400 hover:to-red-300 shadow-2xl transition-all"
-                onClick={() => dispatch(setShowMessagesToAdmin(false))}
+                onClick={backToCommUsers}
               >
                 <FontAwesomeIcon icon={faMultiply} className="flex" />
                 Exit
@@ -149,6 +151,9 @@ const Communication = () => {
                     onClick={async () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
+                      () => {
+                        console.log(msg.read);
+                      };
                     }} // Pass the index as the message ID
                   >
                     <div className="flex-shrink-0 p-2">
@@ -203,7 +208,11 @@ const Communication = () => {
                             </button>
                           </div>
                         ) : (
-                          <p className="break-words">
+                          <p
+                            className={`break-words ${
+                              msg.read || "text-red-500"
+                            }`}
+                          >
                             {msg.message && msg.message}
                             <span className="p-1 text-gray-500">
                               {msg.edit && "(edited)"}
@@ -221,6 +230,17 @@ const Communication = () => {
                         >
                           <FontAwesomeIcon icon={faMessage} className="flex" />
                         </div>
+                        {currentUser._id !== msg.user && (
+                          <Tooltip message="Read(Click to mark as unread)">
+                          <span className="text-gray-500 cursor-pointer">
+                          <FontAwesomeIcon
+                            icon={faCheckDouble}
+                            className="flex text-green-500"
+                          />
+                          </span>
+                        </Tooltip>
+                          
+                        )}
                         <div
                           className={`cursor-pointer ${
                             edit && activeThread === msg.id

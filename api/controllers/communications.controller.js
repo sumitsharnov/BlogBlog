@@ -37,6 +37,7 @@ export const communication = async (req, res, next) => {
         sentAt: timestamp,
         firstName: firstName,
         photoURL: photoURL,
+        read: false
       });
       messages.user = { firstName, photoURL };
       messages.reactions = "";
@@ -51,8 +52,9 @@ export const communication = async (req, res, next) => {
           sentAt: timestamp,
           firstName: firstName,
           photoURL: photoURL,
-          user: userId,
+          user: currentUserId,
           replies: [],
+          read: false
         },
         user: { firstName: firstName, photoURL: photoURL },
       });

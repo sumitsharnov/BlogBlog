@@ -15,7 +15,8 @@ import {
   setReplyId,
   setMessageThread,
   setLoading,
-  setErrorText
+  setErrorText,
+  setShowMessagesToAdmin,
 } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
@@ -23,8 +24,13 @@ export const useCommunication = () => {
   const [showReplies, setShowReplies] = useState(false);
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
-  const { messageId, activatedMessage, communicationUserId, messageThread } =
-    useSelector((state) => state.comm);
+  const {
+    messageId,
+    activatedMessage,
+    communicationUserId,
+    messageThread,
+    showMessagesToAdmin,
+  } = useSelector((state) => state.comm);
   const [message, setMessage] = useState([]);
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
@@ -135,6 +141,9 @@ export const useCommunication = () => {
 
   const getAllMessages = async () => {
     try {
+      showMessagesToAdmin ||
+        (currentUser._id !== communicationUserId &&
+          dispatch(setMessageThread("")));
       dispatch(setLoading(true));
       dispatch(setErrorText(""));
       setCount(count + 1);
@@ -146,10 +155,8 @@ export const useCommunication = () => {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);
         setUserImage((data.user && data.user[0].photoURL) || anonuser);
-        
-      } 
+      }
       dispatch(setLoading(false));
-      
     } catch (error) {
       dispatch(setErrorText(error.message));
       dispatch(setLoading(false));
@@ -179,6 +186,10 @@ export const useCommunication = () => {
     setEditReply(false);
     dispatch(setReplyId(""));
   };
+  const backToCommUsers = () => {
+    dispatch(setShowMessagesToAdmin(false));
+    dispatch(setMessageThread(""));
+  };
 
   return {
     handleReplies,
@@ -186,7 +197,7 @@ export const useCommunication = () => {
     setShowReplies,
     replyThread,
     handleSubmit,
-    count, 
+    count,
     setCount,
     message,
     setMessage,
@@ -213,5 +224,7 @@ export const useCommunication = () => {
     handleEditReplySave,
     getAllMessages,
     messageThread,
+    setMessageThread,
+    backToCommUsers,
   };
 };
