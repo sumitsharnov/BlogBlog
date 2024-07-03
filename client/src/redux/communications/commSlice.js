@@ -27,6 +27,9 @@ const commSlice = createSlice({
     setMessageThread(state, action) {
       state.messageThread = action.payload;
     },
+    setMessageThreadInit(state) {
+        state.messageThread = "";
+      },
     setCommunicationUserId(state, action) {
       state.communicationUserId = action.payload;
     },
@@ -50,7 +53,8 @@ export const {
   setCommunicationUserId,
   setShowMessagesToAdmin,
   setLoading,
-  setErrorText
+  setErrorText,
+  setMessageThreadInit
 } = commSlice.actions;
 
 export default commSlice.reducer;
