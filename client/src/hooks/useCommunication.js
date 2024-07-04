@@ -104,7 +104,7 @@ export const useCommunication = () => {
   // Post a message - main message
   const handleSubmit = async () => {
     if (message.length <= 0) {
-      dispatch(setErrorText("Me)ssage cannot be empty"));
+      dispatch(setErrorText("Message cannot be empty"));
       setCount(count + 1);
       return;
     }
@@ -141,9 +141,6 @@ export const useCommunication = () => {
 
   const getAllMessages = async () => {
     try {
-      showMessagesToAdmin ||
-        (currentUser._id !== communicationUserId &&
-          dispatch(setMessageThread("")));
       dispatch(setLoading(true));
       dispatch(setErrorText(""));
       setCount(count + 1);
