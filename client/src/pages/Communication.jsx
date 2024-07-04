@@ -58,6 +58,7 @@ const Communication = () => {
   );
   const dispatch = useDispatch();
   const [activeThread, setActiveThread] = useState(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     setActiveThread(activatedMessage);
@@ -208,16 +209,24 @@ const Communication = () => {
                             </button>
                           </div>
                         ) : (
-                          <p
-                            className={`break-words ${
-                              msg.read || "text-red-500"
-                            }`}
-                          >
-                            {msg.message && msg.message}
-                            <span className="p-1 text-gray-500">
-                              {msg.edit && "(edited)"}
-                            </span>
-                          </p>
+                          <div className="relative group hover:cursor-pointer">
+                            <p
+                              className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out
+                ${
+                  !msg.read
+                    ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                            >
+                              {msg.message && msg.message}
+                            </p>
+                            {!msg.read && (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
+                            )}
+                            <div className="flex items-center">
+                              <Tooltip message="Message will be marked Read when clicked"></Tooltip>
+                            </div>
+                          </div>
                         )}
                       </div>
                       <div className="flex gap-2  ml-[2%] mt-2 m-4">
@@ -232,14 +241,13 @@ const Communication = () => {
                         </div>
                         {currentUser._id !== msg.user && (
                           <Tooltip message="Read(Click to mark as unread)">
-                          <span className="text-gray-500 cursor-pointer">
-                          <FontAwesomeIcon
-                            icon={faCheckDouble}
-                            className="flex text-green-500"
-                          />
-                          </span>
-                        </Tooltip>
-                          
+                            <span className="text-gray-500 cursor-pointer">
+                              <FontAwesomeIcon
+                                icon={faCheckDouble}
+                                className="flex text-green-500"
+                              />
+                            </span>
+                          </Tooltip>
                         )}
                         <div
                           className={`cursor-pointer ${
