@@ -58,7 +58,6 @@ const Communication = () => {
   );
   const dispatch = useDispatch();
   const [activeThread, setActiveThread] = useState(null);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     setActiveThread(activatedMessage);
@@ -223,9 +222,9 @@ const Communication = () => {
                             {!msg.read && (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
                             )}
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                               <Tooltip message="Message will be marked Read when clicked"></Tooltip>
-                            </div>
+                            </div> */}
                           </div>
                         )}
                       </div>
@@ -240,11 +239,11 @@ const Communication = () => {
                           <FontAwesomeIcon icon={faMessage} className="flex" />
                         </div>
                         {currentUser._id !== msg.user && (
-                          <Tooltip message="Read(Click to mark as unread)">
+                          <Tooltip message="Read">
                             <span className="text-gray-500 cursor-pointer">
                               <FontAwesomeIcon
                                 icon={faCheckDouble}
-                                className="flex text-green-500"
+                                className="flex text-gray-500"
                               />
                             </span>
                           </Tooltip>
