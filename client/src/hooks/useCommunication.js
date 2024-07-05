@@ -24,13 +24,8 @@ export const useCommunication = () => {
   const [showReplies, setShowReplies] = useState(false);
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
-  const {
-    messageId,
-    activatedMessage,
-    communicationUserId,
-    messageThread,
-    showMessagesToAdmin,
-  } = useSelector((state) => state.comm);
+  const { messageId, activatedMessage, communicationUserId, messageThread } =
+    useSelector((state) => state.comm);
   const [message, setMessage] = useState([]);
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
@@ -82,6 +77,7 @@ export const useCommunication = () => {
         (await postEditMessage(messageId, token, editMessage));
       await getAllMessages();
       setEdit(false);
+      // setShowReplies(false);
     } catch (error) {
       dispatch(setErrorText(error.message));
     }
@@ -95,6 +91,7 @@ export const useCommunication = () => {
       const res = await postEditReply(replyId, token, editReplyText, messageId);
       res && (await handleReplies(messageId));
       dispatch(setLoading(false));
+
       dispatch(setReplyId(""));
     } catch (error) {
       dispatch(setErrorText(error.message));

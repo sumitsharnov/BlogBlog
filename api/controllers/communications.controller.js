@@ -16,6 +16,7 @@ export const communication = async (req, res, next) => {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       next(errorHandler(401, "Unauthorized"));
+      return;
     }
     currentUserId ||
       next(errorHandler(500, "User is not authorized"));

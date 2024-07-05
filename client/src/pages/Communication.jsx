@@ -218,6 +218,7 @@ const Communication = () => {
                 }`}
                             >
                               {msg.message && msg.message}
+                             <span className="ml-2 text-gray-400"> {msg.edit && "(edited)"} </span>
                             </p>
                             {!msg.read && (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
