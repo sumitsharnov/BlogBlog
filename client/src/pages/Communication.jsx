@@ -42,6 +42,7 @@ const Communication = () => {
     editMessage,
     messageThread,
     backToCommUsers,
+    markMessageAsRead,
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
@@ -68,6 +69,7 @@ const Communication = () => {
     setDisplayImage(anonuser);
   };
 
+  console.log(count);
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
@@ -144,7 +146,7 @@ const Communication = () => {
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
-                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4 ${
+                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4  relative${
                       activeThread === msg.id &&
                       "bg-violet-200 m-4 translate-all duration-200"
                     }`}
@@ -156,6 +158,7 @@ const Communication = () => {
                       };
                     }} // Pass the index as the message ID
                   >
+                    
                     <div className="flex-shrink-0 p-2">
                       <img
                         src={msg.photoURL ? msg.photoURL : anonuser}
@@ -208,29 +211,39 @@ const Communication = () => {
                             </button>
                           </div>
                         ) : (
-                          <div className="relative group hover:cursor-pointer">
-                            <p
+                          <div
+                            className="relative group hover:cursor-pointer"
+                            key={count}
+                          >
+                            <div
+                              onClick={async () => {
+                                dispatch(setMessageId(msg.id));
+                                markMessageAsRead(msg.id);
+                                console.log(msg.id, "This is critical");
+                              }}
                               className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out
+                                
                 ${
                   !msg.read && currentUser._id !== msg.user
                     ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
+                key={count}
                             >
                               {msg.message && msg.message}
                               <span className="ml-2 text-gray-400 font-light">
                                 {" "}
                                 {msg.edit && "(edited)"}{" "}
                               </span>
-                            </p>
+                            </div>
                             {msg.read ? (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
                             ) : (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                             )}
-                            {/* <div className="flex items-center">
-                              <Tooltip message="Message will be marked Read when clicked"></Tooltip>
-                            </div> */}
+                            {msg.read || currentUser._id !== msg.user &&  <div className="w-72">
+                              <Tooltip message="Message will be marked Read when clicked; sender will be notified"></Tooltip>
+                            </div>}
                           </div>
                         )}
                       </div>
@@ -282,24 +295,26 @@ const Communication = () => {
                                 />
                               )}
                         </div>
-                        {currentUser._id === msg.user &&(
-                          msg.read ? <Tooltip message="Read">
-                            <span className="text-gray-500 cursor-pointer">
-                              <FontAwesomeIcon
-                                icon={faCheckDouble}
-                                className="flex text-blue-500"
-                              />
-                            </span>
-                          </Tooltip> :
-                          <Tooltip message="Sent">
-                          <span className="text-gray-500 cursor-pointer">
-                            <FontAwesomeIcon
-                              icon={faCheckDouble}
-                              className="flex text-gray-500"
-                            />
-                          </span>
-                        </Tooltip>
-                        )}
+                        {currentUser._id === msg.user &&
+                          (msg.read ? (
+                            <Tooltip message="Read">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-blue-500"
+                                />
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip message="Sent">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-gray-500"
+                                />
+                              </span>
+                            </Tooltip>
+                          ))}
                       </div>
                     </div>
                   </div>
