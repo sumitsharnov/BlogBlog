@@ -212,16 +212,21 @@ const Communication = () => {
                             <p
                               className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out
                 ${
-                  !msg.read
-                    ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium"
+                  !msg.read && currentUser._id !== msg.user
+                    ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
                             >
                               {msg.message && msg.message}
-                             <span className="ml-2 text-gray-400"> {msg.edit && "(edited)"} </span>
+                              <span className="ml-2 text-gray-400 font-light">
+                                {" "}
+                                {msg.edit && "(edited)"}{" "}
+                              </span>
                             </p>
-                            {!msg.read && (
+                            {msg.read ? (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
+                            ) : (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                             )}
                             {/* <div className="flex items-center">
                               <Tooltip message="Message will be marked Read when clicked"></Tooltip>
@@ -239,16 +244,7 @@ const Communication = () => {
                         >
                           <FontAwesomeIcon icon={faMessage} className="flex" />
                         </div>
-                        {currentUser._id !== msg.user && (
-                          <Tooltip message="Read">
-                            <span className="text-gray-500 cursor-pointer">
-                              <FontAwesomeIcon
-                                icon={faCheckDouble}
-                                className="flex text-gray-500"
-                              />
-                            </span>
-                          </Tooltip>
-                        )}
+
                         <div
                           className={`cursor-pointer ${
                             edit && activeThread === msg.id
@@ -286,6 +282,16 @@ const Communication = () => {
                                 />
                               )}
                         </div>
+                        {currentUser._id === msg.user && (
+                          <Tooltip message="Read">
+                            <span className="text-gray-500 cursor-pointer">
+                              <FontAwesomeIcon
+                                icon={faCheckDouble}
+                                className="flex text-gray-500"
+                              />
+                            </span>
+                          </Tooltip>
+                        )}
                       </div>
                     </div>
                   </div>
