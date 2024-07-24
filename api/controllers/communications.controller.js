@@ -303,3 +303,29 @@ export const editReply = async (req, res, next) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const markAsRead = async (req, res, next) => {
+  try {
+    const messageId = req.params.messageId;
+    const { token } = req.body;
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+
+    const communication = await Communication.findOneAndUpdate(
+      { "messages.id": messageId },
+      { $set: { "messages.$.read": true } },
+      { new: true }
+    );
+
+    if (!communication) return res.status(404).json({ error: "Message not found" });
+
+    return res.status(200).json({ message: "Marked as read successfully" });
+  } catch (error) {
+    console.error("Error marking message as read:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};

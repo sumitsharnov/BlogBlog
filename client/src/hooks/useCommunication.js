@@ -149,6 +149,8 @@ export const useCommunication = () => {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);
         setUserImage((data.user && data.user[0].photoURL) || anonuser);
+      } else {
+        dispatch(setMessageThread(""));
       }
       dispatch(setLoading(false));
     } catch (error) {

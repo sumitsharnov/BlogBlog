@@ -282,15 +282,23 @@ const Communication = () => {
                                 />
                               )}
                         </div>
-                        {currentUser._id === msg.user && (
-                          <Tooltip message="Read">
+                        {currentUser._id === msg.user &&(
+                          msg.read ? <Tooltip message="Read">
                             <span className="text-gray-500 cursor-pointer">
                               <FontAwesomeIcon
                                 icon={faCheckDouble}
-                                className="flex text-gray-500"
+                                className="flex text-blue-500"
                               />
                             </span>
-                          </Tooltip>
+                          </Tooltip> :
+                          <Tooltip message="Sent">
+                          <span className="text-gray-500 cursor-pointer">
+                            <FontAwesomeIcon
+                              icon={faCheckDouble}
+                              className="flex text-gray-500"
+                            />
+                          </span>
+                        </Tooltip>
                         )}
                       </div>
                     </div>
