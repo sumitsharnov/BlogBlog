@@ -37,6 +37,7 @@ export const useCommunication = () => {
   const [editReply, setEditReply] = useState(false);
   const [editMessage, setEditMessage] = useState("");
   const [editReplyText, setEditReplyText] = useState("");
+  const [sync, setSync] = useState(false);
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
@@ -105,6 +106,7 @@ export const useCommunication = () => {
     if (message.length <= 0) {
       dispatch(setErrorText("Message cannot be empty"));
       setCount(count + 1);
+      
       return;
     }
     try {
@@ -113,7 +115,7 @@ export const useCommunication = () => {
       await postMessage(communicationUserId, currentUser._id, token, message);
       dispatch(setErrorText(null));
       setMessage([""]);
-      await getAllMessages();
+      await getAllMessages(true, false);
     } catch (error) {
       dispatch(setErrorText(error.message));
     }
@@ -138,11 +140,12 @@ export const useCommunication = () => {
     setNewReply([""]);
   };
 
-  const getAllMessages = async (loading = true) => {
+  const getAllMessages = async (loading = false, syncing = true) => {
     try {
       dispatch(setLoading(loading));
       dispatch(setErrorText(""));
       setCount(count + 1);
+      setSync(syncing);
       const data = await getMessages(
         communicationUserId || currentUser._id,
         token
@@ -155,9 +158,11 @@ export const useCommunication = () => {
         dispatch(setMessageThread(""));
       }
       dispatch(setLoading(false));
+      setSync(false);
     } catch (error) {
       dispatch(setErrorText(error.message));
       dispatch(setLoading(false));
+      setSync(false);
     }
   };
 
@@ -172,7 +177,7 @@ export const useCommunication = () => {
   };
 
   useEffect(() => {
-    getAllMessages();
+    getAllMessages(true, true);
   }, []);
 
   const handleCancelEdit = () => {
@@ -194,7 +199,7 @@ export const useCommunication = () => {
       setCount(prev => prev + 1);
       await markAsRead(token, msgId);
       dispatch(setErrorText(null));
-      await getAllMessages(false);
+      await getAllMessages(false, false);
       
     }catch (error) {
       dispatch(setErrorText(error.message));
@@ -250,6 +255,8 @@ export const useCommunication = () => {
     setMessageThread,
     backToCommUsers,
     markMessageAsRead,
-    markReplyRead
+    markReplyRead,
+    sync,
+    setSync
   };
 };

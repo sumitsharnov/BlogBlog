@@ -8,6 +8,7 @@ import {
   faTrash,
   faMultiply,
   faCheckDouble,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
 import ReplyThread from "../components/ReplyThread";
@@ -43,6 +44,8 @@ const Communication = () => {
     messageThread,
     backToCommUsers,
     markMessageAsRead,
+    getAllMessages,
+    sync
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
@@ -69,7 +72,7 @@ const Communication = () => {
     setDisplayImage(anonuser);
   };
 
-  console.log(count);
+
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
@@ -113,6 +116,10 @@ const Communication = () => {
               <FontAwesomeIcon icon={faPaperPlane} className="flex" />
               Post
             </button>
+            <button className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200" onClick={()=>getAllMessages(false, true)}>
+              <FontAwesomeIcon icon={faSync}/>
+              {sync ? "Syncing..." : "Sync"}
+            </button>
             {showMessagesToAdmin && (
               <button
                 className="flex gap-2 justify-center items-center border border-red-500 rounded-full p-2 bg-white text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
@@ -128,7 +135,7 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
-            {loading && (
+            {(loading || sync) && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
                   {edit && editMessage.trim() !== ""
@@ -136,7 +143,7 @@ const Communication = () => {
                     : edit && editMessage.trim() === ""
                     ? "Deleting"
                     : messageEntries && messageEntries.length > 0
-                    ? "Posting..."
+                    ? sync ? "Syncing..." : "Posting..."
                     : "Loading..."}
                 </p>
                 <Loader />
@@ -153,6 +160,7 @@ const Communication = () => {
                     onClick={async () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
+                      currentUser._id !== msg.user && markMessageAsRead(msg.id);
                     }} // Pass the index as the message ID
                   >
                     
@@ -224,7 +232,7 @@ const Communication = () => {
                     ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
-                key={count}
+                              key={count}
                             >
                               {msg.message && msg.message}
                               <span className="ml-2 text-gray-400 font-light">

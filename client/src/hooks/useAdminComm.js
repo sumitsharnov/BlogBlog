@@ -8,7 +8,7 @@ import { setCommunicationUserId, setShowMessagesToAdmin, setLoading, setMessageT
 //https://ui.aceternity.com/components/following-pointer
 export const useAdminComm = () => {
   const dispatch = useDispatch();
-  const { messageEntries } = useCommunication();
+  const { messageEntries, setSync } = useCommunication();
   const { currentUser, token } = useSelector((state) => state.user);
   const [commUsers, setCommUsers] =  useState([]);
   const getUsersCommunicated = async () => {
@@ -30,14 +30,14 @@ export const useAdminComm = () => {
   }, []);
 
   const selectedComm = async (userID) =>{
-    dispatch(setMessageThread([]));  // Clear any existing messages.
+    setSync(true);
     dispatch(setLoading(true));
+    dispatch(setMessageThread([]));  // Clear any existing messages.
     dispatch(setCommunicationUserId(userID))
     dispatch(setShowMessagesToAdmin(true));
-    dispatch(setLoading(false));
+    // dispatch(setLoading(false));
   }
 
-  
 
   return {
     getUsersCommunicated,
