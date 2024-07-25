@@ -1,5 +1,5 @@
 import express from "express";
-import {communication, getMessages, getMessagesByMessageId, addReplies, getReplies, editMessage, editReply, markAsRead} from "../controllers/communications.controller.js";
+import {communication, getMessages, getMessagesByMessageId, addReplies, getReplies, editMessage, editReply, markAsRead, markReplyAsRead} from "../controllers/communications.controller.js";
 const router = express.Router();
 
 router.post("/send", communication);
@@ -10,5 +10,6 @@ router.get("/threads/:messageId", getReplies);
 router.post("/editMessage/:messageId", editMessage);
 router.post("/editReply/:messageId", editReply);
 router.post("/markRead/:messageId", markAsRead);
+router.post("/markReplyRead", markReplyAsRead);
 
 export default router;

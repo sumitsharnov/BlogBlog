@@ -274,8 +274,6 @@ export const editReply = async (req, res, next) => {
   try {
     const messageId = req.params.messageId;
     const { replyId, editedText, token } = req.body;
-
-    console.log(messageId, replyId, token, editedText, "Sumit");
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
@@ -327,6 +325,39 @@ export const markAsRead = async (req, res, next) => {
     return res.status(200).json({ message: "Marked as read successfully" });
   } catch (error) {
     console.error("Error marking message as read:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const markReplyAsRead = async (req, res, next) => {
+  try {
+    const { replyId, messageId, token } = req.body;
+
+    console.log(messageId, replyId, token, "Sumit");
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+
+    // Find the communication document by message ID
+    const communication = await Communication.findOne({
+      "messages.id": messageId,
+    });
+    if (!communication)
+      return res.status(404).json({ error: "Message not found" });
+
+    const reply = communication.messages
+      .find((msg) => msg.id === messageId)
+      .replies.find((rep) => rep.id === replyId);
+    if (!reply) return res.status(404).json({ error: "Reply not found" });
+
+    reply.read = true;
+    await communication.save();
+
+    return res.status(200).json({ message: "Reply marked as read successfully" });
+  } catch (error) {
+    console.error("Error updating reply:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
