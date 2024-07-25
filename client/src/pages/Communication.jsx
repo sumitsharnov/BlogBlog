@@ -146,16 +146,13 @@ const Communication = () => {
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
-                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4  relative${
+                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4  relative ${
                       activeThread === msg.id &&
                       "bg-violet-200 m-4 translate-all duration-200"
                     }`}
                     onClick={async () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
-                      () => {
-                        console.log(msg.read);
-                      };
                     }} // Pass the index as the message ID
                   >
                     
@@ -219,7 +216,6 @@ const Communication = () => {
                               onClick={async () => {
                                 dispatch(setMessageId(msg.id));
                                 markMessageAsRead(msg.id);
-                                console.log(msg.id, "This is critical");
                               }}
                               className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out
                                 

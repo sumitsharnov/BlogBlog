@@ -152,6 +152,7 @@ export const addReplies = async (req, res, next) => {
       firstName: user.firstName,
       sentAt: timestamp,
       user: userId,
+      read: false,
     };
 
     // Use findOneAndUpdate with the $push operator to add the reply to the correct message

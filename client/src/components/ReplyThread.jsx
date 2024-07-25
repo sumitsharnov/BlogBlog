@@ -14,8 +14,10 @@ import {
   faEraser,
   faEdit,
   faSave,
+  faCheckDouble
 } from "@fortawesome/free-solid-svg-icons";
 import anonuser from "../images/home/anonuser.png";
+import Tooltip from "../components/Tooltip";
 
 const ReplyThread = ({ setShowReplies, replyThread }) => {
   const dispatch = useDispatch();
@@ -163,12 +165,19 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                         <Loader width={2} height={2} />
                       </span>
                     ) : (
-                      <p className="break-words">
+                      <div
+                        className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out ${
+                          !thread.message.read &&
+                          currentUser._id !== thread.user
+                            ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
                         {thread.message && thread.message}{" "}
                         <span className="p-1 text-gray-500">
                           {thread.edit && "(edited)"}
                         </span>
-                      </p>
+                      </div>
                     )}
                   </div>
                   <div
@@ -176,7 +185,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                       editReply && thread.id === replyId
                         ? "text-green-800"
                         : "text-red-500"
-                    } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
+                    } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem] flex gap-1`}
                     onClick={async () => {
                       dispatch(setReplyId(thread.id));
                       (editReply && thread.id === replyId) ||
@@ -190,6 +199,26 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                           className="flex mt-1 ml-2"
                         />
                       ))}
+                      {currentUser._id === thread.user &&
+                          (thread.read ? (
+                            <Tooltip message="Read">
+                              <span className="text-gray-500 cursor-pointer p-1">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-blue-500"
+                                />
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip message="Sent">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-gray-500 p-[.3rem]"
+                                />
+                              </span>
+                            </Tooltip>
+                          ))}
                   </div>
                 </div>
               </div>

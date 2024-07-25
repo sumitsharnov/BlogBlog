@@ -20,6 +20,7 @@ const contentSchema = new mongoose.Schema({
           sentAt: Date,
           user: String,
           edit: Boolean,
+          read: Boolean,
         },
       ],
     },
