@@ -48,5 +48,5 @@ export default Tooltip;
 
 Tooltip.propTypes = {
     message: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
   };

@@ -6,7 +6,8 @@ import {
   getRepliesByMessageId,
   postEditMessage,
   postEditReply,
-  markAsRead
+  markAsRead,
+  markReplyAsRead
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
@@ -200,7 +201,20 @@ export const useCommunication = () => {
     }
   };
 
+  const markReplyRead = async (replyId,msgId, token) => {
+    try{
+      setCount(prev => prev + 1);
+      await markReplyAsRead(replyId, msgId, token);
+      dispatch(setErrorText(null));
+      await handleReplies(msgId);
+    }catch (error) {
+      dispatch(setErrorText(error.message));
+    }
+  };
+
   return {
+    token,
+    messageId,
     handleReplies,
     showReplies,
     setShowReplies,
@@ -235,6 +249,7 @@ export const useCommunication = () => {
     messageThread,
     setMessageThread,
     backToCommUsers,
-    markMessageAsRead
+    markMessageAsRead,
+    markReplyRead
   };
 };

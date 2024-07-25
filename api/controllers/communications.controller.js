@@ -332,8 +332,6 @@ export const markAsRead = async (req, res, next) => {
 export const markReplyAsRead = async (req, res, next) => {
   try {
     const { replyId, messageId, token } = req.body;
-
-    console.log(messageId, replyId, token, "Sumit");
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {

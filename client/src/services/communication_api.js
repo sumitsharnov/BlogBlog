@@ -155,3 +155,21 @@ export const markAsRead = async (token, messageId) => {
     throw new Error(error.message);
   }
 };
+
+export const markReplyAsRead = async (replyId, messageId, token) => {
+  const formData = { token: token, messageId: messageId, replyId: replyId};
+  try {
+    const res = await fetch(`/api/messages/markReplyRead`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
