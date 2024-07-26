@@ -45,7 +45,7 @@ const Communication = () => {
     backToCommUsers,
     markMessageAsRead,
     getAllMessages,
-    sync
+    sync,
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
@@ -71,7 +71,6 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
-
 
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
@@ -116,8 +115,11 @@ const Communication = () => {
               <FontAwesomeIcon icon={faPaperPlane} className="flex" />
               Post
             </button>
-            <button className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200" onClick={()=>getAllMessages(false, true)}>
-              <FontAwesomeIcon icon={faSync}/>
+            <button
+              className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200"
+              onClick={() => getAllMessages(false, true)}
+            >
+              <FontAwesomeIcon icon={faSync} />
               {sync ? "Syncing..." : "Sync"}
             </button>
             {showMessagesToAdmin && (
@@ -143,7 +145,9 @@ const Communication = () => {
                     : edit && editMessage.trim() === ""
                     ? "Deleting"
                     : messageEntries && messageEntries.length > 0
-                    ? sync ? "Syncing..." : "Posting..."
+                    ? sync
+                      ? "Syncing..."
+                      : "Posting..."
                     : "Loading..."}
                 </p>
                 <Loader />
@@ -163,7 +167,6 @@ const Communication = () => {
                       currentUser._id !== msg.user && markMessageAsRead(msg.id);
                     }} // Pass the index as the message ID
                   >
-                    
                     <div className="flex-shrink-0 p-2">
                       <img
                         src={msg.photoURL ? msg.photoURL : anonuser}
@@ -225,7 +228,7 @@ const Communication = () => {
                                 dispatch(setMessageId(msg.id));
                                 markMessageAsRead(msg.id);
                               }}
-                              className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out
+                              className={`break-words rounded-md shadow-md transition-all duration-300 ease-in-out
                                 
                 ${
                   !msg.read && currentUser._id !== msg.user
@@ -234,7 +237,9 @@ const Communication = () => {
                 }`}
                               key={count}
                             >
-                              {msg.message && msg.message}
+                              <p className="whitespace-pre-line m-2 -mb-2">
+                                {msg.message && msg.message}
+                              </p>
                               <span className="ml-2 text-gray-400 font-light">
                                 {" "}
                                 {msg.edit && "(edited)"}{" "}
@@ -245,9 +250,12 @@ const Communication = () => {
                             ) : (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                             )}
-                            {msg.read || currentUser._id !== msg.user &&  <div className="w-72">
-                              <Tooltip message="Message will be marked Read when clicked; sender will be notified"></Tooltip>
-                            </div>}
+                            {msg.read ||
+                              (currentUser._id !== msg.user && (
+                                <div className="w-72">
+                                  <Tooltip message="Message will be marked Read when clicked; sender will be notified"></Tooltip>
+                                </div>
+                              ))}
                           </div>
                         )}
                       </div>

@@ -103,7 +103,7 @@ export const useCommunication = () => {
 
   // Post a message - main message
   const handleSubmit = async () => {
-    if (message.length <= 0) {
+    if (message.trim().length <= 0) {
       dispatch(setErrorText("Message cannot be empty"));
       setCount(count + 1);
       
@@ -112,7 +112,7 @@ export const useCommunication = () => {
     try {
       dispatch(setErrorText(""));
       setCount(count + 1);
-      await postMessage(communicationUserId, currentUser._id, token, message);
+      await postMessage(communicationUserId, currentUser._id, token, message.trim());
       dispatch(setErrorText(null));
       setMessage([""]);
       await getAllMessages(true, false);

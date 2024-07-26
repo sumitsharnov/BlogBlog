@@ -243,22 +243,24 @@ export const editMessage = async (req, res, next) => {
     }
 
     // If editedText is empty, delete the message
-    if (!editedText.trim()) {
-      const updatedCommunication = await Communication.findOneAndUpdate(
-        { "messages.id": messageId },
-        { $pull: { messages: { id: messageId } } },
-        { new: true }
-      );
-      return res.status(200).json("Message deleted successfully");
-    }
+    // if (!editedText.trim()) {
+    //   const updatedCommunication = await Communication.findOneAndUpdate(
+    //     { "messages.id": messageId },
+    //     { $pull: { messages: { id: messageId } } },
+    //     { new: true }
+    //   );
+    //   return res.status(200).json("Message deleted successfully");
+    // }
+
+    //If edited text is empty, update the message to this message has been deleted.
 
     // If editedText is not empty, update the message
     const updatedMessage = await Communication.findOneAndUpdate(
       { "messages.id": messageId },
       {
         $set: {
-          "messages.$.message": editedText,
-          "messages.$.edit": true,
+          "messages.$.message": editedText.trim() ? editedText : "This message has been deleted.",
+          "messages.$.edit": editedText.trim() ? true : false,
         },
       },
       { new: true } // Return the updated document
