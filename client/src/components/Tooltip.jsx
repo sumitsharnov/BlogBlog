@@ -34,7 +34,7 @@ const Tooltip = ({ message, children }) => {
       {children}
       <div
         ref={tooltipRef}
-        className={`absolute ${tooltipPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'} hidden w-56 p-2 text-xs text-white bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-md group-hover:flex transition-opacity duration-300 ease-in-out`}
+        className={`z-10 absolute ${tooltipPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'} hidden w-auto p-2 text-xs text-white bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-md group-hover:flex transition-opacity duration-300 ease-in-out`}
       >
         {message}
       </div>
@@ -48,5 +48,5 @@ export default Tooltip;
 
 Tooltip.propTypes = {
     message: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
   };

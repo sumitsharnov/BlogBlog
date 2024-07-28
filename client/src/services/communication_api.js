@@ -136,3 +136,40 @@ export const postEditReply = async (replyId, token, editedText, messageId) => {
     throw new Error(error.message);
   }
 };
+
+
+export const markAsRead = async (token, messageId) => {
+  const formData = { token: token };
+  try {
+    const res = await fetch(`/api/messages/markRead/${messageId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", messageId: messageId },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const markReplyAsRead = async (replyId, messageId, token) => {
+  const formData = { token: token, messageId: messageId, replyId: replyId};
+  try {
+    const res = await fetch(`/api/messages/markReplyRead`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

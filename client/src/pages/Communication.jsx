@@ -8,6 +8,7 @@ import {
   faTrash,
   faMultiply,
   faCheckDouble,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./Home";
 import ReplyThread from "../components/ReplyThread";
@@ -42,6 +43,9 @@ const Communication = () => {
     editMessage,
     messageThread,
     backToCommUsers,
+    markMessageAsRead,
+    getAllMessages,
+    sync,
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
@@ -111,6 +115,13 @@ const Communication = () => {
               <FontAwesomeIcon icon={faPaperPlane} className="flex" />
               Post
             </button>
+            <button
+              className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200"
+              onClick={() => getAllMessages(false, true)}
+            >
+              <FontAwesomeIcon icon={faSync} />
+              {sync ? "Syncing..." : "Sync"}
+            </button>
             {showMessagesToAdmin && (
               <button
                 className="flex gap-2 justify-center items-center border border-red-500 rounded-full p-2 bg-white text-gray-600 font-semibold hover:text-white hover:bg-gradient-to-tr 
@@ -126,7 +137,7 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
-            {loading && (
+            {(loading || sync) && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
                   {edit && editMessage.trim() !== ""
@@ -134,7 +145,9 @@ const Communication = () => {
                     : edit && editMessage.trim() === ""
                     ? "Deleting"
                     : messageEntries && messageEntries.length > 0
-                    ? "Posting..."
+                    ? sync
+                      ? "Syncing..."
+                      : "Posting..."
                     : "Loading..."}
                 </p>
                 <Loader />
@@ -144,16 +157,14 @@ const Communication = () => {
               ? messageEntries.map(([key, msg]) => (
                   <div
                     key={key}
-                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4 ${
+                    className={`flex items-start p-4 rounded-lg shadow-lg mb-4  relative ${
                       activeThread === msg.id &&
                       "bg-violet-200 m-4 translate-all duration-200"
                     }`}
                     onClick={async () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
-                      () => {
-                        console.log(msg.read);
-                      };
+                      currentUser._id !== msg.user && markMessageAsRead(msg.id);
                     }} // Pass the index as the message ID
                   >
                     <div className="flex-shrink-0 p-2">
@@ -208,16 +219,44 @@ const Communication = () => {
                             </button>
                           </div>
                         ) : (
-                          <p
-                            className={`break-words ${
-                              msg.read || "text-red-500"
-                            }`}
+                          <div
+                            className="relative group hover:cursor-pointer"
+                            key={count}
                           >
-                            {msg.message && msg.message}
-                            <span className="p-1 text-gray-500">
-                              {msg.edit && "(edited)"}
-                            </span>
-                          </p>
+                            <div
+                              onClick={async () => {
+                                dispatch(setMessageId(msg.id));
+                                markMessageAsRead(msg.id);
+                              }}
+                              className={`break-words rounded-md shadow-md transition-all duration-300 ease-in-out
+                                
+                ${
+                  !msg.read && currentUser._id !== msg.user
+                    ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                              key={count}
+                            >
+                              <p className="whitespace-pre-line m-2 -mb-2">
+                                {msg.message && msg.message}
+                              </p>
+                              <span className="ml-2 text-gray-400 font-light">
+                                {" "}
+                                {msg.edit && "(edited)"}{" "}
+                              </span>
+                            </div>
+                            {msg.read ? (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
+                            ) : (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+                            )}
+                            {msg.read ||
+                              (currentUser._id !== msg.user && (
+                                <div className="w-72">
+                                  <Tooltip message="Message will be marked Read when clicked; sender will be notified"></Tooltip>
+                                </div>
+                              ))}
+                          </div>
                         )}
                       </div>
                       <div className="flex gap-2  ml-[2%] mt-2 m-4">
@@ -230,17 +269,7 @@ const Communication = () => {
                         >
                           <FontAwesomeIcon icon={faMessage} className="flex" />
                         </div>
-                        {currentUser._id !== msg.user && (
-                          <Tooltip message="Read(Click to mark as unread)">
-                          <span className="text-gray-500 cursor-pointer">
-                          <FontAwesomeIcon
-                            icon={faCheckDouble}
-                            className="flex text-green-500"
-                          />
-                          </span>
-                        </Tooltip>
-                          
-                        )}
+
                         <div
                           className={`cursor-pointer ${
                             edit && activeThread === msg.id
@@ -278,6 +307,26 @@ const Communication = () => {
                                 />
                               )}
                         </div>
+                        {currentUser._id === msg.user &&
+                          (msg.read ? (
+                            <Tooltip message="Read">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-blue-500"
+                                />
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip message="Sent">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-gray-500"
+                                />
+                              </span>
+                            </Tooltip>
+                          ))}
                       </div>
                     </div>
                   </div>

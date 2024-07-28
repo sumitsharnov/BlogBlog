@@ -14,8 +14,10 @@ import {
   faEraser,
   faEdit,
   faSave,
+  faCheckDouble
 } from "@fortawesome/free-solid-svg-icons";
 import anonuser from "../images/home/anonuser.png";
+import Tooltip from "../components/Tooltip";
 
 const ReplyThread = ({ setShowReplies, replyThread }) => {
   const dispatch = useDispatch();
@@ -32,11 +34,14 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     handleEditReplySave,
     editReplyText,
     errorMessage,
+    markReplyRead, 
+    messageId,
+    token
   } = useCommunication();
   const { currentUser } = useSelector((state) => state.user);
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
-  const { replyId, loading } = useSelector((state) => state.comm);
+  const { replyId, loading} = useSelector((state) => state.comm);
   useEffect(() => {
     replyThread && setReplies(Object.entries(replyThread));
   }, [replyThread]);
@@ -163,12 +168,30 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                         <Loader width={2} height={2} />
                       </span>
                     ) : (
-                      <p className="break-words">
+                      <div
+                        onClick={() => {currentUser._id !== thread.user && markReplyRead(thread.id, messageId, token)}}
+                        className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out relative group hover:cursor-pointer ${
+                          !thread.read ?
+                          currentUser._id !== thread.user &&
+                            "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        
                         {thread.message && thread.message}{" "}
-                        <span className="p-1 text-gray-500">
+                        {thread.read ? (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>
+                            ) : (
+                              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+                            )}
+                       
+                        <span className="p-1 text-gray-500 font-light">
                           {thread.edit && "(edited)"}
                         </span>
-                      </p>
+                        {thread.read || currentUser._id !== thread.user &&  <div className="w-72 h-auto">
+                              <Tooltip message="Message will be marked Read when clicked; sender will be notified"></Tooltip>
+                            </div>}
+                      </div>
                     )}
                   </div>
                   <div
@@ -176,7 +199,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                       editReply && thread.id === replyId
                         ? "text-green-800"
                         : "text-red-500"
-                    } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem]`}
+                    } hover:text-blue-800 font-medium  rounded transition duration-300 ease-in-out -mt-[.1rem] flex gap-1`}
                     onClick={async () => {
                       dispatch(setReplyId(thread.id));
                       (editReply && thread.id === replyId) ||
@@ -190,6 +213,26 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                           className="flex mt-1 ml-2"
                         />
                       ))}
+                      {currentUser._id === thread.user &&
+                          (thread.read ? (
+                            <Tooltip message="Read">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-blue-500 p-[.3rem]"
+                                />
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip message="Sent">
+                              <span className="text-gray-500 cursor-pointer">
+                                <FontAwesomeIcon
+                                  icon={faCheckDouble}
+                                  className="flex text-gray-500 p-[.3rem]"
+                                />
+                              </span>
+                            </Tooltip>
+                          ))}
                   </div>
                 </div>
               </div>

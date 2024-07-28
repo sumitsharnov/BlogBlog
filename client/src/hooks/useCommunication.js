@@ -6,6 +6,8 @@ import {
   getRepliesByMessageId,
   postEditMessage,
   postEditReply,
+  markAsRead,
+  markReplyAsRead
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
@@ -24,13 +26,8 @@ export const useCommunication = () => {
   const [showReplies, setShowReplies] = useState(false);
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
-  const {
-    messageId,
-    activatedMessage,
-    communicationUserId,
-    messageThread,
-    showMessagesToAdmin,
-  } = useSelector((state) => state.comm);
+  const { messageId, activatedMessage, communicationUserId, messageThread } =
+    useSelector((state) => state.comm);
   const [message, setMessage] = useState([]);
   const [user, setUser] = useState(null);
   const [userImage, setUserImage] = useState(anonuser);
@@ -40,6 +37,7 @@ export const useCommunication = () => {
   const [editReply, setEditReply] = useState(false);
   const [editMessage, setEditMessage] = useState("");
   const [editReplyText, setEditReplyText] = useState("");
+  const [sync, setSync] = useState(false);
   const dispatch = useDispatch();
 
   const handleReplies = async (messageId) => {
@@ -82,6 +80,7 @@ export const useCommunication = () => {
         (await postEditMessage(messageId, token, editMessage));
       await getAllMessages();
       setEdit(false);
+      // setShowReplies(false);
     } catch (error) {
       dispatch(setErrorText(error.message));
     }
@@ -95,6 +94,7 @@ export const useCommunication = () => {
       const res = await postEditReply(replyId, token, editReplyText, messageId);
       res && (await handleReplies(messageId));
       dispatch(setLoading(false));
+
       dispatch(setReplyId(""));
     } catch (error) {
       dispatch(setErrorText(error.message));
@@ -103,18 +103,19 @@ export const useCommunication = () => {
 
   // Post a message - main message
   const handleSubmit = async () => {
-    if (message.length <= 0) {
-      dispatch(setErrorText("Me)ssage cannot be empty"));
+    if (message.trim().length <= 0) {
+      dispatch(setErrorText("Message cannot be empty"));
       setCount(count + 1);
+      
       return;
     }
     try {
       dispatch(setErrorText(""));
       setCount(count + 1);
-      await postMessage(communicationUserId, currentUser._id, token, message);
+      await postMessage(communicationUserId, currentUser._id, token, message.trim());
       dispatch(setErrorText(null));
       setMessage([""]);
-      await getAllMessages();
+      await getAllMessages(true, false);
     } catch (error) {
       dispatch(setErrorText(error.message));
     }
@@ -139,14 +140,12 @@ export const useCommunication = () => {
     setNewReply([""]);
   };
 
-  const getAllMessages = async () => {
+  const getAllMessages = async (loading = false, syncing = true) => {
     try {
-      showMessagesToAdmin ||
-        (currentUser._id !== communicationUserId &&
-          dispatch(setMessageThread("")));
-      dispatch(setLoading(true));
+      dispatch(setLoading(loading));
       dispatch(setErrorText(""));
       setCount(count + 1);
+      setSync(syncing);
       const data = await getMessages(
         communicationUserId || currentUser._id,
         token
@@ -155,11 +154,15 @@ export const useCommunication = () => {
         dispatch(setMessageThread(data.messages));
         setUser(data.user);
         setUserImage((data.user && data.user[0].photoURL) || anonuser);
+      } else {
+        dispatch(setMessageThread(""));
       }
       dispatch(setLoading(false));
+      setSync(false);
     } catch (error) {
       dispatch(setErrorText(error.message));
       dispatch(setLoading(false));
+      setSync(false);
     }
   };
 
@@ -174,7 +177,7 @@ export const useCommunication = () => {
   };
 
   useEffect(() => {
-    getAllMessages();
+    getAllMessages(true, true);
   }, []);
 
   const handleCancelEdit = () => {
@@ -191,7 +194,32 @@ export const useCommunication = () => {
     dispatch(setMessageThread(""));
   };
 
+  const markMessageAsRead = async (msgId) => {
+    try{
+      setCount(prev => prev + 1);
+      await markAsRead(token, msgId);
+      dispatch(setErrorText(null));
+      await getAllMessages(false, false);
+      
+    }catch (error) {
+      dispatch(setErrorText(error.message));
+    }
+  };
+
+  const markReplyRead = async (replyId,msgId, token) => {
+    try{
+      setCount(prev => prev + 1);
+      await markReplyAsRead(replyId, msgId, token);
+      dispatch(setErrorText(null));
+      await handleReplies(msgId);
+    }catch (error) {
+      dispatch(setErrorText(error.message));
+    }
+  };
+
   return {
+    token,
+    messageId,
     handleReplies,
     showReplies,
     setShowReplies,
@@ -226,5 +254,9 @@ export const useCommunication = () => {
     messageThread,
     setMessageThread,
     backToCommUsers,
+    markMessageAsRead,
+    markReplyRead,
+    sync,
+    setSync
   };
 };

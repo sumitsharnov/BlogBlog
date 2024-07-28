@@ -16,6 +16,7 @@ export const communication = async (req, res, next) => {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       next(errorHandler(401, "Unauthorized"));
+      return;
     }
     currentUserId ||
       next(errorHandler(500, "User is not authorized"));
@@ -151,6 +152,7 @@ export const addReplies = async (req, res, next) => {
       firstName: user.firstName,
       sentAt: timestamp,
       user: userId,
+      read: false,
     };
 
     // Use findOneAndUpdate with the $push operator to add the reply to the correct message
@@ -241,22 +243,24 @@ export const editMessage = async (req, res, next) => {
     }
 
     // If editedText is empty, delete the message
-    if (!editedText.trim()) {
-      const updatedCommunication = await Communication.findOneAndUpdate(
-        { "messages.id": messageId },
-        { $pull: { messages: { id: messageId } } },
-        { new: true }
-      );
-      return res.status(200).json("Message deleted successfully");
-    }
+    // if (!editedText.trim()) {
+    //   const updatedCommunication = await Communication.findOneAndUpdate(
+    //     { "messages.id": messageId },
+    //     { $pull: { messages: { id: messageId } } },
+    //     { new: true }
+    //   );
+    //   return res.status(200).json("Message deleted successfully");
+    // }
+
+    //If edited text is empty, update the message to this message has been deleted.
 
     // If editedText is not empty, update the message
     const updatedMessage = await Communication.findOneAndUpdate(
       { "messages.id": messageId },
       {
         $set: {
-          "messages.$.message": editedText,
-          "messages.$.edit": true,
+          "messages.$.message": editedText.trim() ? editedText : "This message has been deleted.",
+          "messages.$.edit": editedText.trim() ? true : false,
         },
       },
       { new: true } // Return the updated document
@@ -272,8 +276,6 @@ export const editReply = async (req, res, next) => {
   try {
     const messageId = req.params.messageId;
     const { replyId, editedText, token } = req.body;
-
-    console.log(messageId, replyId, token, editedText, "Sumit");
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
@@ -297,6 +299,63 @@ export const editReply = async (req, res, next) => {
     await communication.save();
 
     return res.status(200).json({ message: "Reply updated successfully" });
+  } catch (error) {
+    console.error("Error updating reply:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const markAsRead = async (req, res, next) => {
+  try {
+    const messageId = req.params.messageId;
+    const { token } = req.body;
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+
+    const communication = await Communication.findOneAndUpdate(
+      { "messages.id": messageId },
+      { $set: { "messages.$.read": true } },
+      { new: true }
+    );
+
+    if (!communication) return res.status(404).json({ error: "Message not found" });
+
+    return res.status(200).json({ message: "Marked as read successfully" });
+  } catch (error) {
+    console.error("Error marking message as read:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const markReplyAsRead = async (req, res, next) => {
+  try {
+    const { replyId, messageId, token } = req.body;
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+
+    // Find the communication document by message ID
+    const communication = await Communication.findOne({
+      "messages.id": messageId,
+    });
+    if (!communication)
+      return res.status(404).json({ error: "Message not found" });
+
+    const reply = communication.messages
+      .find((msg) => msg.id === messageId)
+      .replies.find((rep) => rep.id === replyId);
+    if (!reply) return res.status(404).json({ error: "Reply not found" });
+
+    reply.read = true;
+    await communication.save();
+
+    return res.status(200).json({ message: "Reply marked as read successfully" });
   } catch (error) {
     console.error("Error updating reply:", error);
     return res.status(500).json({ error: "Internal server error" });
