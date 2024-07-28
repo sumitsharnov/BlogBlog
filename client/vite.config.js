@@ -5,6 +5,10 @@ import reactIcons from "vite-plugin-react-icons";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    sourcemap: true, // Enable sourcemaps for the build
+    outDir: 'dist'
+  },
   server: {
     proxy: {
       "/api": {
