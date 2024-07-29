@@ -1,5 +1,5 @@
 import express from "express";
-import { commuincationsAdmin, getUsersFromCommunication } from "../controllers/CommunicationsAdmin.controller.js";
+import { commuincationsAdmin, getUsersFromCommunication } from "../controllers/communicationsAdmin.controller.js";
 const router = express.Router();
 
 router.get("/allComm", commuincationsAdmin);
