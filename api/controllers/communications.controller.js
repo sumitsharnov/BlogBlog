@@ -38,7 +38,8 @@ export const communication = async (req, res, next) => {
         sentAt: timestamp,
         firstName: firstName,
         photoURL: photoURL,
-        read: false
+        read: false,
+        delete:false
       });
       messages.user = { firstName, photoURL };
       messages.reactions = "";
@@ -55,7 +56,8 @@ export const communication = async (req, res, next) => {
           photoURL: photoURL,
           user: currentUserId,
           replies: [],
-          read: false
+          read: false,
+          delete:false
         },
         user: { firstName: firstName, photoURL: photoURL },
       });
@@ -155,6 +157,9 @@ export const addReplies = async (req, res, next) => {
       read: false,
     };
 
+    if (communication && communication.messages.some(msg => msg.id === messageId && msg.delete)) {
+      throw new Error("Cannot update replies for a deleted message.");
+    }
     // Use findOneAndUpdate with the $push operator to add the reply to the correct message
     const updatedCommunication = await Communication.findOneAndUpdate(
       { "messages.id": messageId },
@@ -261,6 +266,7 @@ export const editMessage = async (req, res, next) => {
         $set: {
           "messages.$.message": editedText.trim() ? editedText : "This message has been deleted.",
           "messages.$.edit": editedText.trim() ? true : false,
+          "messages.$.delete": editedText.trim() ? false : true,
         },
       },
       { new: true } // Return the updated document

@@ -11,6 +11,7 @@ const contentSchema = new mongoose.Schema({
       user: String,
       edit: Boolean,
       read: Boolean,
+      delete: Boolean,
       replies: [
         {
           id: String,
