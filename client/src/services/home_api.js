@@ -47,7 +47,7 @@ export async function fetchTimeline(token) {
 
 export async function fetchCertificates(token) {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/certificates/cfts`, {
+    const res = await fetch(`${API_BASE_URL}/api/certificates`, {
       method: "GET",
       headers: { Authorization: token },
     });

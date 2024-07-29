@@ -15,6 +15,7 @@ import pino from 'pino';
 import pinoPretty from 'pino-pretty'; // Import pino-pretty
 import { GridFSBucket } from 'mongodb';
 import cors from 'cors';
+import path from 'path';
 
 dotenv.config();
 
