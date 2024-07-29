@@ -6,6 +6,7 @@ import { Types } from "mongoose";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 const mongodbUrl = process.env.MONGO;
+const API_BASE_URL = process.env.BASE_URL;
 
 export const upload = async (req, res, next) => {
   try {
@@ -79,7 +80,7 @@ export const getProfilePhoto = async (req, res, next) => {
     if (photo.length === 0) {
       next(errorHandler(400, "Profile photo not found for the specified userId"));
     }
-    const photoUrl = `/api/profile/photo/${encodeURIComponent(
+    const photoUrl = `${API_BASE_URL}/api/profile/photo/${encodeURIComponent(
       photo[0].filename
     )}`;
     const updatedUser = await updateProfilePhoto(photoUrl, userId);
