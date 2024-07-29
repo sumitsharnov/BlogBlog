@@ -58,9 +58,6 @@ app.use(express.static('dist')); // Adjust this if your build directory is diffe
 // Serve static files from the 'dist' directory
 app.use(express.static(path.resolve(__dirname, 'dist')));
 // Handle any other routes (for single-page application)
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-});
 // Middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
