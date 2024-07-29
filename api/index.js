@@ -42,7 +42,7 @@ mongoose
 // Create Express app
 const app = express();
 const corsOptions = {
-  origin: 'https://sumits-portfolio-2tkv.onrender.com/',
+  origin: 'https://sumits-portfolio-2tkv.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
