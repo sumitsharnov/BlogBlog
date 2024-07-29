@@ -95,7 +95,8 @@ const Communication = () => {
             <img
               src={displayImage}
               alt="profile"
-              className="w-16 h-10 rounded-full transition duration-300 transform hover:scale-110 m-4 border border-violet-400"
+              className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
+              onError={handleErrorImage}
             />
             <textarea
               type="text"
@@ -160,8 +161,9 @@ const Communication = () => {
                     className={`flex items-start p-4 rounded-lg shadow-lg mb-4  relative ${
                       activeThread === msg.id &&
                       "bg-violet-200 m-4 translate-all duration-200"
-                      
-                    } ${msg.delete ? 'pointer-events-none cursor-default' : ''}`}
+                    } ${
+                      msg.delete ? "pointer-events-none cursor-default" : ""
+                    }`}
                     onClick={async () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
@@ -231,10 +233,12 @@ const Communication = () => {
                               }}
                               className={`break-words rounded-md shadow-md transition-all duration-300 ease-in-out flex justify-start
                                   ${
-                                    !msg.read && currentUser._id !== msg.user && !msg.delete
+                                    !msg.read &&
+                                    currentUser._id !== msg.user &&
+                                    !msg.delete
                                       ? "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
                                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                              } ${msg.delete &&  "bg-orange-100"}`}
+                                  } ${msg.delete && "bg-orange-100"}`}
                               key={count}
                             >
                               <p className={`whitespace-pre-line p-1`}>
@@ -259,7 +263,7 @@ const Communication = () => {
                           </div>
                         )}
                       </div>
-                      <div className={`${msg.delete && 'hidden'}`}>
+                      <div className={`${msg.delete && "hidden"}`}>
                         <div className="flex gap-2  ml-[2%] mt-2 m-4">
                           <div
                             className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out"
