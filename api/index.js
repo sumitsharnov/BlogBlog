@@ -14,6 +14,7 @@ import communicationsAdmin from "./routes/commuincationsAdmin.route.js";
 import pino from 'pino';
 import pinoPretty from 'pino-pretty'; // Import pino-pretty
 import { GridFSBucket } from 'mongodb';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -40,7 +41,9 @@ mongoose
 
 // Create Express app
 const app = express();
-
+app.use(cors({
+  origin: 'https://your-frontend-url.com', // Replace with your frontend URL
+}));
 // Middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
