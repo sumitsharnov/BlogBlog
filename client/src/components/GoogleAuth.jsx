@@ -5,6 +5,8 @@ import { signInSuccess } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import MessagesCentre from "../components/MessagesCentre";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function ViaGoogleLogin() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loginCount, setLoginCount] = useState(0);
@@ -16,7 +18,7 @@ export default function ViaGoogleLogin() {
     provider.setCustomParameters({ prompt: "select_account" });
     try {
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch("/api/google/googleauth", {
+      const res = await fetch(`${API_BASE_URL}/api/google/googleauth`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

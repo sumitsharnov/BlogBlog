@@ -1,5 +1,6 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const handleSignIn = async (formData) => {
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -8,7 +9,7 @@ export const handleSignIn = async (formData) => {
   };
 
   export const handleGuestLogin = async (formData) => {
-    const res = await fetch("/api/auth/guestlogin", {
+    const res = await fetch(`${API_BASE_URL}/api/auth/guestlogin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),

@@ -1,5 +1,6 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const updateProfilePhoto = async (requestOptions) => {
-  const response = await fetch("/api/profile/photo/update", requestOptions);
+  const response = await fetch(`${API_BASE_URL}/api/profile/photo/update`, requestOptions);
   if (!response.ok) {
     throw new Error(response.status);
   }
@@ -7,7 +8,7 @@ export const updateProfilePhoto = async (requestOptions) => {
 };
 
 export const updateProfilePhotoURL = async (formData) => {
-  const response = await fetch("/api/profile/photo/find", {
+  const response = await fetch(`${API_BASE_URL}/api/profile/photo/find`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -19,7 +20,7 @@ export const updateProfilePhotoURL = async (formData) => {
 };
 
 export const deleteProfilePhoto = async (formData) => {
-  const response = await fetch("/api/profile/photo/delete", {
+  const response = await fetch(`${API_BASE_URL}/api/profile/photo/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),

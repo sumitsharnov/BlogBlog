@@ -1,8 +1,8 @@
 // api.js
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export async function fetchTestimonials(token) {
   try {
-    const res = await fetch("/api/testimonials", {
+    const res = await fetch(`${API_BASE_URL}/api/testimonials`, {
       method: "GET",
       headers: { Authorization: token },
     });
@@ -23,7 +23,7 @@ export async function fetchTimeline(token) {
     setTimeout(resolve, 3000);
   });
   try {
-    const res = await fetch("/api/timeline/content", {
+    const res = await fetch(`${API_BASE_URL}/api/timeline/content`, {
       method: "GET",
       headers: { Authorization: token },
     });
@@ -47,7 +47,7 @@ export async function fetchTimeline(token) {
 
 export async function fetchCertificates(token) {
   try {
-    const res = await fetch("/api/certificates", {
+    const res = await fetch(`${API_BASE_URL}/api/certificates`, {
       method: "GET",
       headers: { Authorization: token },
     });
@@ -69,13 +69,13 @@ export async function downloadCfts(cft, token) {
     });
     let res;
     if (cft.name === "All") {
-      res = await fetch(`/api/download/all/files`, {
+      res = await fetch(`${API_BASE_URL}/api/download/all/files`, {
         method: "GET",
         headers: { Authorization: token },
       });
     } else {
       res = await fetch(
-        `/api/download/${cft.name}.${cft.type}`,
+        `${API_BASE_URL}/api/download/${cft.name}.${cft.type}`,
         {
           method: "GET",
           headers: { Authorization: token },

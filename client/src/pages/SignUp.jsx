@@ -22,6 +22,7 @@ import {
 import MessagesCentre from "../components/MessagesCentre";
 import { signUpSuccess } from "../redux/user/userSlice";
 import Home from "./Home";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -68,7 +69,7 @@ const SignUp = () => {
       await handleErrorReponse("email validation error");
     } else {
       try {
-        const res = await fetch("/api/auth/signup", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),

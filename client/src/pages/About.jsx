@@ -1,4 +1,6 @@
 import{ useState } from 'react';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const About = () => {
   const [file, setFile] = useState(null);
@@ -32,7 +34,7 @@ const About = () => {
     };
 
     try {
-      const response = await fetch('/api/profile/photo/update', requestOptions);
+      const response = await fetch(`${API_BASE_URL}/api/profile/photo/update`, requestOptions);
 
       if (!response.ok) {
         throw new Error(`Failed to upload file: ${response.statusText}`);

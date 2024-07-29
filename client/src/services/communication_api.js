@@ -1,3 +1,4 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export async function postMessage(
   communicationUserId,
   currentUserId,
@@ -11,7 +12,7 @@ export async function postMessage(
     message: message,
   };
   try {
-    const res = await fetch("/api/messages/send", {
+    const res = await fetch(`${API_BASE_URL}/api/messages/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -29,7 +30,7 @@ export async function postMessage(
 
 export const getMessages = async (userId, token) => {
   try {
-    const res = await fetch("/api/messages/getMessages", {
+    const res = await fetch(`${API_BASE_URL}/api/messages/getMessages`, {
       method: "GET",
       headers: { userId: userId, authorization: token },
     });
@@ -49,7 +50,7 @@ export const getMessagesById = async (messageId, token) => {
     setTimeout(resolve, 3000);
   });
   try {
-    const res = await fetch(`/api/messages/getMessages/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/getMessages/${messageId}`, {
       method: "GET",
       headers: { authorization: token },
     });
@@ -69,7 +70,7 @@ export const postReply = async (reply, token, messageId, userId) => {
     setTimeout(resolve, 3000);
   });
   try {
-    const res = await fetch(`/api/messages/reply/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/reply/${messageId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -86,7 +87,7 @@ export const postReply = async (reply, token, messageId, userId) => {
 
 export const getRepliesByMessageId = async (messageId) => {
   try {
-    const res = await fetch(`/api/messages/threads/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/threads/${messageId}`, {
       method: "GET",
       headers: { messageId: messageId },
     });
@@ -104,7 +105,7 @@ export const getRepliesByMessageId = async (messageId) => {
 export const postEditMessage = async (messageId, token, editedText) => {
   const formData = { editedText: editedText, token: token };
   try {
-    const res = await fetch(`/api/messages/editMessage/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/editMessage/${messageId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", messageId: messageId },
       body: JSON.stringify(formData),
@@ -122,7 +123,7 @@ export const postEditMessage = async (messageId, token, editedText) => {
 export const postEditReply = async (replyId, token, editedText, messageId) => {
   const formData = { editedText: editedText, token: token, replyId: replyId };
   try {
-    const res = await fetch(`/api/messages/editReply/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/editReply/${messageId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", messageId: messageId },
       body: JSON.stringify(formData),
@@ -141,7 +142,7 @@ export const postEditReply = async (replyId, token, editedText, messageId) => {
 export const markAsRead = async (token, messageId) => {
   const formData = { token: token };
   try {
-    const res = await fetch(`/api/messages/markRead/${messageId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/markRead/${messageId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", messageId: messageId },
       body: JSON.stringify(formData),
@@ -159,7 +160,7 @@ export const markAsRead = async (token, messageId) => {
 export const markReplyAsRead = async (replyId, messageId, token) => {
   const formData = { token: token, messageId: messageId, replyId: replyId};
   try {
-    const res = await fetch(`/api/messages/markReplyRead`, {
+    const res = await fetch(`${API_BASE_URL}/api/messages/markReplyRead`, {
       method: "POST",
       headers: { "Content-Type": "application/json"},
       body: JSON.stringify(formData),
