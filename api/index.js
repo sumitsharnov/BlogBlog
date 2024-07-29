@@ -41,9 +41,13 @@ mongoose
 
 // Create Express app
 const app = express();
-app.use(cors({
-  origin: 'https://your-frontend-url.com', // Replace with your frontend URL
-}));
+const corsOptions = {
+  origin: 'https://sumits-portfolio-2tkv.onrender.com/',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions)); 
 // Middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
