@@ -229,7 +229,7 @@ const Communication = () => {
                             <div
                               onClick={async () => {
                                 dispatch(setMessageId(msg.id));
-                                markMessageAsRead(msg.id);
+                                currentUser._id !== msg.user && markMessageAsRead(msg.id);
                               }}
                               className={`break-words rounded-md shadow-md transition-all duration-300 ease-in-out flex justify-start
                                   ${
