@@ -12,7 +12,7 @@ import profileRoutes from "./routes/profile.route.js";
 import communications from "./routes/communication.route.js";
 import communicationsAdmin from "./routes/commuincationsAdmin.route.js";
 import pino from 'pino';
-import pinoPretty from 'pino-pretty'; // Import pino-pretty
+import pinoPretty from 'pino-pretty';
 import { GridFSBucket } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
@@ -22,10 +22,10 @@ dotenv.config();
 
 // Initialize Pino logger with pino-pretty for pretty printing
 const logger = pino({
-  prettifier: pinoPretty, // Use pino-pretty as the prettifier
+  prettifier: pinoPretty, 
 });
 
-let bucket; // Declare bucket variable outside of the promise chain
+let bucket;
 let profilephotobucket;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,11 +36,11 @@ mongoose
   .then(() => {
     console.log("MongoDB connected");
     const db = mongoose.connection.db;
-    bucket = new GridFSBucket(db, { bucketName: 'filesBucket' }); // Initialize GridFS bucket
+    bucket = new GridFSBucket(db, { bucketName: 'filesBucket' });
     profilephotobucket = new GridFSBucket(db, { bucketName: 'profilePhotoBucket' });
   })
   .catch((err) => {
-    console.error(err); // Log MongoDB connection error
+    console.error(err); 
   });
 
 // Create Express app
@@ -52,15 +52,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.static('dist')); // Adjust this if your build directory is different
-
-// Serve static files from the 'dist' directory
-app.use(express.static(path.resolve(__dirname, 'dist')));
-
-// Handle any other routes (for single-page application)
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-});
+app.use(express.static(path.resolve(__dirname, 'client', 'dist'))); 
 
 // Middleware
 app.use((req, res, next) => {
@@ -87,11 +79,16 @@ app.use("/api/profile/photo", profileRoutes);
 app.use("/api/messages", communications);
 app.use("/api/admin/comm", communicationsAdmin);
 
+// Catch-all route to serve index.html for any route not matched by the API
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
-  logger.error(`[${statusCode}] ${message}`); // Log errors
+  logger.error(`[${statusCode}] ${message}`);
   res.status(statusCode).json({
     success: false,
     statusCode,
@@ -102,7 +99,7 @@ app.use((err, req, res, next) => {
 // Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  logger.info(`Server is running on port ${port}`); // Log server startup
+  logger.info(`Server is running on port ${port}`);
 });
 
 // Export app and bucket separately
