@@ -54,10 +54,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.static('dist')); // Adjust this if your build directory is different
 
-// Catch-all route to serve index.html for any route not matched by the API
 // Serve static files from the 'dist' directory
 app.use(express.static(path.resolve(__dirname, 'dist')));
+
 // Handle any other routes (for single-page application)
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
+
 // Middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -82,7 +86,6 @@ app.use("/api/certificates", certificateRoutes);
 app.use("/api/profile/photo", profileRoutes);
 app.use("/api/messages", communications);
 app.use("/api/admin/comm", communicationsAdmin);
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {

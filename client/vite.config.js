@@ -16,6 +16,7 @@ export default defineConfig({
         secure: false,
       },
     },
+    historyApiFallback: true, // Add this line
   },
   plugins: [react(), reactRefresh(), reactIcons],
 });
