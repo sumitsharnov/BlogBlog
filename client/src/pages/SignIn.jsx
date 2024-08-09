@@ -96,6 +96,7 @@ const SignIn = () => {
   const handleSubmit = useCallback(
     async (e) => {
       e && e.preventDefault();
+      setGuest(false);
       setKey((prev) => prev + 1);
       setIsSubmitted(true);
       setLoading(true);
