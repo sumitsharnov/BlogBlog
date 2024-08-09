@@ -23,11 +23,11 @@ const Timeline = ({content}) => {
 
   const cardLength = content && content.length;
  
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.2]);
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.2]);
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 1], [0.0, 1.15]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 1], [0.0, 1.15]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 1], [0.0, 1.15]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 1], [0.0, 1.15]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 1], [0, 1.15]);
 
   const backgroundColors = ["var(--black)", "var(--black)", "var(--black)"];
   const linearGradients = [
