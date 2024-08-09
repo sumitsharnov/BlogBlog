@@ -101,7 +101,7 @@ const Communication = () => {
             <textarea
               type="text"
               value={message}
-              placeholder="Write your message here..."
+              placeholder="Write to Sumit..."
               className={`w-[100%]  p-2 rounded-lg max-h-24 min-h-16 ${
                 !message ? "border border-red-400" : "border border-green-500"
               }`}
