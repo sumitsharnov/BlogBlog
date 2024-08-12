@@ -87,4 +87,9 @@ export const guestlogin = async (req, res, next) => {
   }
 };
 
+export const justReturnRandomString = (req, res) => {
+  const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  res.json({ randomString: randomString });
+}
+
 
