@@ -80,9 +80,9 @@ app.use("/api/messages", communications);
 app.use("/api/admin/comm", communicationsAdmin);
 
 // Catch-all route to serve index.html for any route not matched by the API
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
