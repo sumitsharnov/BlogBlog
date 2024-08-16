@@ -20,7 +20,7 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
-import { getUnreadMessages } from "../api/controllers/communications.controller.js";
+import { getUnreadMessages } from "./controllers/communications.controller.js";
 
 dotenv.config();
 
