@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faSignOut, faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Tooltip from "./Tooltip";
 import {
   setCommunicationUserId,
@@ -68,9 +68,9 @@ export default function Header() {
           />
         </form> */}
         <div className="flex gap-2 md:order-2">
-          <Button className="w-12 h-10 lg:hidden" color="gray" pill>
+          {/* <Button className="w-12 h-10 lg:hidden" color="gray" pill>
             <AiOutlineSearch />
-          </Button>
+          </Button> */}
           {/* <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
             <FaMoon />
           </Button> */}
