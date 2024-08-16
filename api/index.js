@@ -52,7 +52,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.static(path.resolve(__dirname, 'client', 'dist'))); 
+// app.use(express.static(path.resolve(__dirname, 'client', 'dist'))); 
 
 // Middleware
 app.use((req, res, next) => {
@@ -65,7 +65,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use('/images', express.static("api/utils/images"));
+app.use('/images', express.static(path.join(__dirname, 'utils/images')));
+
 
 // Routes
 app.use("/api", fileRoutes);
