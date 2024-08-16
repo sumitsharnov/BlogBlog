@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
 import Tooltip from "../components/Tooltip";
+import { setNewMessage } from "../redux/communications/commSlice";
 
 const Communication = () => {
   const {
@@ -46,9 +47,11 @@ const Communication = () => {
     markMessageAsRead,
     getAllMessages,
     sync,
+    // getCountUnreadMessages
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
+  const { newMessage } = useSelector((state) => state.comm);
   const {
     activatedMessage,
     showMessagesToAdmin,
@@ -118,7 +121,7 @@ const Communication = () => {
             </button>
             <button
               className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200"
-              onClick={() => getAllMessages(false, true)}
+              onClick={() => {getAllMessages(false, true); dispatch(setNewMessage(""))}}
             >
               <FontAwesomeIcon icon={faSync} />
               {sync ? "Syncing..." : "Sync"}
@@ -138,6 +141,7 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
+            {newMessage && <div className="text-center font-medium text-red-300  p-2 m-2 rounded-full  transition-all animate-bounce">{newMessage}</div>}
             {(loading || sync) && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
@@ -168,6 +172,7 @@ const Communication = () => {
                       dispatch(setMessageId(msg.id));
                       handleReplies(msg.id);
                       currentUser._id !== msg.user && markMessageAsRead(msg.id);
+                      // getCountUnreadMessages();
                     }} // Pass the index as the message ID
                   >
                     <div className="flex-shrink-0 p-2">

@@ -17,6 +17,10 @@ import { GridFSBucket } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from 'http';
+import { WebSocketServer } from 'ws';
+import jwt from 'jsonwebtoken';
+import { getUnreadMessages } from "../api/controllers/communications.controller.js";
 
 dotenv.config();
 
@@ -45,6 +49,59 @@ mongoose
 
 // Create Express app
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+
+const clients = new Map();
+
+wss.on('connection', ws => {
+  ws.on('message', async message => {
+    const data = JSON.parse(message);
+    if (data.type === 'init') {
+      try {
+        jwt.verify(data.token, process.env.JWT_SECRET);
+        clients.set(ws, { userId: data.userId, token: data.token });
+      } catch (e) {
+        ws.send(JSON.stringify({ error: 'Unauthorized' }));
+        ws.close();
+      }
+    } else {
+      console.log(`Received message => ${message}`);
+    }
+  });
+
+  const sendUnreadMessages = async () => {
+    for (const [client, { userId, token }] of clients.entries()) {
+      try {
+        const unreadMessages = await getUnreadMessages(userId, token);
+        client.send(JSON.stringify({ unreadMessages }));
+      } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+          console.error("Token expired:", error);
+          client.send(JSON.stringify({ error: "Token expired" }));
+        } else {
+          console.error("Error fetching unread messages:", error);
+          client.send(JSON.stringify({ error: "Error fetching unread messages" }));
+        }
+      }
+    }
+  };
+
+  const debounceInterval = 5000; // 15 seconds
+  let debounceTimeout;
+
+  const debounceSendUnreadMessages = () => {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(sendUnreadMessages, debounceInterval);
+  };
+
+  const intervalId = setInterval(debounceSendUnreadMessages, debounceInterval);
+
+  ws.on('close', () => {
+    clearInterval(intervalId);
+    clients.delete(ws);
+  });
+});
 const corsOptions = {
   origin: ['http://localhost:5173','https://sumits-portfolio-2tkv.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -99,7 +156,7 @@ app.use((err, req, res, next) => {
 
 // Start the server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
   logger.info(`Server is running on port ${port}`);
 });
 

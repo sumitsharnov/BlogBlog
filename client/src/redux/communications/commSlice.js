@@ -8,7 +8,10 @@ const initialState = {
   communicationUserId: "",
   showMessagesToAdmin: false,
   loading: false,
-  errorText: ""
+  errorText: "",
+  unreadRepliesCount: 0,
+  unreadMessagesCount: 0,
+  newMessage :  "",
 };
 
 const commSlice = createSlice({
@@ -28,8 +31,8 @@ const commSlice = createSlice({
       state.messageThread = action.payload;
     },
     setMessageThreadInit(state) {
-        state.messageThread = "";
-      },
+      state.messageThread = "";
+    },
     setCommunicationUserId(state, action) {
       state.communicationUserId = action.payload;
     },
@@ -40,7 +43,19 @@ const commSlice = createSlice({
       state.loading = action.payload;
     },
     setErrorText(state, action) {
-        state.errorText = action.payload;
+      state.errorText = action.payload;
+    },
+    setUnreadRepliesCount(state, action) {
+      state.unreadRepliesCount = action.payload;
+    },
+    setUnreadMessagesCount(state, action) {
+      state.unreadMessagesCount = action.payload;
+    },
+    setNewMessage(state, action) {
+      state.newMessage = action.payload;
+    },
+    resetComm() {
+      return initialState;
     }
   },
 });
@@ -54,7 +69,11 @@ export const {
   setShowMessagesToAdmin,
   setLoading,
   setErrorText,
-  setMessageThreadInit
+  setMessageThreadInit,
+  setUnreadRepliesCount,
+  setUnreadMessagesCount,
+  setNewMessage,
+  resetComm,
 } = commSlice.actions;
 
 export default commSlice.reducer;

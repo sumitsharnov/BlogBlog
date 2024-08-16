@@ -14,10 +14,12 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserInfo } from "./services/user_api";
 import { updateCurrentUser, clearSignInSuccess } from "./redux/user/userSlice";
+import { setUnreadMessagesCount, setNewMessage } from "./redux/communications/commSlice";
 import Cookies from "js-cookie";
 
 export default function App() {
   const { currentUser, token } = useSelector((state) => state.user);
+  const { unreadMessagesCount } = useSelector((state) => state.comm);
   const dispatch = useDispatch();
   useEffect(() => {
     if (currentUser && currentUser._id && token) {
@@ -35,6 +37,30 @@ export default function App() {
       fetch();
     }
   }, []);
+
+  useEffect(() => {
+    if (currentUser && token) {
+      if (currentUser.type.toLowerCase() === "user" || currentUser.type.toLowerCase() === "thirdparty") {
+        const ws = new WebSocket("ws://localhost:3000");
+        ws.onopen = () => {
+          ws.send(
+            JSON.stringify({ type: "init", userId: currentUser._id, token })
+          );
+        };
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if(unreadMessagesCount < data.unreadMessages){
+            dispatch(setNewMessage("You have a new chat, click on Sync to view it!"));
+          }
+          dispatch(setUnreadMessagesCount(data.unreadMessages));
+        };
+
+        return () => {
+          ws.close();
+        };
+      }
+    }
+  });
 
   return (
     <BrowserRouter>

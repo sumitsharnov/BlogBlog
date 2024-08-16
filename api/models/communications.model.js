@@ -12,6 +12,7 @@ const contentSchema = new mongoose.Schema({
       edit: Boolean,
       read: Boolean,
       delete: Boolean,
+      unreadReplies: Number,
       replies: [
         {
           id: String,

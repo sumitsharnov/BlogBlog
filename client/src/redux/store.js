@@ -5,7 +5,7 @@ import homeReducer from './home/homeSlice'
 import commReducer from './communications/commSlice'
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from'redux-persist/lib/storage'
-
+import resetNewMessageTransform from "./communications/commTransform";
 const rootReducer = combineReducers({
   user: userReducer,
   home: homeReducer,
@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  transforms: [resetNewMessageTransform],
   version: 1,
 }
 

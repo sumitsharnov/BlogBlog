@@ -43,7 +43,8 @@
     "pino": "^8.19.0",
     "pino-pretty": "^11.0.0",
     "react-loader-spinner": "^6.1.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.177",

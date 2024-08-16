@@ -367,3 +367,62 @@ export const markReplyAsRead = async (req, res, next) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getUnreadMessages = async (userId, token) => {
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find the communication document for the specific user
+    const communication = await Communication.findOne({ _id: userId });
+    if (!communication) throw new Error("User not found");
+
+    // Filter out unread main messages from different users
+    let unreadMessagesCount = 0;
+    communication.messages.forEach(msg => {
+      if (!msg.read && !msg.delete && msg.user !== userId) {
+        unreadMessagesCount++;
+      }
+    });
+
+    return unreadMessagesCount;
+  } catch (error) {
+    console.error("Error fetching unread messages:", error);
+    throw new Error("Internal server error");
+  }
+};
+
+export const getUnreadReplies = async (req, res, next) => {
+  try {
+    const userId = req.headers["userid"]; // Retrieve userId from headers
+    const token = req.headers.authorization;
+    const messageId = req.query.messageId; // Retrieve messageId from query parameters
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(errorHandler(401, "Unauthorized"));
+    }
+    if (!userId || !messageId) return next(errorHandler(500, "Something went wrong"));
+
+    // Find the communication document for the specific user
+    const communication = await Communication.findOne({ _id: userId });
+    if (!communication) return res.status(404).json({ error: "User not found" });
+
+    // Find the specific message and count unread replies
+    const message = communication.messages.find(msg => msg.id === messageId);
+    if (!message) return res.status(404).json({ error: "Message not found" });
+
+    const unreadRepliesCount = message.replies.filter(reply => !reply.read && reply.user !== userId).length;
+
+    res.status(200).json({ replies: unreadRepliesCount });
+  } catch (error) {
+    console.error("Error fetching unread replies:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+
+

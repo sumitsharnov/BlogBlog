@@ -41,7 +41,7 @@ const Home = () => {
     { name: "csharp oops", type: "pdf" },
     { name: "Django Deployment", type: "pdf" },
   ];
-
+  
   const {
     handleDownload,
     handleDownloadModal,

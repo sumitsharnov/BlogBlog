@@ -8,9 +8,9 @@ import Cookies from "js-cookie";
 import anonuser from "../images/home/anonuser.png";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faUserEdit, faSignOut, faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import MessagesCentre from "./MessagesCentre";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Tooltip from "./Tooltip";
 import {
   setCommunicationUserId,
@@ -23,6 +23,7 @@ export default function Header() {
   const [count, setCount] = useState(0);
   const location = useLocation();
   const { currentUser, signInSuccess } = useSelector((state) => state.user);
+  const { unreadMessagesCount } = useSelector((state) => state.comm);
   const displayImage = (currentUser && currentUser.photoURL) || anonuser;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ export default function Header() {
                 <img
                   src={displayImage}
                   alt="profile"
-                  className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110"
+                  className="w-8 h-8 rounded-full transition duration-300 transform hover:scale-110 mr-[3em]"
                   onError={handleErrorImage}
                 />
               </div>
@@ -164,10 +165,16 @@ export default function Header() {
                   to="/communications"
                   className={
                     location.pathname === "/communications"
-                      ? "border-b-4 border-purple-400 p-2"
-                      : ""
+                      ? "border-b-4 border-purple-400 p-2 relative"
+                      : "relative"
                   }
                 >
+                  <div className="relative inline-block">
+                    <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
+                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-white bg-red-600 rounded-full mr-2">
+                     {unreadMessagesCount}
+                    </span>
+                  </div>
                   Communications
                 </NavLink>
               ))}
