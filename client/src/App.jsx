@@ -42,7 +42,8 @@ export default function App() {
   useEffect(() => {
     if (currentUser && token) {
       if (currentUser.type.toLowerCase() === "user" || currentUser.type.toLowerCase() === "thirdparty") {
-        const ws = new WebSocket(`ws:${API_BASE_URL}`);
+        const apiURL = API_BASE_URL.replace(/^http/, 'wss'); 
+        const ws = new WebSocket(apiURL);
         ws.onopen = () => {
           ws.send(
             JSON.stringify({ type: "init", userId: currentUser._id, token })
