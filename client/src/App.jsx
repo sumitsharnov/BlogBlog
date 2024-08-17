@@ -14,7 +14,10 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserInfo } from "./services/user_api";
 import { updateCurrentUser, clearSignInSuccess } from "./redux/user/userSlice";
-import { setUnreadMessagesCount, setNewMessage } from "./redux/communications/commSlice";
+import {
+  setUnreadMessagesCount,
+  setNewMessage,
+} from "./redux/communications/commSlice";
 import Cookies from "js-cookie";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -41,8 +44,11 @@ export default function App() {
 
   useEffect(() => {
     if (currentUser && token) {
-      if (currentUser.type.toLowerCase() === "user" || currentUser.type.toLowerCase() === "thirdparty") {
-        const apiURL = API_BASE_URL.replace(/^http/, 'ws'); 
+      if (
+        currentUser.type.toLowerCase() === "user" ||
+        currentUser.type.toLowerCase() === "thirdparty"
+      ) {
+        const apiURL = API_BASE_URL.replace(/^http/, "ws");
         const ws = new WebSocket(apiURL);
         ws.onopen = () => {
           ws.send(
@@ -51,8 +57,10 @@ export default function App() {
         };
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data);
-          if(unreadMessagesCount < data.unreadMessages){
-            dispatch(setNewMessage("You have a new chat, click on Sync to view it!"));
+          if (unreadMessagesCount < data.unreadMessages) {
+            dispatch(
+              setNewMessage("You have a new chat, click on Sync to view it!")
+            );
           }
           dispatch(setUnreadMessagesCount(data.unreadMessages));
         };
@@ -68,6 +76,31 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen flex flex-col min-w-[100%]">
         <Header />
+        <div
+          className="bg-blue-100 bg-opacity-50 border border-blue-400 text-blue-700 px-4 py-3  relative text-center shadow-lg flex items-center justify-center"
+          role="alert"
+        >
+          <svg
+            className="w-6 h-6 text-blue-700 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+            ></path>
+          </svg>
+
+          <span className="block sm:inline">
+            Some features are still in development and may not work as expected.
+            Thank you for your understanding.
+          </span>
+        </div>
+
         <div className="flex-grow">
           <Routes>
             <Route path="/about" element={<About />} />
