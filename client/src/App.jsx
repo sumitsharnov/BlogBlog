@@ -16,6 +16,7 @@ import { getUserInfo } from "./services/user_api";
 import { updateCurrentUser, clearSignInSuccess } from "./redux/user/userSlice";
 import { setUnreadMessagesCount, setNewMessage } from "./redux/communications/commSlice";
 import Cookies from "js-cookie";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function App() {
   const { currentUser, token } = useSelector((state) => state.user);
@@ -41,7 +42,7 @@ export default function App() {
   useEffect(() => {
     if (currentUser && token) {
       if (currentUser.type.toLowerCase() === "user" || currentUser.type.toLowerCase() === "thirdparty") {
-        const ws = new WebSocket("ws://localhost:3000");
+        const ws = new WebSocket(`ws:${API_BASE_URL}`);
         ws.onopen = () => {
           ws.send(
             JSON.stringify({ type: "init", userId: currentUser._id, token })
