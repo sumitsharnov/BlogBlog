@@ -42,7 +42,7 @@ export default function App() {
   useEffect(() => {
     if (currentUser && token) {
       if (currentUser.type.toLowerCase() === "user" || currentUser.type.toLowerCase() === "thirdparty") {
-        const apiURL = API_BASE_URL.replace(/^http/, 'wss'); 
+        const apiURL = API_BASE_URL.replace(/^http/, 'ws'); 
         const ws = new WebSocket(apiURL);
         ws.onopen = () => {
           ws.send(
