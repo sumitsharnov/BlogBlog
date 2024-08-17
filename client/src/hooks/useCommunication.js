@@ -19,6 +19,7 @@ import {
   setLoading,
   setErrorText,
   setShowMessagesToAdmin,
+  setNewMessage
 } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
@@ -142,6 +143,7 @@ export const useCommunication = () => {
 
   const getAllMessages = async (loading = false, syncing = true) => {
     try {
+      dispatch(setNewMessage(""));
       dispatch(setLoading(loading));
       dispatch(setErrorText(""));
       setCount(count + 1);

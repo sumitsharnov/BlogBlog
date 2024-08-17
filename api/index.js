@@ -87,7 +87,7 @@ wss.on('connection', ws => {
     }
   };
 
-  const debounceInterval = 5000; // 15 seconds
+  const debounceInterval = 2000; // 2 seconds
   let debounceTimeout;
 
   const debounceSendUnreadMessages = () => {

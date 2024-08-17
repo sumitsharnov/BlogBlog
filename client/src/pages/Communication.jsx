@@ -23,7 +23,6 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminComm from "../components/AdminComm";
 import Tooltip from "../components/Tooltip";
-import { setNewMessage } from "../redux/communications/commSlice";
 
 const Communication = () => {
   const {
@@ -121,7 +120,7 @@ const Communication = () => {
             </button>
             <button
               className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200"
-              onClick={() => {getAllMessages(false, true); dispatch(setNewMessage(""))}}
+              onClick={() => {getAllMessages(false, true)}}
             >
               <FontAwesomeIcon icon={faSync} />
               {sync ? "Syncing..." : "Sync"}
