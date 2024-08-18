@@ -46,9 +46,6 @@ export const getMessages = async (userId, token) => {
 };
 
 export const getMessagesById = async (messageId, token) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
   try {
     const res = await fetch(`${API_BASE_URL}/api/messages/getMessages/${messageId}`, {
       method: "GET",
@@ -66,9 +63,6 @@ export const getMessagesById = async (messageId, token) => {
 
 export const postReply = async (reply, token, messageId, userId) => {
   const formData = { reply: reply, token: token, userId: userId };
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
   try {
     const res = await fetch(`${API_BASE_URL}/api/messages/reply/${messageId}`, {
       method: "POST",

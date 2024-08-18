@@ -92,7 +92,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                   thread.id === replyId &&
                   editReply &&
                   "border border-violet-300 transition-all m-2"
-                } ${key === "0" && "bg-gradient-to-tr from-purple-200 via-yellow-200 to-green-200"}`}
+                }`}
               >
                 <div className="flex-shrink-0 p-2">
                   <img

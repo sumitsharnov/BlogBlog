@@ -120,7 +120,9 @@ const Communication = () => {
             </button>
             <button
               className="border-2 border-red-200 p-2 rounded-full flex gap-1 justify-between items-center hover:bg-violet-200"
-              onClick={() => {getAllMessages(false, true)}}
+              onClick={() => {
+                getAllMessages(false, true);
+              }}
             >
               <FontAwesomeIcon icon={faSync} />
               {sync ? "Syncing..." : "Sync"}
@@ -140,7 +142,11 @@ const Communication = () => {
         <hr className="w-full border border-gray-300"></hr>
         <div className="flex justify-between">
           <div className="w-full">
-            {newMessage && <div className="text-center font-medium text-red-300  p-2 m-2 rounded-full  transition-all animate-bounce">{newMessage}</div>}
+            {newMessage && (
+              <div className="text-center font-medium text-red-300  p-2 m-2 rounded-full  transition-all animate-bounce">
+                {newMessage}
+              </div>
+            )}
             {(loading || sync) && (
               <span className="flex flex-col justify-center items-center p-4">
                 <p className="m-2 text-violet-500 p-2">
@@ -233,7 +239,8 @@ const Communication = () => {
                             <div
                               onClick={async () => {
                                 dispatch(setMessageId(msg.id));
-                                currentUser._id !== msg.user && markMessageAsRead(msg.id);
+                                currentUser._id !== msg.user &&
+                                  markMessageAsRead(msg.id);
                               }}
                               className={`break-words rounded-md shadow-md transition-all duration-300 ease-in-out flex justify-start
                                   ${
@@ -248,6 +255,7 @@ const Communication = () => {
                               <p className={`whitespace-pre-line p-1 w-[100%]`}>
                                 {msg.message && msg.message}
                               </p>
+
                               <span className="ml-1 text-gray-400 font-light p-1">
                                 {" "}
                                 {msg.edit && "(edited)"}{" "}
