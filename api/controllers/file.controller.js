@@ -4,7 +4,9 @@ import {GridFsStorage} from "multer-gridfs-storage"
 import { bucket } from "../index.js";
 import archiver from "archiver";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
+dotenv.config({ path: "../../.env" });
 export const upload = () => {
   const mongodbUrl = process.env.MONGO;
   const storage = new GridFsStorage({

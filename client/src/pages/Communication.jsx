@@ -245,7 +245,7 @@ const Communication = () => {
                                   } ${msg.delete && "bg-orange-100"}`}
                               key={count}
                             >
-                              <p className={`whitespace-pre-line p-1`}>
+                              <p className={`whitespace-pre-line p-1 w-[100%]`}>
                                 {msg.message && msg.message}
                               </p>
                               <span className="ml-1 text-gray-400 font-light p-1">
