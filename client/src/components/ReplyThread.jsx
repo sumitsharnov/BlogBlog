@@ -87,11 +87,12 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
             return (
               <div
                 key={key}
+                id={key}
                 className={`flex items-start p-4 bg-white rounded-lg shadow-lg mb-4 ${
                   thread.id === replyId &&
                   editReply &&
                   "border border-violet-300 transition-all m-2"
-                }`}
+                } ${key === "0" && "bg-gradient-to-tr from-purple-200 via-yellow-200 to-green-200"}`}
               >
                 <div className="flex-shrink-0 p-2">
                   <img

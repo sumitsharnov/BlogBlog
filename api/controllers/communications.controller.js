@@ -18,8 +18,7 @@ export const communication = async (req, res, next) => {
       next(errorHandler(401, "Unauthorized"));
       return;
     }
-    currentUserId ||
-      next(errorHandler(500, "User is not authorized"));
+    currentUserId || next(errorHandler(500, "User is not authorized"));
     if (currentUserId === communicationUserId) {
       messages = await Communication.findOne({ _id: communicationUserId });
       user = await User.findOne({ _id: communicationUserId });
@@ -39,7 +38,7 @@ export const communication = async (req, res, next) => {
         firstName: firstName,
         photoURL: photoURL,
         read: false,
-        delete:false
+        delete: false,
       });
       messages.user = { firstName, photoURL };
       messages.reactions = "";
@@ -57,7 +56,7 @@ export const communication = async (req, res, next) => {
           user: currentUserId,
           replies: [],
           read: false,
-          delete:false
+          delete: false,
         },
         user: { firstName: firstName, photoURL: photoURL },
       });
@@ -114,15 +113,15 @@ export const getMessagesByMessageId = async (req, res, next) => {
 
 export const addReplies = async (req, res, next) => {
   try {
-    const messageId = req.params.messageId; // Retrieve messageId from params
+    const { messageId } = req.params;
     const { reply, token, userId } = req.body;
-    const randomUuid = uuidv4();
     const timestamp = new Date().toISOString();
+
     // Verify token
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-      next(errorHandler(401, "Unauthorized"));
+      return next(errorHandler(401, "Unauthorized"));
     }
 
     if (!messageId) {
@@ -145,11 +144,28 @@ export const addReplies = async (req, res, next) => {
       return next(errorHandler(404, "Message not found in the communication"));
     }
 
-    const user = await User.findOne({ _id: userId });
-    // Construct the reply object including the photoURL and firstName
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+
+    // Add the main message to the replies array if it's the first reply
+    if (communication.messages[messageIndex].replies.length === 0) {
+      const mainMessage = {
+        ...communication.messages[messageIndex],
+        id: uuidv4(),
+      };
+      await Communication.findOneAndUpdate(
+        { "messages.id": messageId },
+        { $push: { "messages.$.replies": mainMessage } },
+        { new: true }
+      );
+    }
+
+    // Construct the reply object
     const replyWithSenderInfo = {
-      id: randomUuid,
-      message: reply, // Assuming 'reply' is a string containing the reply message
+      id: uuidv4(),
+      message: reply,
       photoURL: user.photoURL,
       firstName: user.firstName,
       sentAt: timestamp,
@@ -157,14 +173,18 @@ export const addReplies = async (req, res, next) => {
       read: false,
     };
 
-    if (communication && communication.messages.some(msg => msg.id === messageId && msg.delete)) {
-      throw new Error("Cannot update replies for a deleted message.");
+    // Check if the message is deleted
+    if (communication.messages[messageIndex].delete) {
+      return next(
+        errorHandler(400, "Cannot update replies for a deleted message.")
+      );
     }
-    // Use findOneAndUpdate with the $push operator to add the reply to the correct message
+
+    // Add the reply to the correct message
     const updatedCommunication = await Communication.findOneAndUpdate(
       { "messages.id": messageId },
       { $push: { "messages.$.replies": replyWithSenderInfo } },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedCommunication) {
@@ -205,12 +225,15 @@ export const getReplies = async (req, res, next) => {
       return next(new Error("Message not found in the communication"));
     }
     const replies = communication.messages[messageIndex].replies;
-    if (replies)
+    if (replies.length > 0) {
+      if (replies[0].read !== communication.messages[messageIndex].read)
+        replies[0].read = communication.messages[messageIndex].read;
       for (const reply of replies) {
         const user = await User.findOne({ _id: reply.user });
         const { photoURL } = user._doc;
         reply.photoURL = photoURL;
       }
+    }
     // Respond with the replies array
     res.status(200).json(replies);
   } catch (err) {
@@ -264,7 +287,9 @@ export const editMessage = async (req, res, next) => {
       { "messages.id": messageId },
       {
         $set: {
-          "messages.$.message": editedText.trim() ? editedText : "This message has been deleted.",
+          "messages.$.message": editedText.trim()
+            ? editedText
+            : "This message has been deleted.",
           "messages.$.edit": editedText.trim() ? true : false,
           "messages.$.delete": editedText.trim() ? false : true,
         },
@@ -328,7 +353,8 @@ export const markAsRead = async (req, res, next) => {
       { new: true }
     );
 
-    if (!communication) return res.status(404).json({ error: "Message not found" });
+    if (!communication)
+      return res.status(404).json({ error: "Message not found" });
 
     return res.status(200).json({ message: "Marked as read successfully" });
   } catch (error) {
@@ -361,7 +387,9 @@ export const markReplyAsRead = async (req, res, next) => {
     reply.read = true;
     await communication.save();
 
-    return res.status(200).json({ message: "Reply marked as read successfully" });
+    return res
+      .status(200)
+      .json({ message: "Reply marked as read successfully" });
   } catch (error) {
     console.error("Error updating reply:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -378,7 +406,7 @@ export const getUnreadMessages = async (userId, token) => {
 
     // Filter out unread main messages from different users
     let unreadMessagesCount = 0;
-    communication.messages.forEach(msg => {
+    communication.messages.forEach((msg) => {
       if (!msg.read && !msg.delete && msg.user !== userId) {
         unreadMessagesCount++;
       }
@@ -402,17 +430,21 @@ export const getUnreadReplies = async (req, res, next) => {
     } catch (e) {
       return next(errorHandler(401, "Unauthorized"));
     }
-    if (!userId || !messageId) return next(errorHandler(500, "Something went wrong"));
+    if (!userId || !messageId)
+      return next(errorHandler(500, "Something went wrong"));
 
     // Find the communication document for the specific user
     const communication = await Communication.findOne({ _id: userId });
-    if (!communication) return res.status(404).json({ error: "User not found" });
+    if (!communication)
+      return res.status(404).json({ error: "User not found" });
 
     // Find the specific message and count unread replies
-    const message = communication.messages.find(msg => msg.id === messageId);
+    const message = communication.messages.find((msg) => msg.id === messageId);
     if (!message) return res.status(404).json({ error: "Message not found" });
 
-    const unreadRepliesCount = message.replies.filter(reply => !reply.read && reply.user !== userId).length;
+    const unreadRepliesCount = message.replies.filter(
+      (reply) => !reply.read && reply.user !== userId
+    ).length;
 
     res.status(200).json({ replies: unreadRepliesCount });
   } catch (error) {
@@ -420,9 +452,3 @@ export const getUnreadReplies = async (req, res, next) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
-
-
-
-
