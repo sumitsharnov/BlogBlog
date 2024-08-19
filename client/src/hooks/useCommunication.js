@@ -7,7 +7,7 @@ import {
   postEditMessage,
   postEditReply,
   markAsRead,
-  markReplyAsRead
+  markReplyAsRead,
 } from "../services/communication_api";
 import { useEffect, useState } from "react";
 import anonuser from "../images/home/anonuser.png";
@@ -19,11 +19,11 @@ import {
   setLoading,
   setErrorText,
   setShowMessagesToAdmin,
-  setNewMessage
+  setNewMessage,
+  setReplyThread
 } from "../redux/communications/commSlice";
 
 export const useCommunication = () => {
-  const [replyThread, setReplyThread] = useState(null);
   const [showReplies, setShowReplies] = useState(false);
   const [count, setCount] = useState(0);
   const { currentUser, token } = useSelector((state) => state.user);
@@ -44,18 +44,18 @@ export const useCommunication = () => {
   const handleReplies = async (messageId) => {
     dispatch(setErrorText(""));
     setShowReplies(true);
-    setReplyThread(null);
+    dispatch(setReplyThread(null));
     dispatch(setActiveMessage(messageId));
     setCount(count + 1);
     // const data = await getMessagesById(messageId, token);
     try {
       const replies = await getRepliesByMessageId(messageId, token);
-      (await replies) && setReplyThread(replies);
+      (await replies) && dispatch(setReplyThread(replies));
 
       setPostedMessage(true);
     } catch (error) {
       dispatch(setErrorText(error.message));
-      setReplyThread([]);
+      dispatch(setReplyThread([]));
     }
   };
 
@@ -178,6 +178,16 @@ export const useCommunication = () => {
     }
   };
 
+  // const getUnreadRepliesByMessageId = async (id, token) => {
+  //   try {
+  //     const res = await getUserInfo(currentUser._id, token);
+  //     const userInfo = await res.json();
+  //     setUser(userInfo);
+  //   } catch (error) {
+  //     dispatch(setErrorText(error.message));
+  //   }
+  // };
+
   useEffect(() => {
     getAllMessages(true, true);
   }, []);
@@ -195,6 +205,7 @@ export const useCommunication = () => {
     dispatch(setShowMessagesToAdmin(false));
     dispatch(setMessageThread(""));
   };
+
 
   const markMessageAsRead = async (msgId) => {
     try{
@@ -225,7 +236,6 @@ export const useCommunication = () => {
     handleReplies,
     showReplies,
     setShowReplies,
-    replyThread,
     handleSubmit,
     count,
     setCount,

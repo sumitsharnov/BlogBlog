@@ -20,7 +20,7 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
-import { getUnreadMessages } from "./controllers/communications.controller.js";
+import { getUnreadMessages, getReplies } from "./controllers/communications.controller.js";
 
 dotenv.config();
 
@@ -60,7 +60,7 @@ wss.on('connection', ws => {
     if (data.type === 'init') {
       try {
         jwt.verify(data.token, process.env.JWT_SECRET);
-        clients.set(ws, { userId: data.userId, token: data.token });
+        clients.set(ws, { userId: data.userId, token: data.token, messageId: data.messageId});
       } catch (e) {
         ws.send(JSON.stringify({ error: 'Unauthorized' }));
         ws.close();
@@ -71,10 +71,20 @@ wss.on('connection', ws => {
   });
 
   const sendUnreadMessages = async () => {
-    for (const [client, { userId, token }] of clients.entries()) {
+    for (const [client, { userId, token, messageId }] of clients.entries()) {
       try {
         const unreadMessages = await getUnreadMessages(userId, token);
-        client.send(JSON.stringify({ unreadMessages }));
+        const reply_data = messageId && await fetch(`${process.env.BASE_URL}/api/messages/threads/${messageId}`);
+        const unreadReplies_data = await fetch(`${process.env.BASE_URL}/api/messages/getUnreadReplies`, {
+          method: 'GET',
+          headers: {
+            'userId': userId,
+            'Authorization': token,
+          }
+        });
+        const replies = await reply_data.json();
+        const unreadReplies = await unreadReplies_data.json();
+        client.send(JSON.stringify({ unreadMessages, replies, unreadReplies }));
       } catch (error) {
         if (error.name === 'TokenExpiredError') {
           console.error("Token expired:", error);

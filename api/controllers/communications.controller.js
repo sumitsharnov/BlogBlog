@@ -203,7 +203,6 @@ export const addReplies = async (req, res, next) => {
 export const getReplies = async (req, res, next) => {
   try {
     const messageId = req.params.messageId; // Retrieve messageId from params
-
     if (!messageId) {
       return next(new Error("Message ID is missing"));
     }
@@ -423,32 +422,31 @@ export const getUnreadReplies = async (req, res, next) => {
   try {
     const userId = req.headers["userid"]; // Retrieve userId from headers
     const token = req.headers.authorization;
-    const messageId = req.query.messageId; // Retrieve messageId from query parameters
 
     try {
       jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       return next(errorHandler(401, "Unauthorized"));
     }
-    if (!userId || !messageId)
-      return next(errorHandler(500, "Something went wrong"));
+    if (!userId) return next(errorHandler(500, "Something went wrong"));
 
     // Find the communication document for the specific user
     const communication = await Communication.findOne({ _id: userId });
     if (!communication)
       return res.status(404).json({ error: "User not found" });
 
-    // Find the specific message and count unread replies
-    const message = communication.messages.find((msg) => msg.id === messageId);
-    if (!message) return res.status(404).json({ error: "Message not found" });
+    // Iterate over all messages and count unread replies for each
+    const unreadReplies = communication.messages.map((message) => {
+      const unreadRepliesCount = message.replies.filter(
+        (reply) => !reply.read && reply.user !== userId
+      ).length;
+      return { messageId: message.id, unreadReplies: unreadRepliesCount };
+    });
 
-    const unreadRepliesCount = message.replies.filter(
-      (reply) => !reply.read && reply.user !== userId
-    ).length;
-
-    res.status(200).json({ replies: unreadRepliesCount });
+    res.status(200).json(unreadReplies);
   } catch (error) {
     console.error("Error fetching unread replies:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+

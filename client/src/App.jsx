@@ -17,13 +17,15 @@ import { updateCurrentUser, clearSignInSuccess } from "./redux/user/userSlice";
 import {
   setUnreadMessagesCount,
   setNewMessage,
+  setReplyThread,
+  setUnreadRepliesCountWithMessageId
 } from "./redux/communications/commSlice";
 import Cookies from "js-cookie";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function App() {
   const { currentUser, token } = useSelector((state) => state.user);
-  const { unreadMessagesCount } = useSelector((state) => state.comm);
+  const { unreadMessagesCount, messageId } = useSelector((state) => state.comm);
   const dispatch = useDispatch();
   useEffect(() => {
     if (currentUser && currentUser._id && token) {
@@ -52,7 +54,7 @@ export default function App() {
         const ws = new WebSocket(apiURL);
         ws.onopen = () => {
           ws.send(
-            JSON.stringify({ type: "init", userId: currentUser._id, token })
+            JSON.stringify({ type: "init", userId: currentUser._id, token, messageId })
           );
         };
         ws.onmessage = (event) => {
@@ -62,7 +64,10 @@ export default function App() {
               setNewMessage("You have a new chat, click on Sync to view it!")
             );
           }
-          dispatch(setUnreadMessagesCount(data.unreadMessages));
+          data.unreadMessages && dispatch(setUnreadMessagesCount(data.unreadMessages));
+          data.replies && dispatch(setReplyThread(data.replies));
+          console.log(data.unreadReplies)
+          data.unreadReplies && dispatch(setUnreadRepliesCountWithMessageId(data.unreadReplies));
         };
 
         return () => {

@@ -29,7 +29,6 @@ const Communication = () => {
     handleReplies,
     showReplies,
     setShowReplies,
-    replyThread,
     handleSubmit,
     count,
     message,
@@ -50,7 +49,9 @@ const Communication = () => {
   } = useCommunication();
   // const {showMessagesToAdmin} =  useAdminComm();
   const { currentUser } = useSelector((state) => state.user);
-  const { newMessage } = useSelector((state) => state.comm);
+  const { newMessage, unreadRepliesCountWithMessageId } = useSelector(
+    (state) => state.comm
+  );
   const {
     activatedMessage,
     showMessagesToAdmin,
@@ -73,7 +74,6 @@ const Communication = () => {
     console.error(event);
     setDisplayImage(anonuser);
   };
-
   return currentUser.type.toLowerCase() === "guest" ? (
     <Home />
   ) : currentUser.type.toLowerCase() === "user" ||
@@ -277,17 +277,27 @@ const Communication = () => {
                       </div>
                       <div className={`${msg.delete && "hidden"}`}>
                         <div className="flex gap-2  ml-[2%] mt-2 m-4">
-                          <div
-                            className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out"
-                            onClick={async () => {
-                              dispatch(setMessageId(msg.id));
-                              handleReplies(msg.id);
-                            }} // Pass the index as the message ID
-                          >
-                            <FontAwesomeIcon
-                              icon={faMessage}
-                              className="flex"
-                            />
+                          <div>
+                            <div
+                              key={msg.id}
+                              className="cursor-pointer text-gray-600 hover:text-green-800 font-medium rounded transition duration-300 ease-in-out"
+                              onClick={async () => {
+                                dispatch(setMessageId(msg.id));
+                                handleReplies(msg.id);
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faMessage}
+                                className="flex absolute"
+                              />
+                              {unreadRepliesCountWithMessageId && (
+                                <span className="top-0 right-0 transform translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-white bg-red-600 rounded-full mr-2">
+                                  {unreadRepliesCountWithMessageId.find(
+                                    (reply) => reply.messageId === msg.id
+                                  )?.unreadReplies || 0}
+                                </span>
+                              )}
+                            </div>
                           </div>
 
                           <div
@@ -367,7 +377,6 @@ const Communication = () => {
             <ReplyThread
               setShowReplies={setShowReplies}
               user={user}
-              replyThread={replyThread}
               count={count}
             />
           </div>

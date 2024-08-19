@@ -170,19 +170,19 @@ export const markReplyAsRead = async (replyId, messageId, token) => {
 };
 
 
-// export async function getUnreadMessagesCount(token, userId) {
-//   try {
-//     const res = await fetch(`${API_BASE_URL}/api/messages/getUnreadMessages`, {
-//       method: "GET",
-//       headers: { Authorization: token, userid : userId },
-//     });
-//     const data = await res.json();
+export async function getUnreadRepliesCount(token, userId, messageId) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/messages/getUnreadReplies/${messageId}`, {
+      method: "GET",
+      headers: { authorization: token, userid : userId },
+    });
+    const data = await res.json();
 
-//     if (!res.ok) {
-//       throw new Error(data.message);
-//     }
-//     return data;
-//   } catch (error) {
-//     throw new Error("Something went wrong");
-//   }
-// }
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
+}

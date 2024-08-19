@@ -12,6 +12,8 @@ const initialState = {
   unreadRepliesCount: 0,
   unreadMessagesCount: 0,
   newMessage :  "",
+  replyThread: "",
+  unreadRepliesCountWithMessageId: [],
 };
 
 const commSlice = createSlice({
@@ -54,6 +56,12 @@ const commSlice = createSlice({
     setNewMessage(state, action) {
       state.newMessage = action.payload;
     },
+    setReplyThread(state, action) {
+      state.replyThread = action.payload;
+    },
+    setUnreadRepliesCountWithMessageId(state, action) {
+      state.unreadRepliesCountWithMessageId = action.payload;
+    },
     resetComm() {
       return initialState;
     }
@@ -74,6 +82,8 @@ export const {
   setUnreadMessagesCount,
   setNewMessage,
   resetComm,
+  setReplyThread,
+  setUnreadRepliesCountWithMessageId,
 } = commSlice.actions;
 
 export default commSlice.reducer;
