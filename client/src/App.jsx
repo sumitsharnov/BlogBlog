@@ -66,7 +66,6 @@ export default function App() {
           }
           data.unreadMessages && dispatch(setUnreadMessagesCount(data.unreadMessages));
           data.replies && dispatch(setReplyThread(data.replies));
-          console.log(data.unreadReplies)
           data.unreadReplies && dispatch(setUnreadRepliesCountWithMessageId(data.unreadReplies));
         };
 

@@ -41,10 +41,10 @@ export const useCommunication = () => {
   const [sync, setSync] = useState(false);
   const dispatch = useDispatch();
 
-  const handleReplies = async (messageId) => {
+  const handleReplies = async (messageId, replyThreadNull = false) => {
     dispatch(setErrorText(""));
     setShowReplies(true);
-    dispatch(setReplyThread(null));
+    replyThreadNull || dispatch(setReplyThread(null));
     dispatch(setActiveMessage(messageId));
     setCount(count + 1);
     // const data = await getMessagesById(messageId, token);
@@ -224,7 +224,7 @@ export const useCommunication = () => {
       setCount(prev => prev + 1);
       await markReplyAsRead(replyId, msgId, token);
       dispatch(setErrorText(null));
-      await handleReplies(msgId);
+      await handleReplies(msgId, true);
     }catch (error) {
       dispatch(setErrorText(error.message));
     }
