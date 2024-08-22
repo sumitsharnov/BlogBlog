@@ -19,7 +19,7 @@ import {
 import anonuser from "../images/home/anonuser.png";
 import Tooltip from "../components/Tooltip";
 
-const ReplyThread = ({ setShowReplies, replyThread }) => {
+const ReplyThread = ({ setShowReplies }) => {
   const dispatch = useDispatch();
   const {
     newReply,
@@ -38,6 +38,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
     messageId,
     token
   } = useCommunication();
+  const {replyThread} = useSelector((state) => state.comm);
   const { currentUser } = useSelector((state) => state.user);
   const [replies, setReplies] = useState([]);
   const loadingThreads = replyThread === null ? true : false;
@@ -171,7 +172,7 @@ const ReplyThread = ({ setShowReplies, replyThread }) => {
                     ) : (
                       <div
                         onClick={() => {currentUser._id !== thread.user && markReplyRead(thread.id, messageId, token)}}
-                        className={`break-words rounded-md shadow-md p-2 transition-all duration-300 ease-in-out relative group hover:cursor-pointer ${
+                        className={`break-words rounded-md shadow-md p-2 duration-300 ease-in-out relative group hover:cursor-pointer  transition-all animate-bounce${
                           !thread.read ?
                           currentUser._id !== thread.user &&
                             "bg-purple-100 border-l-4 border-purple-500 text-purple-700 hover:text-purple-900 hover:font-medium font-bold"
