@@ -291,10 +291,8 @@ const Communication = () => {
                                 className="flex absolute"
                               />
                               {unreadRepliesCountWithMessageId && (
-                                <span className="top-0 right-0 transform translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-red-500 bg-white rounded-full mr-2 border border-black">
-                                  {unreadRepliesCountWithMessageId.find(
-                                    (reply) => reply.messageId === msg.id
-                                  )?.unreadReplies || 0}
+                                <span className="top-0 right-0 transform translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 text-xs font-bold leading-none border border-black text-red-400 bg-white rounded-full mr-2">
+                                  {unreadRepliesCountWithMessageId[msg.id] || 0}
                                 </span>
                               )}
                             </div>

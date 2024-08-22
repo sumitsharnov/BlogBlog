@@ -435,13 +435,14 @@ export const getUnreadReplies = async (req, res, next) => {
     if (!communication)
       return res.status(404).json({ error: "User not found" });
 
-    // Iterate over all messages and count unread replies for each
-    const unreadReplies = communication.messages.map((message) => {
+    // Create an object with messageId as key and unread replies count as value
+    const unreadReplies = communication.messages.reduce((acc, message) => {
       const unreadRepliesCount = message.replies.filter(
         (reply) => !reply.read && reply.user !== userId
       ).length;
-      return { messageId: message.id, unreadReplies: unreadRepliesCount };
-    });
+      acc[message.id] = unreadRepliesCount;
+      return acc;
+    }, {});
 
     res.status(200).json(unreadReplies);
   } catch (error) {
@@ -449,4 +450,5 @@ export const getUnreadReplies = async (req, res, next) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 

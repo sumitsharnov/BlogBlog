@@ -64,8 +64,9 @@ export default function App() {
               setNewMessage("You have a new chat, click on Sync to view it!")
             );
           }
-          data.unreadMessages && dispatch(setUnreadMessagesCount(data.unreadMessages));
+          dispatch(setUnreadMessagesCount(data.unreadMessages ? data.unreadMessages : 0));
           data.replies && dispatch(setReplyThread(data.replies));
+          console.log( data.unreadMessages)
           data.unreadReplies && dispatch(setUnreadRepliesCountWithMessageId(data.unreadReplies));
         };
 
