@@ -252,14 +252,15 @@ const Communication = () => {
                                   } ${msg.delete && "bg-orange-100"}`}
                               key={count}
                             >
-                              <p className={`whitespace-pre-line p-1 w-[100%]`}>
+                              <p className={`p-1 w-[100%]`}>
                                 {msg.message && msg.message}
-                              </p>
-
-                              <span className="ml-1 text-gray-400 font-light p-1">
+                                <div className="p-1 text-gray-400 font-light inline-block text-center ml-1">
                                 {" "}
                                 {msg.edit && "(edited)"}{" "}
-                              </span>
+                              </div>
+                              </p>
+
+                             
                             </div>
                             {msg.read ? (
                               <span className="absolute top-0 right-0 h-2 w-2 bg-purple-500 rounded-full"></span>

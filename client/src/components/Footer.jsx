@@ -1,16 +1,17 @@
+import { Link } from "react-router-dom";
 const FooterComponent = () => {
   return (
     <footer className="w-full bg-white dark:bg-gray-900 border-b-2  border-t-teal-500 mt-1">
       <div className="mx-auto max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div className="flex justify-center items-center space-x-4 mb-4 sm:mb-0">
-            <a
-              href="#"
+            <Link
+              to="/about"
               className="flex items-center text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white hover:underline"
             >
               <span className="sr-only">About</span>
               About
-            </a>
+            </Link>
             <a
               href="#"
               className="flex items-center text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white hover:underline"

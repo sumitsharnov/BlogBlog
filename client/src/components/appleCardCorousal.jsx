@@ -1,7 +1,7 @@
-import{ useEffect, useRef, useState, createContext, useContext } from "react";
+import { useEffect, useRef, useState, createContext, useContext } from "react";
 import { TbArrowNarrowLeft, TbArrowNarrowRight, TbX } from "react-icons/tb";
 import { AnimatePresence, motion } from "framer-motion";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 // Context for Carousel
 export const CarouselContext = createContext({
@@ -75,7 +75,15 @@ export const Carousel = ({ items, initialScroll = 0 }) => {
             {items.map((item, index) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 * index, ease: "easeOut" } }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.5,
+                    delay: 0.2 * index,
+                    ease: "easeOut",
+                  },
+                }}
                 key={"card" + index}
                 className="last:pr-[5%] md:last:pr-[33%] rounded-3xl"
               >
@@ -84,20 +92,20 @@ export const Carousel = ({ items, initialScroll = 0 }) => {
             ))}
           </div>
         </div>
-        <div className="flex justify-end gap-2 mr-10">
+        <div className="flex justify-center items-center gap-2 m-2 p-4">
           <button
             className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
             onClick={scrollLeft}
             disabled={!canScrollLeft}
           >
-            <TbArrowNarrowLeft className="h-6 w-6 text-gray-500" />
+            <TbArrowNarrowLeft className={`h-6 w-6 ${canScrollLeft ? 'text-green-500' : 'text-red-500'}`} />
           </button>
           <button
             className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
             onClick={scrollRight}
             disabled={!canScrollRight}
           >
-            <TbArrowNarrowRight className="h-6 w-6 text-gray-500" />
+            <TbArrowNarrowRight className={`h-6 w-6 ${canScrollRight ? 'text-green-500' : 'text-red-500'}`} />
           </button>
         </div>
       </div>
@@ -126,11 +134,7 @@ export const Card = ({ card, index, layout = false }) => {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  });
 
   const handleClose = () => {
     setOpen(false);
@@ -174,18 +178,18 @@ export const Card = ({ card, index, layout = false }) => {
               >
                 {card.title}
               </motion.p>
-              <div className="py-10">{card.content}</div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
       <motion.button
         layoutId={layout ? `card-${card.title}` : undefined}
-        onClick={handleOpen}
-        className="rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[40rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10"
+        // onClick={handleOpen}
+        className="rounded-3xl bg-gray-100 dark:bg-neutral-700 h-80 w-56 md:h-[40rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10"
       >
         <div className="absolute h-full top-0 inset-x-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none" />
-        <div className="relative z-40 p-8">
+
+        <div className="relative z-40 p-4">
           <motion.p
             layoutId={layout ? `category-${card.category}` : undefined}
             className="text-white text-sm md:text-base font-medium text-left"
@@ -194,7 +198,7 @@ export const Card = ({ card, index, layout = false }) => {
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${card.title}` : undefined}
-            className="text-white text-xl md:text-3xl font-semibold max-w-xs text-left font-sans mt-2"
+            className="text-purple-500 text-sm md:text-text-base font-semibold max-w-xs text-left font-sans mt-2"
           >
             {card.title}
           </motion.p>
@@ -202,26 +206,27 @@ export const Card = ({ card, index, layout = false }) => {
         <BlurImage
           src={card.src}
           alt={card.title}
-          className="object-cover absolute z-10 inset-0"
+          className="object-cover z-10 inset-0 relative"
         />
+        <div className="relative w-[100%] flex">
+        <motion.p className="absolute text-white p-4 inline-block">{Object.entries(card.content).map(([key, value]) => {
+          return <p className="flex" key={key}>{key + ": " + value}</p>
+        })}</motion.p>
+        </div>
+        
       </motion.button>
     </>
   );
 };
 
 // BlurImage Component
-export const BlurImage = ({
-  height,
-  width,
-  src,
-  className,
-  alt,
-  ...rest
-}) => {
+export const BlurImage = ({ height, width, src, className, alt, ...rest }) => {
   const [isLoading, setLoading] = useState(true);
   return (
     <img
-      className={`transition duration-300 ${isLoading ? "blur-sm" : "blur-0"} ${className}`}
+      className={`w-[100%] h-[50%] p-4 border-0 border-b-2 border-b-orange-500 transition duration-300 ${
+        isLoading ? "blur-sm" : "blur-0"
+      } ${className}`}
       onLoad={() => setLoading(false)}
       src={src}
       width={width}
@@ -231,7 +236,6 @@ export const BlurImage = ({
     />
   );
 };
-
 
 Carousel.propTypes = {
   items: PropTypes.arrayOf(PropTypes.node).isRequired, // Allows for a broader range of content types

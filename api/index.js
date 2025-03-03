@@ -11,6 +11,7 @@ import fileRoutes from "./routes/file.route.js";
 import profileRoutes from "./routes/profile.route.js";
 import communications from "./routes/communication.route.js";
 import communicationsAdmin from "./routes/commuincationsAdmin.route.js";
+import about from "./routes/about.route.js";
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
 import { GridFSBucket } from 'mongodb';
@@ -146,6 +147,7 @@ app.use("/api/certificates", certificateRoutes);
 app.use("/api/profile/photo", profileRoutes);
 app.use("/api/messages", communications);
 app.use("/api/admin/comm", communicationsAdmin);
+app.use("/api", about)
 
 // Catch-all route to serve index.html for any route not matched by the API
 // app.get('*', (req, res) => {
