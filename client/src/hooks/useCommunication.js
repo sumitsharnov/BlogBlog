@@ -224,7 +224,7 @@ export const useCommunication = () => {
       setCount(prev => prev + 1);
       await markReplyAsRead(replyId, msgId, token);
       dispatch(setErrorText(null));
-      await handleReplies(msgId, true);
+      await handleReplies(msgId, false);
     }catch (error) {
       dispatch(setErrorText(error.message));
     }

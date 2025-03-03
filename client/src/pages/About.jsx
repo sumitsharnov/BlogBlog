@@ -21,7 +21,7 @@ export default function About() {
 const data = [
   {
     category: "Contact Card",
-    title: "Information about Developer",
+    title: "Information about Sumit",
     src: contactCard,
     content: {Name: "Sumit", Ph: "+1-705-905-5436", Email: "sumitsharnov@gmail.com"},
   },
